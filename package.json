@@ -1,0 +1,32 @@
+{
+  "name": "single-spa-react",
+  "version": "1.0.0",
+  "description": "A single spa plugin for React apps",
+  "main": "dist/single-spa-react.dist.js",
+  "scripts": {
+    "build": "babel src/single-spa-react.js --out-file dist/single-spa-react.dist.js --source-maps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeldenning/single-spa-react.git"
+  },
+  "keywords": [
+    "single",
+    "page",
+    "application",
+    "spa",
+    "multi",
+    "one",
+    "react"
+  ],
+  "author": "Joel Denning",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeldenning/single-spa-react/issues"
+  },
+  "homepage": "https://github.com/joeldenning/single-spa-react#readme",
+  "devDependencies": {
+    "babel-cli": "6.0.15",
+    "babel-preset-es2015": "6.0.15"
+  }
+}
