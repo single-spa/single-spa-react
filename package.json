@@ -1,13 +1,13 @@
 {
   "name": "single-spa-react",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A single spa plugin for React apps",
   "main": "dist/single-spa-react.dist.js",
   "scripts": {
     "build": "babel src/single-spa-react.js --out-file dist/single-spa-react.dist.js --source-maps"
   },
   "publishConfig": {
-      "registry": "http://registry.npmjs.org"
+    "registry": "http://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
