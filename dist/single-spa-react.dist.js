@@ -5,9 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.defaultReactApp = defaultReactApp;
 
-function _instanceof(left, right) { if (right != null && right[Symbol.hasInstance]) { return right[Symbol.hasInstance](left); } else { return left instanceof right; } }
-
-function _typeof(obj) { return obj && obj.constructor === Symbol ? "symbol" : typeof obj; }
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
 function defaultReactApp(config) {
     if ((typeof config === 'undefined' ? 'undefined' : _typeof(config)) !== 'object') {
@@ -32,7 +30,7 @@ function defaultReactApp(config) {
             return new Promise(function (resolve) {
                 var rootElementGetter = config.rootElementGetter();
                 var rootElementPromise = undefined;
-                if (_instanceof(rootElementGetter, Promise)) {
+                if (rootElementGetter instanceof Promise) {
                     rootElementPromise = rootElementGetter;
                 } else {
                     //just a synchronous function
@@ -44,7 +42,7 @@ function defaultReactApp(config) {
                     var ReactDOMPromise = undefined;
                     if (typeof config.ReactDOMGetter === 'function') {
                         ReactDOMPromise = config.ReactDOMGetter();
-                        if (!_instanceof(ReactDOMPromise, Promise)) {
+                        if (!(ReactDOMPromise instanceof Promise)) {
                             //it's just a synchronous function call, not a promise
                             ReactDOMPromise = new Promise(function (resolve) {
                                 return resolve(ReactDOMPromise);
