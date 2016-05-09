@@ -1,72 +1,71 @@
-export function defaultReactApp(config) {
-    if (typeof config !== 'object') {
-        throw new Error(`A config object must be provided`);
-    }
-    if (typeof config.rootElementGetter !== 'function') {
-        throw new Error(`The config object must have a rootElementGetter function`);
-    }
-    if (typeof config.mountApp !== 'function') {
-        throw new Error(`The config object must have a mountApp function`);
-    }
-    return {
-        applicationWasMounted: function() {
-            return new Promise((resolve) => {
-                if (config.React)
-                    window.React = config.React;
-                if (config.ReactDOM)
-                    window.ReactDOM = config.ReactDOM;
-                config.mountApp();
-                resolve();
-            });
-        },
-        applicationWillUnmount: function() {
-            return new Promise((resolve) => {
-                const rootElementGetter = config.rootElementGetter();
-                let rootElementPromise;
-                if (rootElementGetter instanceof Promise) {
-                    rootElementPromise = rootElementGetter;
-                } else {
-                    //just a synchronous function
-                    rootElementPromise = new Promise((resolve) => resolve(rootElementGetter));
-                }
-                rootElementPromise
-                .then((rootElement) => {
-                    let ReactDOMPromise;
-                    if (typeof config.ReactDOMGetter === 'function') {
-                        ReactDOMPromise = config.ReactDOMGetter();
-                        if (!(ReactDOMPromise instanceof Promise)) {
-                            //it's just a synchronous function call, not a promise
-                            ReactDOMPromise = new Promise((resolve) => resolve(ReactDOMPromise));
-                        }
-                    } else if (window.ReactDOM) {
-                        ReactDOMPromise = new Promise((resolve) => resolve(window.ReactDOM));
-                    } else if (window.React && window.React.unmountComponentAtNode) {
-                        //old school React has all the ReactDOM funcs on the React obj
-                        ReactDOMPromise = new Promise((resolve) => resolve(window.React));
-                    } else {
-                        throw new Error(`Could not unmount React application because no ReactDOM object was provided in the single spa config`);
-                    }
+let opts;
 
-                    if (window.React) {
-                        config.React = window.React;
-                    }
-                    if (window.ReactDOM) {
-                        config.ReactDOM = window.ReactDOM;
-                    }
+const defaultOpts = {
+	// required opts
+	React: null,
+	ReactDOM: null,
+	rootComponent: null,
+	domElementGetter: null,
+}
 
-                    ReactDOMPromise
-                    .then((ReactDOM) => ReactDOM.unmountComponentAtNode(rootElement))
-                    .then(() => delete window.React)
-                    .then(() => delete window.ReactDOM)
-                    .then(() => resolve())
-                    .catch((ex) => {
-                        throw ex;
-                    });
-                })
-                .catch((ex) => {
-                    throw ex;
-                });
-            })
-        }
-    }
+export default function singleSpaReact(userOpts) {
+	if (typeof userOpts !== 'object') {
+		throw new Error(`single-spa-react requires a configuration object`);
+	}
+
+	opts = {
+		...defaultOpts,
+		...userOpts,
+	};
+
+	if (!opts.React) {
+		throw new Error(`single-spa-react must be passed opts.React`);
+	}
+
+	if (!opts.ReactDOM) {
+		throw new Error(`single-spa-react must be passed opts.ReactDOM`);
+	}
+
+	if (!opts.rootComponent) {
+		throw new Error(`single-spa-react must be passed opts.rootComponent`);
+	}
+
+	if (!opts.domElementGetter) {
+		throw new Error(`single-spa-react must be passed opts.domElementGetter function`);
+	}
+
+	return {
+		bootstrap,
+		mount,
+		unmount,
+	};
+}
+
+function bootstrap() {
+	return new Promise((resolve, reject) => {
+		resolve();
+	});
+}
+
+function mount() {
+	return new Promise((resolve, reject) => {
+		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl());
+		resolve();
+	});
+}
+
+function unmount() {
+	return new Promise((resolve, reject) => {
+		opts.ReactDOM.unmountComponentAtNode(getRootDomEl());
+		resolve();
+	});
+}
+
+function getRootDomEl() {
+	const el = opts.domElementGetter();
+	if (!el) {
+		throw new Error(`single-spa-react: domElementGetter function did not return a valid dom element`);
+	}
+
+	return el;
 }
