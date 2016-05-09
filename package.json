@@ -6,9 +6,6 @@
   "scripts": {
     "build": "babel src --out-dir lib"
   },
-  "publishConfig": {
-    "registry": "http://registry.npmjs.org"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joeldenning/single-spa-react.git"
