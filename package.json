@@ -2,7 +2,7 @@
   "name": "single-spa-react",
   "version": "2.0.0",
   "description": "A single spa plugin for React apps",
-  "main": "dist/single-spa-react.dist.js",
+  "main": "lib/single-spa-react.js",
   "scripts": {
     "build": "babel src --out-dir lib"
   },
