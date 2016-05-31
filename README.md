@@ -1,6 +1,6 @@
 # single-spa-react
 
-Generic lifecycle hooks for React applications that are registered as [child applications](https://github.com/CanopyTax/single-spa/blob/docs-1/docs/configuring-child-applications.md) of [single-spa](https://github.com/CanopyTax/single-spa).
+Generic lifecycle hooks for React applications that are registered as [child applications](https://github.com/CanopyTax/single-spa/blob/master/docs/child-applications.md) of [single-spa](https://github.com/CanopyTax/single-spa).
 
 ## Quickstart
 
