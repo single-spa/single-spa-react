@@ -10,8 +10,9 @@ First, in the child application, run `npm install --save single-spa-react` (or `
 import React from 'react';
 import ReactDOM from 'react-dom';
 import rootComponent from './path-to-root-component.js';
+import singleSpaReact from 'single-spa-react';
 
-const reactLifecycles = singleSpaAngular1({
+const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
   rootComponent,
