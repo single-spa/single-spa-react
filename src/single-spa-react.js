@@ -1,5 +1,3 @@
-let opts;
-
 const defaultOpts = {
 	// required opts
 	React: null,
@@ -13,7 +11,7 @@ export default function singleSpaReact(userOpts) {
 		throw new Error(`single-spa-react requires a configuration object`);
 	}
 
-	opts = {
+	const opts = {
 		...defaultOpts,
 		...userOpts,
 	};
@@ -35,33 +33,33 @@ export default function singleSpaReact(userOpts) {
 	}
 
 	return {
-		bootstrap,
-		mount,
-		unmount,
+		bootstrap: bootstrap.bind(null, opts),
+		mount: mount.bind(null, opts),
+		unmount: unmount.bind(null, opts),
 	};
 }
 
-function bootstrap() {
+function bootstrap(opts) {
 	return new Promise((resolve, reject) => {
 		resolve();
 	});
 }
 
-function mount() {
+function mount(opts) {
 	return new Promise((resolve, reject) => {
-		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl());
+		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts));
 		resolve();
 	});
 }
 
-function unmount() {
+function unmount(opts) {
 	return new Promise((resolve, reject) => {
-		opts.ReactDOM.unmountComponentAtNode(getRootDomEl());
+		opts.ReactDOM.unmountComponentAtNode(getRootDomEl(opts));
 		resolve();
 	});
 }
 
-function getRootDomEl() {
+function getRootDomEl(opts) {
 	const el = opts.domElementGetter();
 	if (!el) {
 		throw new Error(`single-spa-react: domElementGetter function did not return a valid dom element`);
