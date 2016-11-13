@@ -3,7 +3,7 @@
 Generic lifecycle hooks for React applications that are registered as [child applications](https://github.com/CanopyTax/single-spa/blob/master/docs/child-applications.md) of [single-spa](https://github.com/CanopyTax/single-spa).
 
 ## Example
-In addition to the Readme here, an example can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/react/react.app.js) project.
+In addition to this Readme, example usage of single-spa-react can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/react/react.app.js) project.
 
 ## Quickstart
 
