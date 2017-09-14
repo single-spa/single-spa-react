@@ -40,23 +40,22 @@ export default function singleSpaReact(userOpts) {
 }
 
 function bootstrap(opts) {
-	return new Promise((resolve, reject) => {
-		resolve();
-	});
+	return Promise.resolve();
 }
 
 function mount(opts) {
 	return new Promise((resolve, reject) => {
-		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts));
-		resolve();
-	});
+		const whenFinished = resolve;
+		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
+	})
 }
 
 function unmount(opts) {
-	return new Promise((resolve, reject) => {
-		opts.ReactDOM.unmountComponentAtNode(getRootDomEl(opts));
-		resolve();
-	});
+	return Promise
+		.resolve()
+		.then(() => {
+			opts.ReactDOM.unmountComponentAtNode(getRootDomEl(opts));
+		})
 }
 
 function getRootDomEl(opts) {

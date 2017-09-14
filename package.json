@@ -4,7 +4,7 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir lib --source-maps"
   },
   "repository": {
     "type": "git",
