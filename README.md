@@ -43,3 +43,10 @@ All options are passed to single-spa-react via the `opts` parameter when calling
 - `ReactDOM`: (required) The main ReactDOMbject, which is available via `require('react-dom')` `import ReactDOM from 'react-dom'`.
 - `rootComponent`: (required) The top level React component which will be rendered
 - `domElementGetter`: (required) A function that takes in no arguments and returns a DOMElement. This dom element is where the React application will be bootstrapped, mounted, and unmounted.
+- `suppressComponentDidCatchWarning`: (optional) A boolean that indicates if single-spa-react should warn when the rootComponent does not implement componentDidCatch. Defaults to false.
+
+## Notes
+
+For react@>=16, it is best practice to have each single-spa application's root application implement componentDidCatch in order to avoid
+the entire application unmounting unexpectedly when an error occurs. single-spa-react will warn to the console if componentDidCatch is not
+implemented. See https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html for more details.
