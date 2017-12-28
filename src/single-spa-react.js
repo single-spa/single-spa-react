@@ -43,10 +43,13 @@ function bootstrap(opts) {
 	return Promise.resolve();
 }
 
-function mount(opts) {
+function mount(opts, props) {
 	return new Promise((resolve, reject) => {
 		const whenFinished = resolve;
-		opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
+		const renderedComponent = opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
+    if (!renderedComponent.componentDidCatch) {
+      console.warn(`the rootComponent for "${props.childAppName}" that was passed to single-spa-react should implement componentDidCatch.`);
+    }
 	})
 }
 
