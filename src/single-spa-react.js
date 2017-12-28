@@ -49,7 +49,7 @@ function mount(opts, props) {
     const whenFinished = resolve;
     const renderedComponent = opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
     if (!renderedComponent.componentDidCatch && !opts.suppressComponentDidCatchWarning) {
-      console.warn(`the rootComponent for "${props.childAppName}" that was passed to single-spa-react should implement componentDidCatch.`);
+      console.warn(`single-spa-react: ${props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
     }
   })
 }
