@@ -48,7 +48,7 @@ function mount(opts, props) {
   return new Promise((resolve, reject) => {
     const whenFinished = resolve;
     const renderedComponent = opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
-    if (!renderedComponent.componentDidCatch && !opts.suppressComponentDidCatchWarning) {
+    if (!renderedComponent.componentDidCatch && !opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
       console.warn(`single-spa-react: ${props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
     }
   })
@@ -69,4 +69,17 @@ function getRootDomEl(opts) {
   }
 
   return el;
+}
+
+function atLeastReact16(React) {
+  if (React && typeof React.version === 'string' && React.version.indexOf('.') >= 0) {
+    const majorVersionString = React.version.slice(0, React.version.indexOf('.'));
+    try {
+      return Number(majorVersionString) >= 16;
+    } catch(err) {
+      return false;
+    }
+  } else {
+    return false;
+  }
 }
