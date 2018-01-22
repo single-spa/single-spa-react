@@ -46,7 +46,9 @@ function bootstrap(opts) {
 
 function mount(opts, props) {
   return new Promise((resolve, reject) => {
-    const whenFinished = resolve;
+    const whenFinished = function() {
+      resolve(this);
+    };
     const renderedComponent = opts.ReactDOM.render(opts.React.createElement(opts.rootComponent), getRootDomEl(opts), whenFinished);
     if (!renderedComponent.componentDidCatch && !opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
       console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
