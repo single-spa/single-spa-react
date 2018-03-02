@@ -1,13 +1,13 @@
 # single-spa-react
 
-Generic lifecycle hooks for React applications that are registered as [child applications](https://github.com/CanopyTax/single-spa/blob/master/docs/child-applications.md) of [single-spa](https://github.com/CanopyTax/single-spa).
+Generic lifecycle hooks for React applications that are registered as [applications](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications) of [single-spa](https://github.com/CanopyTax/single-spa).
 
 ## Example
 In addition to this Readme, example usage of single-spa-react can be found in the [single-spa-examples](https://github.com/CanopyTax/single-spa-examples/blob/master/src/react/react.app.js) project.
 
 ## Quickstart
 
-First, in the child application, run `npm install --save single-spa-react` (or `jspm install npm:single-spa-react` if your child application is managed by jspm). Then, in your [application's entry file](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), do the following:
+First, in the [single-spa application](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), run `npm install --save single-spa-react`. Then, create an entry file for the application:
 
 ```js
 import React from 'react';
