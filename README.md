@@ -7,7 +7,7 @@ In addition to this Readme, example usage of single-spa-react can be found in th
 
 ## Quickstart
 
-First, in the child application, run `npm install --save single-spa-react` (or `jspm install npm:single-spa-react` if your child application is managed by jspm). Then, in your [child app's entry file](https://github.com/CanopyTax/single-spa/blob/docs-1/docs/configuring-child-applications.md#the-entry-file), do the following:
+First, in the child application, run `npm install --save single-spa-react` (or `jspm install npm:single-spa-react` if your child application is managed by jspm). Then, in your [application's entry file](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), do the following:
 
 ```js
 import React from 'react';
