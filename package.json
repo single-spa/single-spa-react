@@ -4,7 +4,7 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
-    "build": "babel src --out-dir lib --source-maps",
+    "build": "rimraf lib && babel src --out-dir lib --source-maps",
     "prepublish": "yarn build"
   },
   "repository": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.2"
   }
 }
