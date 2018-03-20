@@ -5,6 +5,9 @@
   "main": "lib/single-spa-react.js",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --source-maps",
+    "test": "jest",
+    "watch-tests": "jest --watch",
+    "coverage": "jest --coverage",
     "prepublish": "yarn build"
   },
   "repository": {
@@ -26,8 +29,11 @@
   "homepage": "https://github.com/joeldenning/single-spa-react#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-jest": "^23.0.0-alpha.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
+    "jest": "^22.4.2",
+    "jest-cli": "^23.0.0-alpha.0",
     "rimraf": "^2.6.2"
   }
 }

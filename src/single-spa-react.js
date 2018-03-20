@@ -98,5 +98,12 @@ function atLeastReact16(React) {
 }
 
 function chooseDomElementGetter(opts, props) {
-  return props && props.customProps && props.customProps.domElementGetter ? props.customProps.domElementGetter : opts.domElementGetter
+  const customProps = props && props.customProps ? props.customProps : {}
+  if (customProps.domElement) {
+    return () => props.customProps.domElement
+  } else if (customProps.domElementGetter) {
+    return props.customProps.domElementGetter
+  } else {
+    return opts.domElementGetter
+  }
 }
