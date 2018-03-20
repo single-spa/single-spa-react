@@ -5,9 +5,9 @@
   "main": "lib/single-spa-react.js",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib --source-maps",
-    "test": "jest",
-    "watch-tests": "jest --watch",
-    "coverage": "jest --coverage",
+    "test": "jest --config jest.json",
+    "watch-tests": "jest --watch --config jest.json",
+    "coverage": "jest --coverage --config jest.json",
     "prepublish": "yarn build"
   },
   "repository": {
