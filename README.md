@@ -44,8 +44,9 @@ All options are passed to single-spa-react via the `opts` parameter when calling
 - `rootComponent`: (required) The top level React component which will be rendered
 - `suppressComponentDidCatchWarning`: (optional) A boolean that indicates if single-spa-react should warn when the rootComponent does not implement componentDidCatch. Defaults to false.
 - `domElementGetter`: (optional) A function that takes in no arguments and returns a DOMElement. This dom element is where the React application will be bootstrapped, mounted, and unmounted.
-  Note that this opt can only be omitted when domElementGetter is passed in as a [custom prop](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#custom-props). So you must either
-  do `singleSpaReact({..., domElementGetter: function() {return ...}})` or do `singleSpa.registerApplication(name, app, activityFn, {domElementGetter: function() {...}})`
+  Note that this opt can only be omitted when domElementGetter is passed in as a [custom prop](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#custom-props) or if `domElement`
+  is passed as prop. So you must either do `singleSpaReact({..., domElementGetter: function() {return ...}})`, `singleSpa.registerApplication(name, app, activityFn, {domElementGetter: function() {...}})`,
+  or `singleSpaReact({..., domElement})`.
 
 ## Notes
 
