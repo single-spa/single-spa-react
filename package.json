@@ -4,11 +4,11 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
-    "build": "rimraf lib && babel src --out-dir lib --source-maps",
+    "build": "rimraf lib parcel && mkdirp lib parcel && babel src/single-spa-react.js --source-maps --out-file lib/single-spa-react.js && babel src/parcel.js --source-maps --out-file parcel/index.js",
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
     "coverage": "jest --coverage --config jest.json",
-    "prepublish": "yarn build"
+    "prepublish": "in-publish && yarn build || not-in-publish"
   },
   "repository": {
     "type": "git",
@@ -30,10 +30,21 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-jest": "^23.0.0-alpha.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "in-publish": "^2.0.0",
     "jest": "^22.4.2",
     "jest-cli": "^23.0.0-alpha.0",
+    "mkdirp": "^0.5.1",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "rimraf": "^2.6.2"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }
