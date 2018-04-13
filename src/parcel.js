@@ -140,11 +140,3 @@ export default class Parcel extends React.Component {
     return customProps
   }
 }
-
-function looksLikeParcelConfig(config) {
-  return config && typeof config.mount === 'function' && typeof config.unmount === 'function' && typeof config.bootstrap === 'function'
-}
-
-function isThenable(obj) {
-  return obj && typeof obj.then === 'function'
-}
