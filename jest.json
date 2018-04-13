@@ -5,6 +5,10 @@
     ".*": "./node_modules/babel-jest"
   },
   "rootDir": "./",
-  "modulePaths": ["./"]
+  "modulePaths": ["./"],
+  "globals": {
+    "window": true
+  },
+  "setupFiles": ["<rootDir>/src/test-setup.js"]
 }
 
