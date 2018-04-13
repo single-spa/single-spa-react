@@ -13,7 +13,8 @@ First, in the [single-spa application](https://github.com/CanopyTax/single-spa/b
 import React from 'react';
 import ReactDOM from 'react-dom';
 import rootComponent from './path-to-root-component.js';
-import singleSpaReact from 'single-spa-react';
+// Note that SingleSpaContext is a react@16.3 (if available) context that provides the singleSpa props
+import singleSpaReact, {SingleSpaContext} from 'single-spa-react';
 
 const reactLifecycles = singleSpaReact({
   React,
