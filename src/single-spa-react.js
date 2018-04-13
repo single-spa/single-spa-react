@@ -109,10 +109,6 @@ function unmount(opts, props) {
     })
 }
 
-function update(mount, opts, props) {
-  return mount(opts, props)
-}
-
 function getRootDomEl(domElementGetter) {
   const el = domElementGetter();
   if (!el) {
