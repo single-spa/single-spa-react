@@ -136,4 +136,67 @@ describe('single-spa-react', () => {
       .then(() => lifecycles.mount(props))
       .then(() => expect(console.warn).not.toHaveBeenCalled())
   })
+
+  describe('warnings for componentDidMount', () => {
+    let originalWarn
+    beforeEach(() => {
+      let originalWarn = console.warn
+      console.warn = jest.fn()
+    })
+
+    afterEach(() => {
+      console.warn = originalWarn
+    })
+
+    it(`should not throw a warning`, () => {
+      const props = {why: 'hello', customProps: {}}
+      const lifecycles = singleSpaReact({
+        React,
+        ReactDOM,
+        rootComponent: class rootComponent {componentDidCatch(){}},
+        domElementGetter
+      })
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          return expect(console.warn.mock.calls.length).toBe(0)
+        })
+    })
+
+    it(`should throw a warning`, () => {
+      const props = {why: 'hello', customProps: {}}
+      const lifecycles = singleSpaReact({
+        React,
+        ReactDOM,
+        rootComponent: class rootComponent {},
+        domElementGetter
+      })
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          return expect(console.warn.mock.calls.length).toBe(1)
+        })
+    })
+
+    it(`should throw a warning`, () => {
+      const props = {why: 'hello', customProps: {}}
+      const lifecycles = singleSpaReact({
+        React,
+        ReactDOM,
+        rootComponent: function foo () {},
+        domElementGetter
+      })
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          return expect(console.warn.mock.calls.length).toBe(1)
+        })
+    })
+  })
 })
