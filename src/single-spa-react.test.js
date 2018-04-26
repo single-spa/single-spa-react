@@ -137,7 +137,7 @@ describe('single-spa-react', () => {
       .then(() => expect(console.warn).not.toHaveBeenCalled())
   })
 
-  describe('warnings for comonentDidMount', () => {
+  describe('warnings for componentDidMount', () => {
     let originalWarn
     beforeEach(() => {
       let originalWarn = console.warn
