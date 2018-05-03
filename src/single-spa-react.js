@@ -52,7 +52,7 @@ export default function singleSpaReact(userOpts) {
   };
 
   if (opts.parcelCanUpdate) {
-    lifecycles.update = mount.bind(null, opts)
+    lifecycles.update = update.bind(null, opts)
   }
 
   return lifecycles
@@ -92,7 +92,9 @@ function mount(opts, props) {
 
     const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const renderedComponent = opts.ReactDOM.render(elementToRender, getRootDomEl(domElementGetter), whenFinished)
+    const domElement = getRootDomEl(domElementGetter)
+    const renderedComponent = opts.ReactDOM.render(elementToRender, domElement, whenFinished)
+    opts.domElement = domElement
   })
 }
 
@@ -108,6 +110,18 @@ function unmount(opts, props) {
 
       opts.ReactDOM.unmountComponentAtNode(getRootDomEl(domElementGetter));
     })
+}
+
+function update(opts, props) {
+  return new Promise((resolve, reject) => {
+    const whenFinished = function() {
+      resolve(this);
+    };
+
+    const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
+    const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
+    const renderedComponent = opts.ReactDOM.render(elementToRender, opts.domElement, whenFinished)
+  })
 }
 
 function getRootDomEl(domElementGetter) {

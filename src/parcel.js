@@ -41,7 +41,7 @@ export default class Parcel extends React.Component {
   componentDidUpdate() {
     this.addThingToDo('update', () => {
       if (this.parcel && this.parcel.update) {
-        this.parcel.update(this.getCustomProps())
+        return this.parcel.update(this.getCustomProps())
       }
     })
   }
