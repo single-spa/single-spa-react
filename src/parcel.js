@@ -34,14 +34,14 @@ export default class Parcel extends React.Component {
         this.createdDomElement = domElement = document.createElement(this.props.wrapWith)
         this.props.appendTo.appendChild(domElement)
       }
-      this.parcel = mountParcel(this.props.config, {domElement, ...this.getCustomProps()})
+      this.parcel = mountParcel(this.props.config, {domElement, ...this.getParcelProps()})
       return this.parcel.mountPromise
     })
   }
   componentDidUpdate() {
     this.addThingToDo('update', () => {
       if (this.parcel && this.parcel.update) {
-        return this.parcel.update(this.getCustomProps())
+        return this.parcel.update(this.getParcelProps())
       }
     })
   }
@@ -128,15 +128,15 @@ export default class Parcel extends React.Component {
         throw err
       })
   }
-  getCustomProps = () => {
-    const customProps = Object.assign({}, this.props)
+  getParcelProps = () => {
+    const parcelProps = Object.assign({}, this.props)
 
-    delete customProps.mountParcel
-    delete customProps.config
-    delete customProps.wrapWith
-    delete customProps.appendTo
-    delete customProps.handleError
+    delete parcelProps.mountParcel
+    delete parcelProps.config
+    delete parcelProps.wrapWith
+    delete parcelProps.appendTo
+    delete parcelProps.handleError
 
-    return customProps
+    return parcelProps
   }
 }
