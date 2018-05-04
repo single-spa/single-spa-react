@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Parcel from './parcel.js'
-import {shallow, mount} from 'enzyme'
+import {mount} from 'enzyme'
 import {SingleSpaContext} from '../lib/single-spa-react.js'
 
 document.body.appendChild = jest.fn()
 
 describe(`<Parcel />`, () => {
-  let config, mountParcel = jest.fn()
+  let config, mountParcel = jest.fn(), parcel, props
 
   beforeEach(() => {
     config = {
@@ -16,17 +16,22 @@ describe(`<Parcel />`, () => {
       unmount: jest.fn(),
     }
 
-    mountParcel.mockReset()
-    mountParcel.mockReturnValue(() => ({
+    parcel = {
       loadPromise: jest.fn(),
       bootstrapPromise: jest.fn(),
       mountPromise: jest.fn(),
       unmountPromise: jest.fn(),
       getStatus: jest.fn(),
       unmount: jest.fn(),
-    }))
+      update: jest.fn(),
+    }
+
+    mountParcel.mockReset()
+    mountParcel.mockReturnValue(parcel)
 
     document.body.appendChild.mockReset()
+
+    props = {mountParcel, config}
   })
 
   it(`throws an error if you try to render the component without a config`, () => {
@@ -36,22 +41,88 @@ describe(`<Parcel />`, () => {
   })
 
   it(`renders a div by default`, () => {
-    const wrapper = shallow(<Parcel config={config} mountParcel={mountParcel} />)
+    const wrapper = mount(<Parcel {...props} />)
     expect(wrapper.find('div').length).toBe(1)
   })
 
   it(`calls the mountParcel prop when it mounts`, () => {
-    const wrapper = mount(<Parcel config={config} mountParcel={mountParcel} />)
+    const wrapper = mount(<Parcel {...props} />)
     return wrapper.instance().nextThingToDo.then(() => {
       expect(mountParcel).toHaveBeenCalled()
     })
   })
 
   it(`renders nothing if you pass in the appendTo prop`, () => {
-    const wrapper = shallow(<Parcel config={config} appendTo={document.body} mountParcel={mountParcel} />)
+    const wrapper = mount(<Parcel {...props} appendTo={document.body} />)
     return wrapper.instance().nextThingToDo.then(() => {
       expect(document.body.appendChild).toHaveBeenCalled()
     })
+  })
+
+  it(`doesn't update the parcel a second or third time until previous parcel updates complete`, done => {
+    const wrapper = mount(<Parcel {...props} />)
+    const inst = wrapper.instance()
+
+    let numParcelUpdateCalls = 0
+    let firstParcelUpdateFinished = false
+    let secondParcelUpdateFinished = false
+
+    parcel.update.mockImplementation(() => {
+      switch (++numParcelUpdateCalls) {
+        case 1:
+          return firstParcelUpdate()
+        case 2:
+          return secondParcelUpdate()
+        case 3:
+          return thirdParcelUpdate()
+        default:
+          fail("Parcel update should only be called thrice")
+          break;
+      }
+    })
+
+    function firstParcelUpdate() {
+      return new Promise(resolve => {
+        /* Don't resolve this promise for a while to make sure that the second update
+         * Doesn't start until the first finishes
+         */
+        setTimeout(() => {
+          firstParcelUpdateFinished = true
+          resolve()
+        }, 100)
+      })
+    }
+
+    function secondParcelUpdate() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          expect(firstParcelUpdateFinished).toBe(true)
+          secondParcelUpdateFinished = true
+          resolve()
+        }, 100)
+      })
+    }
+
+    function thirdParcelUpdate() {
+      return Promise.resolve().then(() => {
+        expect(firstParcelUpdateFinished).toBe(true)
+        expect(secondParcelUpdateFinished).toBe(true)
+        done()
+      })
+    }
+
+    function triggerComponentDidUpdate() {
+      wrapper.setProps(props)
+    }
+
+    // not once
+    triggerComponentDidUpdate()
+
+    // not twice
+    triggerComponentDidUpdate()
+
+    // but thrice!
+    triggerComponentDidUpdate()
   })
 
   // https://github.com/airbnb/enzyme/pull/1513 isn't published, waaaaaaaaaaaaa :'(
