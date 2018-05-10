@@ -22,7 +22,7 @@ describe('single-spa-react', () => {
     componentInstance = {componentDidCatch: () => {}}
     rootComponent = jest.fn()
     domElement = "Hey i'm the dom element"
-    domElementGetter = () => domElement
+    domElementGetter = jest.fn().mockImplementation(() => domElement)
 
     console.warn = jest.fn()
   })
@@ -112,6 +112,39 @@ describe('single-spa-react', () => {
       )
   })
 
+  it(`uses the dom element that was used for mount when unmounting`, () => {
+    const opts = {React, ReactDOM, rootComponent}
+    const props = {domElementGetter}
+
+    const lifecycles = singleSpaReact(opts)
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props))
+      .then(() => expect(domElementGetter).toHaveBeenCalledTimes(1))
+      .then(() => lifecycles.unmount(props))
+      .then(() => expect(domElementGetter).toHaveBeenCalledTimes(1))
+  })
+
+  it(`doesn't throw an error if unmount is not called with a dom element or dom element getter`, () => {
+    const opts = {React, ReactDOM, rootComponent}
+    const props = {domElementGetter}
+
+    const lifecycles = singleSpaReact(opts)
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(domElementGetter).toHaveBeenCalledTimes(1)
+
+        // The domElementGetter should no longer be required after mount is finished
+        delete props.domElementGetter
+      })
+      .then(() => lifecycles.unmount(props))
+      .then(() => expect(domElementGetter).toHaveBeenCalledTimes(1))
+  })
+
   it(`warns if you are using react 16 but don't implement componentDidCatch`, () => {
     delete componentInstance.componentDidCatch
     React.version = '16.2.0'
@@ -137,7 +170,7 @@ describe('single-spa-react', () => {
       .then(() => expect(console.warn).not.toHaveBeenCalled())
   })
 
-  describe('warnings for componentDidMount', () => {
+  describe('warnings for componentDidCatch', () => {
     let originalWarn
     beforeEach(() => {
       let originalWarn = console.warn

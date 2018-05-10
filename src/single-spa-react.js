@@ -102,13 +102,7 @@ function unmount(opts, props) {
   return Promise
     .resolve()
     .then(() => {
-      const domElementGetter = chooseDomElementGetter(opts, props)
-
-      if (!domElementGetter) {
-        throw new Error(`Cannot unmount react application '${props.appName || props.name}' without a domElementGetter provided in either opts or props`)
-      }
-
-      opts.ReactDOM.unmountComponentAtNode(getRootDomEl(domElementGetter));
+      opts.ReactDOM.unmountComponentAtNode(opts.domElement);
     })
 }
 
