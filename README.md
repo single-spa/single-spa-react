@@ -8,7 +8,10 @@ In addition to this Readme, example usage of single-spa-react can be found in th
 
 ## Quickstart
 
-First, in the [single-spa application](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), run `npm install --save single-spa-react`. Then, create an entry file for the application:
+First, in the [single-spa application](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#registered-applications), run `npm install --save single-spa-react`. Note that alternatively
+you can use single-spa-react by adding `<script src="https://unpkg.com/single-spa-react"></script>` and accessing the singleSpaReact global variable.
+
+Then, create an entry file for the application:
 
 ```js
 import React from 'react';
@@ -67,6 +70,7 @@ single-spa-react can also be used to create a single-spa parcel (instead of a si
 domElementGetter (since those are provided by the code that will mount the parcel).
 
 Additionally, single-spa-react provides a `<Parcel>` component to make using framework agnostic single-spa parcels easier. This allows you to put the parcel into your render method's jsx, instead of having to implement componentDidMount and componentWillUnmount.
+You can use the Parcel component either by npm installing the library and importing `single-spa-react/parcel` or by adding `<script src="https://unpkg.com/single-spa-react/parcel"></script>` and then accessing the Parcel component with `window.Parcel.default`.
 
 #### Parcel props
 - `config` (required): Either a single-spa parcel config object, or a "loading function" that returns a Promise that resolves with the parcel config.

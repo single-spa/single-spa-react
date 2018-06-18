@@ -4,7 +4,7 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
-    "build": "rimraf lib parcel && mkdirp lib parcel && babel src/single-spa-react.js --source-maps --out-file lib/single-spa-react.js && babel src/parcel.js --source-maps --out-file parcel/index.js",
+    "build": "rimraf lib parcel && mkdirp lib parcel && babel src/single-spa-react.js --source-maps --out-file lib/single-spa-react.js && babel src/parcel.js --source-maps --out-file parcel/index.js --module-id Parcel",
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
     "coverage": "jest --coverage --config jest.json",
@@ -31,6 +31,7 @@
     "babel-cli": "^6.26.0",
     "babel-jest": "^23.0.0-alpha.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
