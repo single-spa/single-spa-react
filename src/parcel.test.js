@@ -19,7 +19,7 @@ describe(`<Parcel />`, () => {
     parcel = {
       loadPromise: jest.fn(),
       bootstrapPromise: jest.fn(),
-      mountPromise: jest.fn(),
+      mountPromise: Promise.resolve(),
       unmountPromise: jest.fn(),
       getStatus: jest.fn(),
       unmount: jest.fn(),
@@ -56,6 +56,17 @@ describe(`<Parcel />`, () => {
     const wrapper = mount(<Parcel {...props} appendTo={document.body} />)
     return wrapper.instance().nextThingToDo.then(() => {
       expect(document.body.appendChild).toHaveBeenCalled()
+    })
+  })
+
+  it(`calls parcelWasMounted prop when the parcel finishes mounting`, () => {
+    const parcelWasMounted = jest.fn()
+    const wrapper = mount(<Parcel {...props} parcelWasMounted={parcelWasMounted} />)
+
+    expect(parcelWasMounted).not.toHaveBeenCalled()
+
+    return wrapper.instance().nextThingToDo.then(() => {
+      expect(parcelWasMounted).toHaveBeenCalled()
     })
   })
 
