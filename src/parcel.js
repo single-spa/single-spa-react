@@ -8,7 +8,8 @@ import {SingleSpaContext} from '../lib/single-spa-react.js'
 
 export default class Parcel extends React.Component {
   static defaultProps = {
-    wrapWith: 'div'
+    wrapWith: 'div',
+    parcelWasMounted: () => {},
   }
   constructor(props) {
     super(props)
@@ -35,6 +36,7 @@ export default class Parcel extends React.Component {
         this.props.appendTo.appendChild(domElement)
       }
       this.parcel = mountParcel(this.props.config, {domElement, ...this.getParcelProps()})
+      this.parcel.mountPromise.then(this.props.parcelWasMounted)
       return this.parcel.mountPromise
     })
   }
@@ -63,8 +65,8 @@ export default class Parcel extends React.Component {
       if (SingleSpaContext && SingleSpaContext.Consumer) {
         return (
           <SingleSpaContext.Consumer>
-            {({mountParcel}) => {
-              this.mountParcel = mountParcel
+            {(context) => {
+              this.mountParcel = context ? context.mountParcel : null
 
               return null
             }}
@@ -74,22 +76,19 @@ export default class Parcel extends React.Component {
         return null
       }
     } else {
-      const reactElement = React.createElement(this.props.wrapWith, {ref: this.handleRef})
-
-      if (SingleSpaContext && SingleSpaContext.Consumer) {
-        return (
+      const children = SingleSpaContext && SingleSpaContext.Consumer
+        ? (
           <SingleSpaContext.Consumer>
-            {({mountParcel}) => {
-              this.mountParcel = mountParcel
+            {(context) => {
+              this.mountParcel = context ? context.mountParcel : null
 
-              return reactElement
+              return null
             }}
           </SingleSpaContext.Consumer>
         )
-      } else {
-        // react@<16.3, or not being rendered within a single-spa application
-        return reactElement
-      }
+        : undefined
+
+      return React.createElement(this.props.wrapWith, {ref: this.handleRef}, children)
     }
   }
   handleRef = el => {
@@ -136,6 +135,7 @@ export default class Parcel extends React.Component {
     delete parcelProps.wrapWith
     delete parcelProps.appendTo
     delete parcelProps.handleError
+    delete parcelProps.parcelWasMounted
 
     return parcelProps
   }
