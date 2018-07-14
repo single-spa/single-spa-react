@@ -9,7 +9,7 @@ import {SingleSpaContext} from '../lib/single-spa-react.js'
 export default class Parcel extends React.Component {
   static defaultProps = {
     wrapWith: 'div',
-    parcelWasMounted: () => {},
+    parcelDidMount: () => {},
   }
   constructor(props) {
     super(props)
@@ -36,7 +36,7 @@ export default class Parcel extends React.Component {
         this.props.appendTo.appendChild(domElement)
       }
       this.parcel = mountParcel(this.props.config, {domElement, ...this.getParcelProps()})
-      this.parcel.mountPromise.then(this.props.parcelWasMounted)
+      this.parcel.mountPromise.then(this.props.parcelDidMount)
       return this.parcel.mountPromise
     })
   }
@@ -135,7 +135,7 @@ export default class Parcel extends React.Component {
     delete parcelProps.wrapWith
     delete parcelProps.appendTo
     delete parcelProps.handleError
-    delete parcelProps.parcelWasMounted
+    delete parcelProps.parcelDidMount
 
     return parcelProps
   }
