@@ -59,14 +59,14 @@ describe(`<Parcel />`, () => {
     })
   })
 
-  it(`calls parcelWasMounted prop when the parcel finishes mounting`, () => {
-    const parcelWasMounted = jest.fn()
-    const wrapper = mount(<Parcel {...props} parcelWasMounted={parcelWasMounted} />)
+  it(`calls parcelDidMount prop when the parcel finishes mounting`, () => {
+    const parcelDidMount = jest.fn()
+    const wrapper = mount(<Parcel {...props} parcelDidMount={parcelDidMount} />)
 
-    expect(parcelWasMounted).not.toHaveBeenCalled()
+    expect(parcelDidMount).not.toHaveBeenCalled()
 
     return wrapper.instance().nextThingToDo.then(() => {
-      expect(parcelWasMounted).toHaveBeenCalled()
+      expect(parcelDidMount).toHaveBeenCalled()
     })
   })
 

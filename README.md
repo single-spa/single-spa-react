@@ -81,7 +81,7 @@ You can use the Parcel component either by npm installing the library and import
    Note that if the `<Parcel>` component is being rendered by a single-spa application that uses single-spa-react, it is **unnecessary** to pass in the prop, since `<Parcel>` can get the prop
    from [SingleSpaContext](#singlespacontext)
 - `handleError` (optional): A function that will be called with errors thrown by the parcel. If not provided, errors will be thrown on the window, by default.
-- `parcelWasMounted` (optional): A function that will be called when the parcel finishes loading and mounting.
+- `parcelDidMount` (optional): A function that will be called when the parcel finishes loading and mounting.
 
 #### Examples
 ```jsx
