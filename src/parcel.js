@@ -26,8 +26,10 @@ export default class Parcel extends React.Component {
     this.addThingToDo('mount', () => {
       const mountParcel = this.props.mountParcel || this.mountParcel
       if (!mountParcel) {
-        throw new Error(`<Parcel /> was not passed a mountParcel prop, nor is it rendered where mountParcel is within the React context.
-					If you are using <Parcel /> within a module that is not using single-spa, you may need to import mountRootParcel from single-spa and pass it into the mountParcel prop`)
+        throw new Error(`
+				  <Parcel /> was not passed a mountParcel prop, nor is it rendered where mountParcel is within the React context.
+				  If you are using <Parcel /> within a module that is not a single-spa application, you will need to import mountRootParcel from single-spa and pass it into <Parcel /> as a mountParcel prop	
+				`)
       }
       let domElement;
       if (this.el) {
