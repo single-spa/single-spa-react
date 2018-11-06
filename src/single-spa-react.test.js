@@ -15,6 +15,18 @@ describe('single-spa-react', () => {
         cbk()
         return componentInstance
       }),
+      hydrate: jest.fn((reactEl, domEl, cbk) => {
+        cbk()
+        return componentInstance
+      }),
+      createRoot: jest.fn(domEl => {
+        return {
+          render: jest.fn((reactEl, cbk) => {
+            cbk()
+            return componentInstance
+          })
+        }
+      }),
       unmountComponentAtNode: jest.fn()
     }
 
@@ -50,6 +62,60 @@ describe('single-spa-react', () => {
         expect(ReactDOM.render.mock.calls[0][0]).toEqual(createdReactElement)
         expect(ReactDOM.render.mock.calls[0][1]).toEqual(domElement)
         expect(typeof ReactDOM.render.mock.calls[0][2]).toEqual('function')
+        return lifecycles.unmount(props)
+      })
+      .then(() => {
+        expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalledWith(domElement)
+      })
+  })
+
+  it(`mounts and unmounts a React component with a 'renderType' of 'hydrate'`, () => {
+    const props = {why: 'hello', customProps: {}}
+    const lifecycles = singleSpaReact({React, ReactDOM, rootComponent, domElementGetter, renderType:'hydrate'})
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(React.createElement).toHaveBeenCalled()
+        expect(React.createElement.mock.calls[0][0]).toEqual(rootComponent)
+        expect(React.createElement.mock.calls[0][1]).toEqual(props)
+        expect(ReactDOM.hydrate).toHaveBeenCalled()
+        expect(ReactDOM.hydrate.mock.calls[0][0]).toEqual(createdReactElement)
+        expect(ReactDOM.hydrate.mock.calls[0][1]).toEqual(domElement)
+        expect(typeof ReactDOM.hydrate.mock.calls[0][2]).toEqual('function')
+        return lifecycles.unmount(props)
+      })
+      .then(() => {
+        expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalledWith(domElement)
+      })
+  })
+
+  it(`mounts and unmounts a React component with a 'renderType' of 'createRoot'`, () => {
+    const props = {why: 'hello', customProps: {}}
+    const lifecycles = singleSpaReact({React, ReactDOM, rootComponent, domElementGetter, renderType:'createRoot'})
+
+    const createRootRender = jest.fn()
+    ReactDOM.createRoot.mockImplementation(domEl => {
+      return {
+        render: createRootRender.mockImplementation((reactEl, cbk) => {
+          cbk()
+          return componentInstance
+        })
+      }
+    })
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(React.createElement).toHaveBeenCalled()
+        expect(React.createElement.mock.calls[0][0]).toEqual(rootComponent)
+        expect(React.createElement.mock.calls[0][1]).toEqual(props)
+        expect(ReactDOM.createRoot).toHaveBeenCalled()
+        expect(ReactDOM.createRoot.mock.calls[0][0]).toEqual(domElement)
+        expect(createRootRender.mock.calls[0][0]).toEqual(createdReactElement)
+        expect(typeof createRootRender.mock.calls[0][1]).toEqual('function')
         return lifecycles.unmount(props)
       })
       .then(() => {

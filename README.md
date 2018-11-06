@@ -56,6 +56,7 @@ All options are passed to single-spa-react via the `opts` parameter when calling
   or `singleSpaReact({..., domElement})`.
 - `parcelCanUpdate`: (optional) A boolean that controls whether an update lifecycle will be created for the returned parcel. Note that option does not impact single-spa applications, but only parcels.
   It is true by default.
+- `renderType`: (optional) ENUM of one of the following: [ 'render', 'hydrate', 'createRoot' ]. Defaults to `'render'`. Allows you to choose which ReactDOM render method you want to use for your application.
 
 ## Notes
 

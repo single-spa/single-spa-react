@@ -93,7 +93,7 @@ function mount(opts, props) {
     const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
     const domElement = getRootDomEl(domElementGetter)
-    const renderedComponent = opts.ReactDOM.render(elementToRender, domElement, whenFinished)
+    const renderedComponent = reactDomRender({elementToRender, domElement, whenFinished, opts})
     opts.domElement = domElement
   })
 }
@@ -114,7 +114,7 @@ function update(opts, props) {
 
     const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const renderedComponent = opts.ReactDOM.render(elementToRender, opts.domElement, whenFinished)
+    const renderedComponent = reactDomRender({elementToRender, domElement:opts.domElement, whenFinished, opts})
   })
 }
 
@@ -149,4 +149,17 @@ function chooseDomElementGetter(opts, props) {
   } else {
     return opts.domElementGetter
   }
+}
+
+function reactDomRender({opts, elementToRender, domElement, whenFinished}) {
+  if(opts.renderType === 'createRoot') {
+    return opts.ReactDOM.createRoot(domElement).render(elementToRender, whenFinished)
+  }
+
+  if(opts.renderType === 'hydrate') {
+    return opts.ReactDOM.hydrate(elementToRender, domElement, whenFinished)
+  }
+
+  // default to this if 'renderType' is null or doesn't match the other options
+  return opts.ReactDOM.render(elementToRender, domElement, whenFinished)
 }
