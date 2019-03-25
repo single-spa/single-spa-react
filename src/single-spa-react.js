@@ -75,8 +75,12 @@ function bootstrap(opts, props) {
 function mount(opts, props) {
   return new Promise((resolve, reject) => {
 
-    if (!opts.rootComponent.prototype.componentDidCatch && !opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
-      console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
+    if (!opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
+      if (!opts.rootComponent.prototype) {
+        console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent does not have a prototype.  If using a functional component, wrap it in an error boundary or other class that implements componentDidCatch to avoid accidentally unmounting the entire single-spa application`)
+      } else if (!opts.rootComponent.prototype.componentDidCatch) {
+        console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
+      }
     }
 
     const domElementGetter = chooseDomElementGetter(opts, props)
