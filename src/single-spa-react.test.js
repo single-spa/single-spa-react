@@ -297,5 +297,22 @@ describe('single-spa-react', () => {
           return expect(console.warn.mock.calls.length).toBe(1)
         })
     })
+
+    it(`provides a default implementation of domElementGetter if you don't provide one`, () => {
+      const props = {name: 'k_ruel'}
+      const lifecycles = singleSpaReact({
+        React,
+        ReactDOM,
+        rootComponent: function foo() {},
+        // No domElementGetter
+      })
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          expect(document.getElementById('k_ruel'))
+        })
+    })
   })
 })

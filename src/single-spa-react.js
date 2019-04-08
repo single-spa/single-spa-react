@@ -85,8 +85,8 @@ function mount(opts, props) {
 
     const domElementGetter = chooseDomElementGetter(opts, props)
 
-    if (!domElementGetter) {
-      throw new Error(`Cannot mount react application '${props.appName || props.name}' without a domElementGetter provided in either opts or props`)
+    if (typeof domElementGetter !== 'function') {
+      throw new Error(`single-spa-react: the domElementGetter for react application '${props.appName || props.name}' is not a function`)
     }
 
     const whenFinished = function() {
@@ -125,7 +125,7 @@ function update(opts, props) {
 function getRootDomEl(domElementGetter) {
   const el = domElementGetter();
   if (!el) {
-    throw new Error(`single-spa-react: domElementGetter function did not return a valid dom element`);
+    throw new Error(`single-spa-react: domElementGetter function did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`);
   }
 
   return el;
@@ -150,8 +150,28 @@ function chooseDomElementGetter(opts, props) {
     return () => props.domElement
   } else if (props.domElementGetter) {
     return props.domElementGetter
-  } else {
+  } else if (opts.domElementGetter) {
     return opts.domElementGetter
+  } else {
+    return defaultDomElementGetter(props)
+  }
+}
+
+function defaultDomElementGetter(props) {
+  const htmlId = props.appName || props.name
+  if (!htmlId) {
+    throw Error(`single-spa-react was not given an application name as a prop, so it can't make a unique dom element container for the react application`)
+  }
+
+  return function defaultDomEl() {
+    let domElement = document.getElementById(htmlId)
+    if (!domElement) {
+      domElement = document.createElement('div')
+      domElement.id = htmlId
+      document.body.appendChild(domElement)
+    }
+
+    return domElement
   }
 }
 

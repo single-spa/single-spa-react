@@ -1,14 +1,16 @@
 {
-  "presets": ["env", "react"],
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+  ],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-class-properties",
-    ["transform-es2015-modules-umd",
+    ["@babel/plugin-transform-modules-umd",
       {
         "globals": {
           "react": "React",
         },
       },
     ],
+    "@babel/plugin-proposal-class-properties",
   ],
 }
