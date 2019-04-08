@@ -11,11 +11,10 @@ const defaultOpts = {
   ReactDOM: null,
   rootComponent: null,
   loadRootComponent: null,
-  domElementGetter: null,
   suppressComponentDidCatchWarning: false,
 
   // optional opts
-  domElementGetter: null, // only can be omitted if provided as a custom prop
+  domElementGetter: null,
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
 }
 
