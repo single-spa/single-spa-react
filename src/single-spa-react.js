@@ -95,7 +95,7 @@ function mount(opts, props) {
 
     const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const domElement = getRootDomEl(domElementGetter)
+    const domElement = getRootDomEl(domElementGetter, props)
     const renderedComponent = reactDomRender({elementToRender, domElement, whenFinished, opts})
     opts.domElement = domElement
   })
@@ -121,10 +121,10 @@ function update(opts, props) {
   })
 }
 
-function getRootDomEl(domElementGetter) {
+function getRootDomEl(domElementGetter, props) {
   const el = domElementGetter();
   if (!el) {
-    throw new Error(`single-spa-react: domElementGetter function did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`);
+    throw new Error(`single-spa-react: domElementGetter function for application '${props.appName || props.name}' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`);
   }
 
   return el;
