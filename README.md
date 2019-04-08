@@ -24,20 +24,11 @@ const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
   rootComponent,
-  domElementGetter: () => document.getElementById('main-content'),
-});
+);
 
-export const bootstrap = [
-  reactLifecycles.bootstrap,
-];
-
-export const mount = [
-  reactLifecycles.mount,
-];
-
-export const unmount = [
-  reactLifecycles.unmount,
-];
+export const bootstrap = reactLifecycles.bootstrap;
+export const mount = reactLifecycles.mount;
+export const unmount = reactLifecycles.unmount;
 ```
 
 ## Options
@@ -50,10 +41,12 @@ All options are passed to single-spa-react via the `opts` parameter when calling
 - `loadRootComponent`: (optional) A loading function that returns a promise that resolves with the parcel. This takes the place of the `rootComponent` opt, when provided. It is intended to help people
    who want to lazy load the source code for their root component. The source code will be lazy loaded during the bootstrap lifecycle.
 - `suppressComponentDidCatchWarning`: (optional) A boolean that indicates if single-spa-react should warn when the rootComponent does not implement componentDidCatch. Defaults to false.
-- `domElementGetter`: (optional) A function that takes in no arguments and returns a DOMElement. This dom element is where the React application will be bootstrapped, mounted, and unmounted.
-  Note that this opt can only be omitted when domElementGetter is passed in as a [custom prop](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#custom-props) or if `domElement`
-  is passed as prop. So you must either do `singleSpaReact({..., domElementGetter: function() {return ...}})`, `singleSpa.registerApplication(name, app, activityFn, {domElementGetter: function() {...}})`,
-  or `singleSpaReact({..., domElement})`.
+- `domElementGetter`: (optional) A function that takes in no arguments and returns a DOMElement. This dom element is where the
+  React application will be bootstrapped, mounted, and unmounted. Note that this opt can be omitted. When omitted, the `domElementGetter` or `domElement`
+  [custom single-spa props](https://github.com/CanopyTax/single-spa/blob/master/docs/applications.md#custom-props) are used.
+  To use those, do `singleSpa.registerApplication(name, app, activityFn, {domElementGetter: function() {...}})` or
+  `singleSpa.registerApplication(name, app, activityFn, {domElement: document.getElementById(...)})`. If no dom element can be found through any
+  of those methods, then a container div will be created and appended to document.body, by default.
 - `parcelCanUpdate`: (optional) A boolean that controls whether an update lifecycle will be created for the returned parcel. Note that option does not impact single-spa applications, but only parcels.
   It is true by default.
 - `renderType`: (optional) ENUM of one of the following: [ 'render', 'hydrate', 'createRoot' ]. Defaults to `'render'`. Allows you to choose which ReactDOM render method you want to use for your application.
