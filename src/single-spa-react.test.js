@@ -311,7 +311,7 @@ describe('single-spa-react', () => {
         .bootstrap()
         .then(() => lifecycles.mount(props))
         .then(() => {
-          expect(document.getElementById('k_ruel'))
+          expect(document.getElementById('k_ruel')).not.toBeFalsy()
         })
     })
   })
