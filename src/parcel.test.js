@@ -1,8 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import Parcel from './parcel.js'
 import {mount} from 'enzyme'
-import {SingleSpaContext} from '../lib/single-spa-react.js'
 
 document.body.appendChild = jest.fn()
 
@@ -134,6 +132,16 @@ describe(`<Parcel />`, () => {
 
     // but thrice!
     triggerComponentDidUpdate()
+  })
+
+  it(`calls mountParcel with the all the React props`, () => {
+    const wrapper = mount(<Parcel {...props} />)
+    // We need to wait for a microtask to finish before the Parcel component will have called mountParcel
+    return Promise.resolve().then(() => {
+      expect(mountParcel).toHaveBeenCalled()
+      const parcelProps = mountParcel.mock.calls[0][1]
+      expect(parcelProps.domElement).toBeInstanceOf(HTMLDivElement)
+    })
   })
 
   // https://github.com/airbnb/enzyme/pull/1513 isn't published, waaaaaaaaaaaaa :'(
