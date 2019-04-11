@@ -131,7 +131,7 @@ export default class Parcel extends React.Component {
       })
   }
   getParcelProps = () => {
-    const parcelProps = Object.assign({}, this.props)
+    const parcelProps = {...this.props}
 
     delete parcelProps.mountParcel
     delete parcelProps.config
