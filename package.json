@@ -1,6 +1,6 @@
 {
   "name": "single-spa-react",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
