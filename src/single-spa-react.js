@@ -157,7 +157,7 @@ function chooseDomElementGetter(opts, props) {
 }
 
 function defaultDomElementGetter(props) {
-  const htmlId = props.appName || props.name
+  const htmlId = `single-spa-application:${props.appName || props.name}`
   if (!htmlId) {
     throw Error(`single-spa-react was not given an application name as a prop, so it can't make a unique dom element container for the react application`)
   }

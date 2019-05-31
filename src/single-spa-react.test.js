@@ -163,21 +163,6 @@ describe('single-spa-react', () => {
     // Doesn't throw
   })
 
-  it(`throws if you provide no way of getting a dom element`, () => {
-    let opts = {React, ReactDOM, rootComponent}
-    let props = {customProps: {}}
-
-    const lifecycles = singleSpaReact(opts)
-
-    return lifecycles
-      .bootstrap()
-      .then(() => lifecycles.mount(props))
-      .then(
-        () => Promise.reject('expected error because no dom element'),
-        () => Promise.resolve('error expected because no dom element')
-      )
-  })
-
   it(`uses the dom element that was used for mount when unmounting`, () => {
     const opts = {React, ReactDOM, rootComponent}
     const props = {domElementGetter}
@@ -311,7 +296,7 @@ describe('single-spa-react', () => {
         .bootstrap()
         .then(() => lifecycles.mount(props))
         .then(() => {
-          expect(document.getElementById('k_ruel')).not.toBeFalsy()
+          expect(document.getElementById('single-spa-application:k_ruel')).not.toBeFalsy()
         })
     })
   })
