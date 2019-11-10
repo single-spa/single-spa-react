@@ -8,7 +8,7 @@
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
     "coverage": "jest --coverage --config jest.json",
-    "prepublish": "in-publish && yarn build || not-in-publish"
+    "prepublishOnly": "yarn build"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,6 @@
     "babel-jest": "^24.8.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
-    "in-publish": "^2.0.0",
     "jest": "^24.8.0",
     "jest-cli": "^24.8.0",
     "mkdirp": "^0.5.1",
