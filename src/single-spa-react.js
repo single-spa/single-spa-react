@@ -157,10 +157,11 @@ function chooseDomElementGetter(opts, props) {
 }
 
 function defaultDomElementGetter(props) {
-  const htmlId = `single-spa-application:${props.appName || props.name}`
-  if (!htmlId) {
+  const appName = props.appName || props.name
+  if (!appName) {
     throw Error(`single-spa-react was not given an application name as a prop, so it can't make a unique dom element container for the react application`)
   }
+  const htmlId = `single-spa-application:${appName}`
 
   return function defaultDomEl() {
     let domElement = document.getElementById(htmlId)
