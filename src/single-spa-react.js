@@ -64,7 +64,7 @@ function bootstrap(opts, props) {
   } else {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
     return opts
-      .loadRootComponent()
+      .loadRootComponent(props)
       .then(resolvedComponent => {
         opts.rootComponent = resolvedComponent
       })
