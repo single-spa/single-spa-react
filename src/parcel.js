@@ -19,7 +19,7 @@ export default class Parcel extends React.Component {
     }
 
     if (!props.config) {
-      throw new Error(`single-spa-react's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/CanopyTax/single-spa-react`)
+      throw new Error(`single-spa-react's Parcel component requires the 'config' prop to either be a parcel config or a loading function that returns a promise. See https://github.com/single-spa/single-spa-react`)
     }
   }
   componentDidMount() {
