@@ -107,7 +107,6 @@ function unmount(opts, props) {
     .resolve()
     .then(() => {
       opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
-    }).then(() => {
       delete opts.domElements[props.name]
     })
 }
