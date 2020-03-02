@@ -12,6 +12,7 @@ const defaultOpts = {
   rootComponent: null,
   loadRootComponent: null,
   suppressComponentDidCatchWarning: false,
+  domElements: {},
 
   // optional opts
   domElementGetter: null,
@@ -97,7 +98,7 @@ function mount(opts, props) {
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
     const domElement = getRootDomEl(domElementGetter, props)
     const renderedComponent = reactDomRender({elementToRender, domElement, whenFinished, opts})
-    opts.domElement = domElement
+    opts.domElements[props.name] = domElement
   })
 }
 
@@ -105,7 +106,7 @@ function unmount(opts, props) {
   return Promise
     .resolve()
     .then(() => {
-      opts.ReactDOM.unmountComponentAtNode(opts.domElement);
+      opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
     })
 }
 
@@ -117,7 +118,7 @@ function update(opts, props) {
 
     const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
     const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const renderedComponent = reactDomRender({elementToRender, domElement:opts.domElement, whenFinished, opts})
+    const renderedComponent = reactDomRender({elementToRender, domElement:opts.domElements[props.name], whenFinished, opts})
   })
 }
 

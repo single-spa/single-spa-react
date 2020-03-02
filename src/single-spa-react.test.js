@@ -143,6 +143,36 @@ describe('single-spa-react', () => {
       })
   })
 
+  it(`correctly handles two parcels using the same configuration`, () => {
+    let opts = {React, ReactDOM, rootComponent}
+
+    let props1 = {domElement: 'element1'}
+    let props2 = {domElement: 'element2'}
+    const lifecycles = singleSpaReact(opts)
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props1))
+      .then(() => lifecycles.unmount(props1))
+      .then(() => {
+        expect(ReactDOM.render).toHaveBeenCalled()
+        expect(ReactDOM.render.mock.calls[0][1]).toBe('element1')
+        expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled()
+        expect(ReactDOM.unmountComponentAtNode.mock.calls.length).toBe(1)
+        expect(ReactDOM.unmountComponentAtNode.mock.calls[0][0]).toBe('element1')
+      })
+      // simulate another parcel using the same configuration
+      .then(() => lifecycles.bootstrap())
+      .then(() => lifecycles.mount(props2))
+      .then(() => lifecycles.unmount(props2))
+      .then(() => {
+        expect(ReactDOM.render).toHaveBeenCalled()
+        expect(ReactDOM.render.mock.calls[1][1]).toBe('element2')
+        expect(ReactDOM.unmountComponentAtNode.mock.calls.length).toBe(2)
+        expect(ReactDOM.unmountComponentAtNode.mock.calls[1][0]).toBe('element2')
+      })
+  })
+
   it(`allows you to provide a domElementGetter as an opt`, () => {
     const props = {why: 'hello', customProps: {}}
     const lifecycles = singleSpaReact({React, ReactDOM, rootComponent, domElementGetter})
