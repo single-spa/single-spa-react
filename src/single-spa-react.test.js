@@ -156,6 +156,7 @@ describe('single-spa-react', () => {
       .then(() => lifecycles.unmount(props1))
       .then(() => {
         expect(ReactDOM.render).toHaveBeenCalled()
+        expect(ReactDOM.render.mock.calls.length).toBe(1)
         expect(ReactDOM.render.mock.calls[0][1]).toBe('element1')
         expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled()
         expect(ReactDOM.unmountComponentAtNode.mock.calls.length).toBe(1)
@@ -166,7 +167,7 @@ describe('single-spa-react', () => {
       .then(() => lifecycles.mount(props2))
       .then(() => lifecycles.unmount(props2))
       .then(() => {
-        expect(ReactDOM.render).toHaveBeenCalled()
+        expect(ReactDOM.render.mock.calls.length).toBe(2)
         expect(ReactDOM.render.mock.calls[1][1]).toBe('element2')
         expect(ReactDOM.unmountComponentAtNode.mock.calls.length).toBe(2)
         expect(ReactDOM.unmountComponentAtNode.mock.calls[1][0]).toBe('element2')
