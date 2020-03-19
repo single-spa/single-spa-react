@@ -140,6 +140,7 @@ export default class Parcel extends React.Component {
     delete parcelProps.mountParcel
     delete parcelProps.config
     delete parcelProps.wrapWith
+    delete parcelProps.wrapStyle
     delete parcelProps.appendTo
     delete parcelProps.handleError
     delete parcelProps.parcelDidMount
