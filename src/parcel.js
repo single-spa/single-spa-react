@@ -9,6 +9,7 @@ import {SingleSpaContext} from '../lib/single-spa-react.js'
 export default class Parcel extends React.Component {
   static defaultProps = {
     wrapWith: 'div',
+    wrapStyle: {},
     parcelDidMount: () => {},
   }
   constructor(props) {
@@ -36,6 +37,9 @@ export default class Parcel extends React.Component {
         domElement = this.el
       } else {
         this.createdDomElement = domElement = document.createElement(this.props.wrapWith)
+        Object.keys(this.props.wrapStyle).forEach(key => {
+          domElement.style[key] = this.props.wrapStyle[key];
+        });
         this.props.appendTo.appendChild(domElement)
       }
       this.parcel = mountParcel(this.props.config, {domElement, ...this.getParcelProps()})
@@ -91,7 +95,7 @@ export default class Parcel extends React.Component {
         )
         : undefined
 
-      return React.createElement(this.props.wrapWith, {ref: this.handleRef}, children)
+      return React.createElement(this.props.wrapWith, {ref: this.handleRef, style: this.props.wrapStyle}, children)
     }
   }
   handleRef = el => {
