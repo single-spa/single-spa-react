@@ -43,6 +43,11 @@ describe(`<Parcel />`, () => {
     expect(wrapper.find('div').length).toBe(1)
   })
 
+  it(`renders a div wrap with style`, () => {
+    const wrapper = mount(<Parcel {...props} wrapStyle={{ height: '100px' }} />);
+    expect(/style\=\"height\:\s{1}100px;\"/.test(wrapper.find('div').html())).toBe(true);
+  })
+
   it(`calls the mountParcel prop when it mounts`, () => {
     const wrapper = mount(<Parcel {...props} />)
     return wrapper.instance().nextThingToDo.then(() => {
