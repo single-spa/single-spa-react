@@ -124,7 +124,7 @@ function update(opts, props) {
 }
 
 function getRootDomEl(domElementGetter, props) {
-  const el = domElementGetter();
+  const el = domElementGetter(props);
   if (!el) {
     throw new Error(`single-spa-react: domElementGetter function for application '${props.appName || props.name}' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`);
   }
