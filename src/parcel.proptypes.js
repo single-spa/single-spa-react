@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types'
-import Parcel from './parcel'
+import PropTypes from "prop-types";
+import Parcel from "./parcel";
 
 Parcel.propTypes = {
   // Required
@@ -22,4 +22,4 @@ Parcel.propTypes = {
   wrapWith: PropTypes.string, // e.g., 'div' or 'span'. Defaults to div
   handleError: PropTypes.func, // errors are just thrown if no handleError function is called
   appendTo: PropTypes.any, // if you want to append to something besides a dom element created by the Parcel component
-}
+};

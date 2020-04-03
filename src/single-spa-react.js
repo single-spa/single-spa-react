@@ -3,7 +3,7 @@
  */
 
 // React context that gives any react component the single-spa props
-export let SingleSpaContext = null
+export let SingleSpaContext = null;
 
 const defaultOpts = {
   // required opts
@@ -17,10 +17,10 @@ const defaultOpts = {
   // optional opts
   domElementGetter: null,
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
-}
+};
 
 export default function singleSpaReact(userOpts) {
-  if (typeof userOpts !== 'object') {
+  if (typeof userOpts !== "object") {
     throw new Error(`single-spa-react requires a configuration object`);
   }
 
@@ -38,11 +38,13 @@ export default function singleSpaReact(userOpts) {
   }
 
   if (!opts.rootComponent && !opts.loadRootComponent) {
-    throw new Error(`single-spa-react must be passed opts.rootComponent or opts.loadRootComponent`);
+    throw new Error(
+      `single-spa-react must be passed opts.rootComponent or opts.loadRootComponent`
+    );
   }
 
   if (!SingleSpaContext && opts.React.createContext) {
-    SingleSpaContext = opts.React.createContext()
+    SingleSpaContext = opts.React.createContext();
   }
 
   const lifecycles = {
@@ -52,92 +54,137 @@ export default function singleSpaReact(userOpts) {
   };
 
   if (opts.parcelCanUpdate) {
-    lifecycles.update = update.bind(null, opts)
+    lifecycles.update = update.bind(null, opts);
   }
 
-  return lifecycles
+  return lifecycles;
 }
 
 function bootstrap(opts, props) {
   if (opts.rootComponent) {
     // This is a class or stateless function component
-    return Promise.resolve()
+    return Promise.resolve();
   } else {
     // They passed a promise that resolves with the react component. Wait for it to resolve before mounting
-    return opts
-      .loadRootComponent(props)
-      .then(resolvedComponent => {
-        opts.rootComponent = resolvedComponent
-      })
+    return opts.loadRootComponent(props).then((resolvedComponent) => {
+      opts.rootComponent = resolvedComponent;
+    });
   }
 }
 
 function mount(opts, props) {
   return new Promise((resolve, reject) => {
-
     if (!opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
       if (!opts.rootComponent.prototype) {
-        console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent does not have a prototype.  If using a functional component, wrap it in an error boundary or other class that implements componentDidCatch to avoid accidentally unmounting the entire single-spa application`)
+        console.warn(
+          `single-spa-react: ${
+            props.name || props.appName || props.childAppName
+          }'s rootComponent does not have a prototype.  If using a functional component, wrap it in an error boundary or other class that implements componentDidCatch to avoid accidentally unmounting the entire single-spa application`
+        );
       } else if (!opts.rootComponent.prototype.componentDidCatch) {
-        console.warn(`single-spa-react: ${props.name || props.appName || props.childAppName}'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`);
+        console.warn(
+          `single-spa-react: ${
+            props.name || props.appName || props.childAppName
+          }'s rootComponent should implement componentDidCatch to avoid accidentally unmounting the entire single-spa application.`
+        );
       }
     }
 
-    const domElementGetter = chooseDomElementGetter(opts, props)
+    const domElementGetter = chooseDomElementGetter(opts, props);
 
-    if (typeof domElementGetter !== 'function') {
-      throw new Error(`single-spa-react: the domElementGetter for react application '${props.appName || props.name}' is not a function`)
+    if (typeof domElementGetter !== "function") {
+      throw new Error(
+        `single-spa-react: the domElementGetter for react application '${
+          props.appName || props.name
+        }' is not a function`
+      );
     }
 
-    const whenFinished = function() {
+    const whenFinished = function () {
       resolve(this);
     };
 
-
-    const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
-    const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const domElement = getRootDomEl(domElementGetter, props)
-    const renderedComponent = reactDomRender({elementToRender, domElement, whenFinished, opts})
-    opts.domElements[props.name] = domElement
-  })
+    const rootComponentElement = opts.React.createElement(
+      opts.rootComponent,
+      props
+    );
+    const elementToRender = SingleSpaContext
+      ? opts.React.createElement(
+          SingleSpaContext.Provider,
+          { value: props },
+          rootComponentElement
+        )
+      : rootComponentElement;
+    const domElement = getRootDomEl(domElementGetter, props);
+    const renderedComponent = reactDomRender({
+      elementToRender,
+      domElement,
+      whenFinished,
+      opts,
+    });
+    opts.domElements[props.name] = domElement;
+  });
 }
 
 function unmount(opts, props) {
-  return Promise
-    .resolve()
-    .then(() => {
-      opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
-      delete opts.domElements[props.name]
-    })
+  return Promise.resolve().then(() => {
+    opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
+    delete opts.domElements[props.name];
+  });
 }
 
 function update(opts, props) {
   return new Promise((resolve, reject) => {
-    const whenFinished = function() {
+    const whenFinished = function () {
       resolve(this);
     };
 
-    const rootComponentElement = opts.React.createElement(opts.rootComponent, props)
-    const elementToRender = SingleSpaContext ? opts.React.createElement(SingleSpaContext.Provider, {value: props}, rootComponentElement) : rootComponentElement
-    const renderedComponent = reactDomRender({elementToRender, domElement:opts.domElements[props.name], whenFinished, opts})
-  })
+    const rootComponentElement = opts.React.createElement(
+      opts.rootComponent,
+      props
+    );
+    const elementToRender = SingleSpaContext
+      ? opts.React.createElement(
+          SingleSpaContext.Provider,
+          { value: props },
+          rootComponentElement
+        )
+      : rootComponentElement;
+    const renderedComponent = reactDomRender({
+      elementToRender,
+      domElement: opts.domElements[props.name],
+      whenFinished,
+      opts,
+    });
+  });
 }
 
 function getRootDomEl(domElementGetter, props) {
   const el = domElementGetter(props);
   if (!el) {
-    throw new Error(`single-spa-react: domElementGetter function for application '${props.appName || props.name}' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`);
+    throw new Error(
+      `single-spa-react: domElementGetter function for application '${
+        props.appName || props.name
+      }' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`
+    );
   }
 
   return el;
 }
 
 function atLeastReact16(React) {
-  if (React && typeof React.version === 'string' && React.version.indexOf('.') >= 0) {
-    const majorVersionString = React.version.slice(0, React.version.indexOf('.'));
+  if (
+    React &&
+    typeof React.version === "string" &&
+    React.version.indexOf(".") >= 0
+  ) {
+    const majorVersionString = React.version.slice(
+      0,
+      React.version.indexOf(".")
+    );
     try {
       return Number(majorVersionString) >= 16;
-    } catch(err) {
+    } catch (err) {
       return false;
     }
   } else {
@@ -146,50 +193,58 @@ function atLeastReact16(React) {
 }
 
 function chooseDomElementGetter(opts, props) {
-  props = props && props.customProps ? props.customProps : props
+  props = props && props.customProps ? props.customProps : props;
   if (props.domElement) {
-    return () => props.domElement
+    return () => props.domElement;
   } else if (props.domElementGetter) {
-    return props.domElementGetter
+    return props.domElementGetter;
   } else if (opts.domElementGetter) {
-    return opts.domElementGetter
+    return opts.domElementGetter;
   } else {
-    return defaultDomElementGetter(props)
+    return defaultDomElementGetter(props);
   }
 }
 
 function defaultDomElementGetter(props) {
-  const appName = props.appName || props.name
+  const appName = props.appName || props.name;
   if (!appName) {
-    throw Error(`single-spa-react was not given an application name as a prop, so it can't make a unique dom element container for the react application`)
+    throw Error(
+      `single-spa-react was not given an application name as a prop, so it can't make a unique dom element container for the react application`
+    );
   }
-  const htmlId = `single-spa-application:${appName}`
+  const htmlId = `single-spa-application:${appName}`;
 
   return function defaultDomEl() {
-    let domElement = document.getElementById(htmlId)
+    let domElement = document.getElementById(htmlId);
     if (!domElement) {
-      domElement = document.createElement('div')
-      domElement.id = htmlId
-      document.body.appendChild(domElement)
+      domElement = document.createElement("div");
+      domElement.id = htmlId;
+      document.body.appendChild(domElement);
     }
 
-    return domElement
-  }
+    return domElement;
+  };
 }
 
-function reactDomRender({opts, elementToRender, domElement, whenFinished}) {
-  if(opts.renderType === 'createRoot') {
-    return opts.ReactDOM.createRoot(domElement).render(elementToRender, whenFinished)
+function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
+  if (opts.renderType === "createRoot") {
+    return opts.ReactDOM.createRoot(domElement).render(
+      elementToRender,
+      whenFinished
+    );
   }
 
-  if(opts.renderType === 'createBlockingRoot') {
-    return opts.ReactDOM.createBlockingRoot(domElement).render(elementToRender, whenFinished)
+  if (opts.renderType === "createBlockingRoot") {
+    return opts.ReactDOM.createBlockingRoot(domElement).render(
+      elementToRender,
+      whenFinished
+    );
   }
 
-  if(opts.renderType === 'hydrate') {
-    return opts.ReactDOM.hydrate(elementToRender, domElement, whenFinished)
+  if (opts.renderType === "hydrate") {
+    return opts.ReactDOM.hydrate(elementToRender, domElement, whenFinished);
   }
 
   // default to this if 'renderType' is null or doesn't match the other options
-  return opts.ReactDOM.render(elementToRender, domElement, whenFinished)
+  return opts.ReactDOM.render(elementToRender, domElement, whenFinished);
 }
