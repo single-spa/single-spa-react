@@ -330,5 +330,25 @@ describe('single-spa-react', () => {
           expect(document.getElementById('single-spa-application:k_ruel')).not.toBeFalsy()
         })
     })
+
+    it(`passes props to the domElementGetter`, () => {
+      const props = {name: ''}
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function Foo() {},
+        domElementGetter: jest.fn()
+      }
+      const lifecycles = singleSpaReact(opts)
+
+      opts.domElementGetter.mockReturnValue(document.createElement('div'))
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          expect(opts.domElementGetter).toHaveBeenCalledWith(props)
+        })
+    })
   })
 })
