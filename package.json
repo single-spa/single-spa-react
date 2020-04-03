@@ -7,8 +7,14 @@
     "build": "rimraf lib parcel && mkdirp lib parcel && babel src/single-spa-react.js --source-maps --out-file lib/single-spa-react.js && babel src/parcel.js --source-maps --out-file parcel/index.js --module-id Parcel",
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
+    "format": "prettier --write './**/*'",
     "coverage": "jest --coverage --config jest.json",
     "prepublishOnly": "yarn build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "repository": {
     "type": "git",
@@ -28,21 +34,24 @@
   },
   "homepage": "https://github.com/joeldenning/single-spa-react#readme",
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-transform-modules-amd": "^7.5.0",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-jest": "^24.8.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "jest": "^24.8.0",
-    "jest-cli": "^24.8.0",
-    "mkdirp": "^0.5.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "rimraf": "^2.6.3"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-transform-modules-amd": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "babel-jest": "^25.2.6",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "husky": "^4.2.3",
+    "jest": "^25.2.7",
+    "jest-cli": "^25.2.7",
+    "mkdirp": "^1.0.4",
+    "prettier": "^2.0.2",
+    "pretty-quick": "^2.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2"
   },
   "peerDependencies": {
     "react": "*"

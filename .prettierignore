@@ -1,0 +1,7 @@
+.gitignore
+.prettierignore
+LICENSE
+yarn.lock
+.npmignore
+lib
+parcel
