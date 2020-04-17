@@ -90,7 +90,7 @@ function mount(opts, props) {
         console.warn(
           `single-spa-react: ${
             props.name || props.appName || props.childAppName
-          }'s rootComponent does not implemtn an error boundary.  If using a functional component, consider providing an opts.errorBoundary to singleSpaReact(opts).`
+          }'s rootComponent does not implement an error boundary.  If using a functional component, consider providing an opts.errorBoundary to singleSpaReact(opts).`
         );
       } else if (!opts.rootComponent.prototype.componentDidCatch) {
         console.warn(
