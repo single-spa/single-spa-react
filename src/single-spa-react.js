@@ -15,6 +15,7 @@ const defaultOpts = {
   domElements: {},
 
   // optional opts
+  errorBoundary: null,
   domElementGetter: null,
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
 };
@@ -40,6 +41,12 @@ export default function singleSpaReact(userOpts) {
   if (!opts.rootComponent && !opts.loadRootComponent) {
     throw new Error(
       `single-spa-react must be passed opts.rootComponent or opts.loadRootComponent`
+    );
+  }
+
+  if (opts.errorBoundary && typeof opts.errorBoundary !== "function") {
+    throw Error(
+      `The errorBoundary opt for single-spa-react must either be omitted or be a function that returns React elements`
     );
   }
 
@@ -74,12 +81,16 @@ function bootstrap(opts, props) {
 
 function mount(opts, props) {
   return new Promise((resolve, reject) => {
-    if (!opts.suppressComponentDidCatchWarning && atLeastReact16(opts.React)) {
+    if (
+      !opts.suppressComponentDidCatchWarning &&
+      atLeastReact16(opts.React) &&
+      !opts.errorBoundary
+    ) {
       if (!opts.rootComponent.prototype) {
         console.warn(
           `single-spa-react: ${
             props.name || props.appName || props.childAppName
-          }'s rootComponent does not have a prototype.  If using a functional component, wrap it in an error boundary or other class that implements componentDidCatch to avoid accidentally unmounting the entire single-spa application`
+          }'s rootComponent does not implemtn an error boundary.  If using a functional component, consider providing an opts.errorBoundary to singleSpaReact(opts).`
         );
       } else if (!opts.rootComponent.prototype.componentDidCatch) {
         console.warn(
@@ -104,17 +115,7 @@ function mount(opts, props) {
       resolve(this);
     };
 
-    const rootComponentElement = opts.React.createElement(
-      opts.rootComponent,
-      props
-    );
-    const elementToRender = SingleSpaContext
-      ? opts.React.createElement(
-          SingleSpaContext.Provider,
-          { value: props },
-          rootComponentElement
-        )
-      : rootComponentElement;
+    const elementToRender = getElementToRender(opts, props);
     const domElement = getRootDomEl(domElementGetter, props);
     const renderedComponent = reactDomRender({
       elementToRender,
@@ -139,17 +140,7 @@ function update(opts, props) {
       resolve(this);
     };
 
-    const rootComponentElement = opts.React.createElement(
-      opts.rootComponent,
-      props
-    );
-    const elementToRender = SingleSpaContext
-      ? opts.React.createElement(
-          SingleSpaContext.Provider,
-          { value: props },
-          rootComponentElement
-        )
-      : rootComponentElement;
+    const elementToRender = getElementToRender(opts, props);
     const renderedComponent = reactDomRender({
       elementToRender,
       domElement: opts.domElements[props.name],
@@ -247,4 +238,73 @@ function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
 
   // default to this if 'renderType' is null or doesn't match the other options
   return opts.ReactDOM.render(elementToRender, domElement, whenFinished);
+}
+
+function getElementToRender(opts, props) {
+  const rootComponentElement = opts.React.createElement(
+    opts.rootComponent,
+    props
+  );
+
+  let elementToRender = SingleSpaContext
+    ? opts.React.createElement(
+        SingleSpaContext.Provider,
+        { value: props },
+        rootComponentElement
+      )
+    : rootComponentElement;
+
+  if (opts.errorBoundary) {
+    elementToRender = opts.React.createElement(
+      createErrorBoundary(opts),
+      props,
+      elementToRender
+    );
+  }
+
+  return elementToRender;
+}
+
+function createErrorBoundary(opts) {
+  // Avoiding babel output for class syntax and super()
+  // to avoid bloat
+  function SingleSpaReactErrorBoundary(props) {
+    // super
+    opts.React.Component.apply(this, arguments);
+
+    this.state = {
+      caughtError: null,
+      caughtErrorInfo: null,
+    };
+
+    SingleSpaReactErrorBoundary.displayName = `SingleSpaReactErrorBoundary(${props.name})`;
+  }
+
+  SingleSpaReactErrorBoundary.prototype = Object.create(
+    opts.React.Component.prototype
+  );
+
+  SingleSpaReactErrorBoundary.prototype.render = function () {
+    if (this.state.caughtError) {
+      return opts.errorBoundary(
+        this.state.caughtError,
+        this.state.caughtErrorInfo,
+        this.props
+      );
+    } else {
+      return this.props.children;
+    }
+  };
+
+  SingleSpaReactErrorBoundary.prototype.componentDidCatch = function (
+    err,
+    info
+  ) {
+    this.setState({
+      caughtError: err,
+      caughtErrorInfo: info,
+    });
+  };
+
+  return SingleSpaReactErrorBoundary;
 }

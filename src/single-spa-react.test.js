@@ -14,6 +14,7 @@ describe("single-spa-react", () => {
       createElement: jest.fn(() => {
         return createdReactElement;
       }),
+      Component: function () {},
       version: "16.2.0",
     }),
       (ReactDOM = {
@@ -308,10 +309,10 @@ describe("single-spa-react", () => {
       .then(() => expect(console.warn).not.toHaveBeenCalled());
   });
 
-  describe("warnings for componentDidCatch", () => {
+  describe("error boundaries", () => {
     let originalWarn;
     beforeEach(() => {
-      let originalWarn = console.warn;
+      originalWarn = console.warn;
       console.warn = jest.fn();
     });
 
@@ -319,7 +320,7 @@ describe("single-spa-react", () => {
       console.warn = originalWarn;
     });
 
-    it(`should not throw a warning`, () => {
+    it(`should not log a warning`, () => {
       const props = { why: "hello", customProps: {} };
       const lifecycles = singleSpaReact({
         React,
@@ -338,7 +339,7 @@ describe("single-spa-react", () => {
         });
     });
 
-    it(`should throw a warning`, () => {
+    it(`should log a warning`, () => {
       const props = { why: "hello", customProps: {} };
       const lifecycles = singleSpaReact({
         React,
@@ -355,7 +356,7 @@ describe("single-spa-react", () => {
         });
     });
 
-    it(`should throw a warning`, () => {
+    it(`should log a warning`, () => {
       const props = { why: "hello", customProps: {} };
       const lifecycles = singleSpaReact({
         React,
@@ -372,6 +373,63 @@ describe("single-spa-react", () => {
         });
     });
 
+    it(`should not log a warning when errorBoundary opts is passed in`, () => {
+      const props = { why: "hello", name: "hi" };
+      const lifecycles = singleSpaReact({
+        React,
+        ReactDOM,
+        rootComponent: function foo() {},
+        errorBoundary() {
+          return null;
+        },
+      });
+
+      return lifecycles
+        .bootstrap()
+        .then(() => lifecycles.mount(props))
+        .then(() => {
+          return expect(console.warn).not.toHaveBeenCalled();
+        });
+    });
+
+    it(`should call opts.errorBoundary during an error boundary handler`, () => {
+      const props = { why: "hello", name: "hi" };
+
+      React.createElement = (type) => type;
+
+      ReactDOM.render = (element, container, cb) => {
+        element.prototype.setState = function (state) {
+          this.state = state;
+          this.render();
+        };
+        const el = new element(props);
+        el.componentDidCatch(err, info);
+        cb();
+      };
+
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function foo() {},
+        errorBoundary: jest.fn(),
+      };
+      const lifecycles = singleSpaReact(opts);
+
+      let err = Error(),
+        info = {};
+
+      return lifecycles
+        .bootstrap()
+        .then(() => expect(opts.errorBoundary).not.toHaveBeenCalled())
+        .then(() => lifecycles.mount(props))
+        .then(() => expect(opts.errorBoundary).toHaveBeenCalled())
+        .then(() => {
+          return expect(console.warn).not.toHaveBeenCalled();
+        });
+    });
+  });
+
+  describe(`domElementGetter`, () => {
     it(`provides a default implementation of domElementGetter if you don't provide one`, () => {
       const props = { name: "k_ruel" };
       const lifecycles = singleSpaReact({
