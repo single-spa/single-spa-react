@@ -255,8 +255,10 @@ function getElementToRender(opts, props) {
     : rootComponentElement;
 
   if (opts.errorBoundary) {
+    opts.errorBoundaryClass =
+      opts.errorBoundaryClass || createErrorBoundary(opts);
     elementToRender = opts.React.createElement(
-      createErrorBoundary(opts),
+      opts.errorBoundaryClass,
       props,
       elementToRender
     );
