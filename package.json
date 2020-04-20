@@ -4,13 +4,20 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/single-spa-react.js",
   "scripts": {
-    "build": "rimraf lib parcel && mkdirp lib parcel && babel src/single-spa-react.js --source-maps --out-file lib/single-spa-react.js && babel src/parcel.js --source-maps --out-file parcel/index.js --module-id Parcel",
+    "build": "rollup -c",
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
     "format": "prettier --write './**/*'",
     "coverage": "jest --coverage --config jest.json",
     "prepublishOnly": "yarn build"
   },
+  "browserslist": [
+    "IE 11",
+    "last 25 chrome versions",
+    "last 20 firefox versions",
+    "last 4 safari versions",
+    "last 4 edge versions"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
@@ -34,10 +41,8 @@
   },
   "homepage": "https://github.com/joeldenning/single-spa-react#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-transform-modules-amd": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
     "babel-jest": "^25.2.6",
@@ -51,7 +56,10 @@
     "pretty-quick": "^2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "rimraf": "^3.0.2"
+    "rollup": "^2.6.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "single-spa-react": "."
   },
   "peerDependencies": {
     "react": "*"

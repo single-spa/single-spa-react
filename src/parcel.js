@@ -4,7 +4,7 @@
  * to have prop-types installed and in their browser bundle, since not everyone uses prop types.
  */
 import React from "react";
-import { SingleSpaContext } from "../lib/single-spa-react.js";
+import { SingleSpaContext } from "single-spa-react";
 
 export default class Parcel extends React.Component {
   static defaultProps = {
