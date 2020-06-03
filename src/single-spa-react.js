@@ -20,7 +20,9 @@ const defaultOpts = {
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
 };
 
-export default function singleSpaReact(userOpts) {
+export default singleSpaReact;
+
+export function singleSpaReact(userOpts) {
   if (typeof userOpts !== "object") {
     throw new Error(`single-spa-react requires a configuration object`);
   }
