@@ -2,7 +2,18 @@
   "name": "single-spa-react",
   "version": "2.14.0",
   "description": "A single spa plugin for React apps",
-  "main": "lib/single-spa-react.js",
+  "main": "lib/umd/single-spa-react.js",
+  "module": "lib/esm/single-spa-react.js",
+  "exports": {
+    "import": {
+      ".": "./lib/esm/single-spa-react.js",
+      "./parcel": "./lib/esm/parcel.js"
+    },
+    "require": {
+      ".": "./lib/umd/single-spa-react.js",
+      "./parcel": "./lib/umd/parcel.js"
+    }
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest --config jest.json",
