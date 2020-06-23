@@ -1,4 +1,4 @@
-import babel from "rollup-plugin-babel";
+import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 
 export default [
@@ -22,7 +22,7 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel(), terser()],
+    plugins: [babel({ babelHelpers: "bundled" }), terser()],
   },
   {
     input: "./src/single-spa-react.js",
@@ -32,9 +32,7 @@ export default [
       sourcemap: true,
     },
     plugins: [
-      babel({
-        envName: "esm",
-      }),
+      babel({ babelHelpers: "bundled" }),
       terser({
         ecma: 6,
         module: true,
@@ -65,7 +63,7 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel(), terser()],
+    plugins: [babel({ babelHelpers: "bundled" }), terser()],
     external: ["single-spa-react", "react"],
   },
   {
@@ -76,9 +74,7 @@ export default [
       sourcemap: true,
     },
     plugins: [
-      babel({
-        envName: "esm",
-      }),
+      babel({ babelHelpers: "bundled" }),
       terser({
         ecma: 6,
         module: true,
