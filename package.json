@@ -4,14 +4,21 @@
   "description": "A single spa plugin for React apps",
   "main": "lib/umd/single-spa-react.js",
   "module": "lib/esm/single-spa-react.js",
+  "type": "module",
   "exports": {
-    "import": {
-      ".": "./lib/esm/single-spa-react.js",
-      "./parcel": "./lib/esm/parcel.js"
+    ".": {
+      "import": "./lib/esm/single-spa-react.js",
+      "require": {
+        "browser": "./lib/umd/single-spa-react.js",
+        "node": "./lib/cjs/single-spa-react.cjs"
+      }
     },
-    "require": {
-      ".": "./lib/umd/single-spa-react.js",
-      "./parcel": "./lib/umd/parcel.js"
+    "./parcel": {
+      "import": "./lib/esm/parcel.js",
+      "require": {
+        "browser": "./lib/umd/parcel.js",
+        "node": "./lib/cjs/parcel.cjs"
+      }
     }
   },
   "scripts": {
