@@ -8,17 +8,11 @@
   "exports": {
     ".": {
       "import": "./lib/esm/single-spa-react.js",
-      "require": {
-        "browser": "./lib/umd/single-spa-react.js",
-        "node": "./lib/cjs/single-spa-react.cjs"
-      }
+      "require": "./lib/cjs/single-spa-react.cjs"
     },
     "./parcel": {
       "import": "./lib/esm/parcel.js",
-      "require": {
-        "browser": "./lib/umd/parcel.js",
-        "node": "./lib/cjs/parcel.cjs"
-      }
+      "require": "./lib/cjs/parcel.cjs"
     }
   },
   "scripts": {
