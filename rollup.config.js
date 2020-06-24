@@ -3,26 +3,26 @@ import { terser } from "rollup-plugin-terser";
 
 export default [
   {
-    input: `src/single-spa-react.js`,
+    input: "src/single-spa-react.js",
     output: [
       {
-        file: `lib/umd/single-spa-react.js`,
+        file: "lib/umd/single-spa-react.js",
         format: "umd",
         name: "singleSpaReact",
         sourcemap: true,
       },
       {
-        file: `lib/system/single-spa-react.js`,
+        file: "lib/system/single-spa-react.js",
         format: "system",
         sourcemap: true,
       },
       {
-        file: `lib/esm/single-spa-react.js`,
+        file: "lib/esm/single-spa-react.js",
         format: "esm",
         sourcemap: true,
       },
       {
-        file: `lib/cjs/single-spa-react.cjs`,
+        file: "lib/cjs/single-spa-react.cjs",
         format: "cjs",
         sourcemap: true,
       },
@@ -30,9 +30,9 @@ export default [
     plugins: [babel({ babelHelpers: "bundled" }), terser()],
   },
   {
-    input: "./src/single-spa-react.js",
+    input: "src/single-spa-react.js",
     output: {
-      file: `./lib/es2015/single-spa-react.js`,
+      file: "lib/es2015/single-spa-react.js",
       format: "esm",
       sourcemap: true,
     },
@@ -45,10 +45,10 @@ export default [
     ],
   },
   {
-    input: `src/parcel.js`,
+    input: "src/parcel.js",
     output: [
       {
-        file: `lib/umd/parcel.js`,
+        file: "lib/umd/parcel.js",
         format: "umd",
         name: "Parcel",
         sourcemap: true,
@@ -58,17 +58,17 @@ export default [
         },
       },
       {
-        file: `lib/system/parcel.js`,
+        file: "lib/system/parcel.js",
         format: "system",
         sourcemap: true,
       },
       {
-        file: `lib/esm/parcel.js`,
+        file: "lib/esm/parcel.js",
         format: "esm",
         sourcemap: true,
       },
       {
-        file: `lib/cjs/parcel.cjs`,
+        file: "lib/cjs/parcel.cjs",
         format: "cjs",
         sourcemap: true,
       },
@@ -77,9 +77,9 @@ export default [
     external: ["single-spa-react", "react"],
   },
   {
-    input: "./src/parcel.js",
+    input: "src/parcel.js",
     output: {
-      file: `./lib/es2015/parcel.js`,
+      file: "lib/es2015/parcel.js",
       format: "esm",
       sourcemap: true,
     },
