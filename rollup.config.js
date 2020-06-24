@@ -21,6 +21,11 @@ export default [
         format: "esm",
         sourcemap: true,
       },
+      {
+        file: `lib/cjs/single-spa-react.cjs`,
+        format: "cjs",
+        sourcemap: true,
+      },
     ],
     plugins: [babel({ babelHelpers: "bundled" }), terser()],
   },
@@ -60,6 +65,11 @@ export default [
       {
         file: `lib/esm/parcel.js`,
         format: "esm",
+        sourcemap: true,
+      },
+      {
+        file: `lib/cjs/parcel.cjs`,
+        format: "cjs",
         sourcemap: true,
       },
     ],
