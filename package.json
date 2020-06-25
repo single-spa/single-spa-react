@@ -2,7 +2,19 @@
   "name": "single-spa-react",
   "version": "2.14.0",
   "description": "A single spa plugin for React apps",
-  "main": "lib/single-spa-react.js",
+  "main": "lib/umd/single-spa-react.js",
+  "module": "lib/esm/single-spa-react.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/esm/single-spa-react.js",
+      "require": "./lib/cjs/single-spa-react.cjs"
+    },
+    "./parcel": {
+      "import": "./lib/esm/parcel.js",
+      "require": "./lib/cjs/parcel.cjs"
+    }
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest --config jest.json",
@@ -57,8 +69,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rollup": "^2.6.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^5.3.0",
+    "@rollup/plugin-babel": "^5.0.4",
+    "rollup-plugin-terser": "^6.1.0",
     "single-spa-react": "."
   },
   "peerDependencies": {
