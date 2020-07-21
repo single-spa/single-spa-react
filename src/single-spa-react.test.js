@@ -55,7 +55,7 @@ describe("single-spa-react", () => {
   });
 
   it(`mounts and unmounts a React component, passing through the single-spa props`, () => {
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -84,7 +84,7 @@ describe("single-spa-react", () => {
   });
 
   it(`mounts and unmounts a React component with a 'renderType' of 'hydrate'`, () => {
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -114,7 +114,7 @@ describe("single-spa-react", () => {
   });
 
   it(`mounts and unmounts a React component with a 'renderType' of 'createRoot'`, () => {
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -164,10 +164,8 @@ describe("single-spa-react", () => {
     let propsDomElementGetter = () => "propsDomElementGetter";
     let propsDomElement = () => "propsDomElement";
     let props = {
-      customProps: {
-        domElement: propsDomElement,
-        domElementGetter: propsDomElementGetter,
-      },
+      domElement: propsDomElement,
+      domElementGetter: propsDomElementGetter,
     };
 
     const lifecycles = singleSpaReact(opts);
@@ -221,7 +219,7 @@ describe("single-spa-react", () => {
   });
 
   it(`allows you to provide a domElementGetter as an opt`, () => {
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -233,8 +231,8 @@ describe("single-spa-react", () => {
     // Doesn't throw
   });
 
-  it(`allows you to provide a domElementGetter as a customProps`, () => {
-    const props = { why: "hello", customProps: { domElementGetter } };
+  it(`allows you to provide a domElementGetter as a prop`, () => {
+    const props = { why: "hello", domElementGetter };
     const lifecycles = singleSpaReact({ React, ReactDOM, rootComponent });
 
     return lifecycles.bootstrap().then(() => lifecycles.mount(props));
@@ -277,7 +275,7 @@ describe("single-spa-react", () => {
   it(`warns if you are using react 16 but don't implement componentDidCatch`, () => {
     delete componentInstance.componentDidCatch;
     React.version = "16.2.0";
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -295,7 +293,7 @@ describe("single-spa-react", () => {
   it(`does not warn if you are using react 15 but don't implement componentDidCatch`, () => {
     delete componentInstance.componentDidCatch;
     React.version = "15.4.1";
-    const props = { why: "hello", customProps: {} };
+    const props = { why: "hello" };
     const lifecycles = singleSpaReact({
       React,
       ReactDOM,
@@ -337,7 +335,7 @@ describe("single-spa-react", () => {
     });
 
     it(`should not log a warning`, () => {
-      const props = { why: "hello", customProps: {} };
+      const props = { why: "hello" };
       const lifecycles = singleSpaReact({
         React,
         ReactDOM,
@@ -356,7 +354,7 @@ describe("single-spa-react", () => {
     });
 
     it(`should log a warning`, () => {
-      const props = { why: "hello", customProps: {} };
+      const props = { why: "hello" };
       const lifecycles = singleSpaReact({
         React,
         ReactDOM,
@@ -373,7 +371,7 @@ describe("single-spa-react", () => {
     });
 
     it(`should log a warning`, () => {
-      const props = { why: "hello", customProps: {} };
+      const props = { why: "hello" };
       const lifecycles = singleSpaReact({
         React,
         ReactDOM,
