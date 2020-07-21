@@ -309,6 +309,22 @@ describe("single-spa-react", () => {
       .then(() => expect(console.warn).not.toHaveBeenCalled());
   });
 
+  // https://github.com/single-spa/single-spa/issues/604
+  it(`does not throw an error if a customProps prop is provided`, async () => {
+    const parcelConfig = singleSpaReact({
+      React,
+      ReactDOM,
+      rootComponent,
+    });
+    const normalProps = { foo: "bar", name: "app1" };
+    await parcelConfig.bootstrap(normalProps);
+    await parcelConfig.mount(normalProps);
+
+    const unusualProps = { name: "app2", customProps: { foo: "bar" } };
+    await parcelConfig.bootstrap(unusualProps);
+    await parcelConfig.mount(unusualProps);
+  });
+
   describe("error boundaries", () => {
     let originalWarn;
     beforeEach(() => {
