@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
+    "watch-build": "rollup -cw",
     "test": "jest --config jest.json",
     "watch-tests": "jest --watch --config jest.json",
     "format": "prettier --write './**/*'",
