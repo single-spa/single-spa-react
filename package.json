@@ -22,7 +22,8 @@
   "scripts": {
     "build": "rollup -c",
     "test": "cross-env BABEL_ENV=test jest --config jest.json",
-    "watch-tests": "jest --watch --config jest.json",
+    "watch-build": "rollup -cw",
+    "watch-tests": "cross-env BABEL_ENV=test jest --watch --config jest.json",
     "format": "prettier --write './**/*'",
     "coverage": "jest --coverage --config jest.json",
     "prepublishOnly": "yarn build"

@@ -1,6 +1,8 @@
 import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 
+const shouldMinify = process.env.ROLLUP_WATCH !== "true";
+
 export default [
   {
     input: "src/single-spa-react.js",
@@ -27,7 +29,7 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel({ babelHelpers: "bundled" }), terser()],
+    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
   },
   {
     input: "src/single-spa-react.js",
@@ -38,10 +40,11 @@ export default [
     },
     plugins: [
       babel({ babelHelpers: "bundled" }),
-      terser({
-        ecma: 6,
-        module: true,
-      }),
+      shouldMinify &&
+        terser({
+          ecma: 6,
+          module: true,
+        }),
     ],
   },
   {
@@ -73,7 +76,7 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel({ babelHelpers: "bundled" }), terser()],
+    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
     external: ["single-spa-react", "react"],
   },
   {
@@ -85,10 +88,11 @@ export default [
     },
     plugins: [
       babel({ babelHelpers: "bundled" }),
-      terser({
-        ecma: 6,
-        module: true,
-      }),
+      shouldMinify &&
+        terser({
+          ecma: 6,
+          module: true,
+        }),
     ],
     external: ["single-spa-react", "react"],
   },
