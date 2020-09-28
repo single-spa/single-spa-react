@@ -103,7 +103,11 @@ export default class Parcel extends React.Component {
 
       return React.createElement(
         this.props.wrapWith,
-        { ref: this.handleRef, style: this.props.wrapStyle, className: this.props.className },
+        {
+          ref: this.handleRef,
+          style: this.props.wrapStyle,
+          className: this.props.wrapClassName,
+        },
         children
       );
     }
