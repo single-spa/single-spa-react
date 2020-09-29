@@ -55,6 +55,11 @@ describe(`<Parcel />`, () => {
     ).toBe(true);
   });
 
+  it(`renders a diw wrap with className`, () => {
+    const wrapper = mount(<Parcel {...props} wrapClassName="wrapper" />);
+    expect(wrapper.find("div").hasClass("wrapper")).toBe(true);
+  });
+
   it(`calls the mountParcel prop when it mounts`, () => {
     const wrapper = mount(<Parcel {...props} />);
     return wrapper.instance().nextThingToDo.then(() => {
