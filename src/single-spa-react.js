@@ -217,18 +217,20 @@ function defaultDomElementGetter(props) {
 }
 
 function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
-  if ([
-    "createRoot",
-    "unstable_createRoot",
-    "createBlockingRoot",
-    "unstable_createBlockingRoot",
-  ].includes(opts.renderType)) {
+  if (
+    [
+      "createRoot",
+      "unstable_createRoot",
+      "createBlockingRoot",
+      "unstable_createBlockingRoot",
+    ].includes(opts.renderType)
+  ) {
     return opts.ReactDOM[opts.renderType](domElement).render(
       elementToRender,
-      whenFinished,
+      whenFinished
     );
   }
-  
+
   if (opts.renderType === "createBlockingRoot") {
     return opts.ReactDOM.createBlockingRoot(domElement).render(
       elementToRender,
