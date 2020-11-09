@@ -217,8 +217,15 @@ function defaultDomElementGetter(props) {
 }
 
 function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
-  if (opts.renderType === "createRoot") {
-    return opts.ReactDOM.createRoot(domElement).render(
+  if (
+    [
+      "createRoot",
+      "unstable_createRoot",
+      "createBlockingRoot",
+      "unstable_createBlockingRoot",
+    ].indexOf(opts.renderType) >= 0
+  ) {
+    return opts.ReactDOM[opts.renderType](domElement).render(
       elementToRender,
       whenFinished
     );

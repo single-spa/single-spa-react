@@ -4,9 +4,12 @@
   "env": {
     "test": {
       "presets": [
-        ["@babel/preset-env", {
-          "targets": "current node"
-        }],
+        [
+          "@babel/preset-env",
+          {
+            "targets": "current node"
+          }
+        ],
         "@babel/preset-react"
       ]
     }
