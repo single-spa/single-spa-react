@@ -261,6 +261,48 @@ describe("single-spa-react", () => {
       });
   });
 
+  it(`mounts and unmounts a React component with a 'renderType' of 'unstable_createBlockingRoot'`, () => {
+    const props = { why: "hello" };
+    const lifecycles = singleSpaReact({
+      React,
+      ReactDOM,
+      rootComponent,
+      domElementGetter,
+      renderType: "unstable_createBlockingRoot",
+    });
+
+    const createRootRender = jest.fn();
+    ReactDOM.unstable_createBlockingRoot.mockImplementation((domEl) => {
+      return {
+        render: createRootRender.mockImplementation((reactEl, cbk) => {
+          cbk();
+          return componentInstance;
+        }),
+      };
+    });
+
+    return lifecycles
+      .bootstrap()
+      .then(() => lifecycles.mount(props))
+      .then(() => {
+        expect(React.createElement).toHaveBeenCalled();
+        expect(React.createElement.mock.calls[0][0]).toEqual(rootComponent);
+        expect(React.createElement.mock.calls[0][1]).toEqual(props);
+        expect(ReactDOM.unstable_createBlockingRoot).toHaveBeenCalled();
+        expect(ReactDOM.unstable_createBlockingRoot.mock.calls[0][0]).toEqual(
+          domElement
+        );
+        expect(createRootRender.mock.calls[0][0]).toEqual(createdReactElement);
+        expect(typeof createRootRender.mock.calls[0][1]).toEqual("function");
+        return lifecycles.unmount(props);
+      })
+      .then(() => {
+        expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalledWith(
+          domElement
+        );
+      });
+  });
+
   it(`chooses the parcel dom element over other dom element getters`, () => {
     const optsDomElementGetter = () => "optsDomElementGetter";
     let opts = {
