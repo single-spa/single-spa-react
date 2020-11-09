@@ -231,13 +231,6 @@ function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
     );
   }
 
-  if (opts.renderType === "createBlockingRoot") {
-    return opts.ReactDOM.createBlockingRoot(domElement).render(
-      elementToRender,
-      whenFinished
-    );
-  }
-
   if (opts.renderType === "hydrate") {
     return opts.ReactDOM.hydrate(elementToRender, domElement, whenFinished);
   }
