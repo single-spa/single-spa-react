@@ -223,7 +223,7 @@ function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
       "unstable_createRoot",
       "createBlockingRoot",
       "unstable_createBlockingRoot",
-    ].includes(opts.renderType)
+    ].indexOf(opts.renderType) >= 0
   ) {
     return opts.ReactDOM[opts.renderType](domElement).render(
       elementToRender,
