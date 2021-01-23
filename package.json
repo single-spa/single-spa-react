@@ -30,12 +30,11 @@
     "build:rollup": "rollup -c",
     "build:types": "rimraf parcel && copyfiles -f types/parcel/index.d.ts ./parcel",
     "test": "concurrently yarn:test:*",
-    "test:browser": "cross-env BABEL_ENV=test jest --config jest.json",
+    "test:browser": "cross-env BABEL_ENV=test jest --config jest.json --coverage",
     "test:types": "tsd",
     "watch-build": "rollup -cw",
     "watch-tests": "cross-env BABEL_ENV=test jest --watch --config jest.json",
     "format": "prettier --write './**/*'",
-    "coverage": "jest --coverage --config jest.json",
     "prepublishOnly": "yarn build"
   },
   "browserslist": [
