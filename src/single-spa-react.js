@@ -9,15 +9,19 @@ const defaultOpts = {
   // required opts
   React: null,
   ReactDOM: null,
+
+  // required - one or the other
   rootComponent: null,
   loadRootComponent: null,
-  suppressComponentDidCatchWarning: false,
-  domElements: {},
 
   // optional opts
+  renderType: null,
   errorBoundary: null,
+  errorBoundaryClass: null,
   domElementGetter: null,
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
+  suppressComponentDidCatchWarning: false,
+  domElements: {},
 };
 
 export default function singleSpaReact(userOpts) {
