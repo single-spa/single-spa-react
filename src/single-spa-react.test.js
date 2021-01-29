@@ -1,4 +1,5 @@
 import singleSpaReact from "./single-spa-react.js";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("single-spa-react", () => {
   let React,
