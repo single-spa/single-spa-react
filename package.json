@@ -37,7 +37,7 @@
     "watch-tests": "cross-env BABEL_ENV=test jest --watch",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm run build"
   },
   "browserslist": [
     "IE 11",
