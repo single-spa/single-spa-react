@@ -4,4 +4,5 @@ LICENSE
 yarn.lock
 .npmignore
 lib
-./parcel/
+parcel/
+coverage

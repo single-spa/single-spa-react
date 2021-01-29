@@ -1,6 +1,9 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import Parcel from "./parcel.js";
-import { mount } from "enzyme";
+import { render } from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+import singleSpaReact from "./single-spa-react";
 
 document.body.appendChild = jest.fn();
 
@@ -9,6 +12,10 @@ describe(`<Parcel />`, () => {
     mountParcel = jest.fn(),
     parcel,
     props;
+
+  beforeAll(() => {
+    singleSpaReact({ React, ReactDOM, rootComponent: () => {} });
+  });
 
   beforeEach(() => {
     config = {
@@ -42,12 +49,12 @@ describe(`<Parcel />`, () => {
   });
 
   it(`renders a div by default`, () => {
-    const wrapper = mount(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />);
     expect(wrapper.find("div").length).toBe(1);
   });
 
   it(`renders a div wrap with style`, () => {
-    const wrapper = mount(
+    const wrapper = render(
       <Parcel {...props} wrapStyle={{ height: "100px" }} />
     );
     expect(
@@ -56,19 +63,19 @@ describe(`<Parcel />`, () => {
   });
 
   it(`renders a diw wrap with className`, () => {
-    const wrapper = mount(<Parcel {...props} wrapClassName="wrapper" />);
+    const wrapper = render(<Parcel {...props} wrapClassName="wrapper" />);
     expect(wrapper.find("div").hasClass("wrapper")).toBe(true);
   });
 
   it(`calls the mountParcel prop when it mounts`, () => {
-    const wrapper = mount(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />);
     return wrapper.instance().nextThingToDo.then(() => {
       expect(mountParcel).toHaveBeenCalled();
     });
   });
 
   it(`renders nothing if you pass in the appendTo prop`, () => {
-    const wrapper = mount(<Parcel {...props} appendTo={document.body} />);
+    const wrapper = render(<Parcel {...props} appendTo={document.body} />);
     return wrapper.instance().nextThingToDo.then(() => {
       expect(document.body.appendChild).toHaveBeenCalled();
     });
@@ -76,7 +83,7 @@ describe(`<Parcel />`, () => {
 
   it(`calls parcelDidMount prop when the parcel finishes mounting`, () => {
     const parcelDidMount = jest.fn();
-    const wrapper = mount(
+    const wrapper = render(
       <Parcel {...props} parcelDidMount={parcelDidMount} />
     );
 
@@ -88,7 +95,7 @@ describe(`<Parcel />`, () => {
   });
 
   it(`doesn't update the parcel a second or third time until previous parcel updates complete`, (done) => {
-    const wrapper = mount(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />);
     const inst = wrapper.instance();
 
     let numParcelUpdateCalls = 0;
@@ -154,7 +161,7 @@ describe(`<Parcel />`, () => {
   });
 
   it(`calls mountParcel with the all the React props`, () => {
-    const wrapper = mount(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />);
     // We need to wait for a microtask to finish before the Parcel component will have called mountParcel
     return Promise.resolve().then(() => {
       expect(mountParcel).toHaveBeenCalled();
@@ -163,23 +170,24 @@ describe(`<Parcel />`, () => {
     });
   });
 
-  // https://github.com/airbnb/enzyme/pull/1513 isn't published, waaaaaaaaaaaaa :'(
-  // it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one`, () => {
-  //   // this creates the SingleSpaContext
-  //   const appLifecycles = singleSpaReact({
-  //     React,
-  //     ReactDOM,
-  //     rootComponent() {return null},
-  //   })
-  //
-  //   const wrapper = mount(
-  //     <SingleSpaContext.Provider value={mountParcel}>
-  //       <Parcel config={config} />
-  //     </SingleSpaContext.Provider>
-  //   )
-  //
-  //   return wrapper.instance().nextThingToDo.then(() => {
-  //     expect(mountParcel).toHaveBeenCalled()
-  //   })
-  // })
+  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one`, () => {
+    // this creates the SingleSpaContext
+    const appLifecycles = singleSpaReact({
+      React,
+      ReactDOM,
+      rootComponent() {
+        return null;
+      },
+    });
+
+    const wrapper = render(
+      <SingleSpaContext.Provider value={mountParcel}>
+        <Parcel config={config} />
+      </SingleSpaContext.Provider>
+    );
+
+    return wrapper.instance().nextThingToDo.then(() => {
+      expect(mountParcel).toHaveBeenCalled();
+    });
+  });
 });
