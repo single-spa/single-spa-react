@@ -1,21 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import Parcel from "./parcel.js";
-import { render } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import singleSpaReact from "./single-spa-react";
-
-document.body.appendChild = jest.fn();
+import singleSpaReact, { SingleSpaContext } from "./single-spa-react";
+import { removeErrorHandler } from "single-spa";
 
 describe(`<Parcel />`, () => {
   let config,
     mountParcel = jest.fn(),
     parcel,
     props;
-
-  beforeAll(() => {
-    singleSpaReact({ React, ReactDOM, rootComponent: () => {} });
-  });
 
   beforeEach(() => {
     config = {
@@ -37,8 +32,6 @@ describe(`<Parcel />`, () => {
     mountParcel.mockReset();
     mountParcel.mockReturnValue(parcel);
 
-    document.body.appendChild.mockReset();
-
     props = { mountParcel, config };
   });
 
@@ -49,39 +42,40 @@ describe(`<Parcel />`, () => {
   });
 
   it(`renders a div by default`, () => {
+    expect(document.querySelector("div")).not.toBeInTheDocument();
     const wrapper = render(<Parcel {...props} />);
-    expect(wrapper.find("div").length).toBe(1);
+    expect(document.querySelector("div")).toBeInTheDocument();
   });
 
   it(`renders a div wrap with style`, () => {
     const wrapper = render(
       <Parcel {...props} wrapStyle={{ height: "100px" }} />
     );
-    expect(
-      /style\=\"height\:\s{1}100px;\"/.test(wrapper.find("div").html())
-    ).toBe(true);
+    expect(document.querySelector(`div[style]`).style.height).toEqual("100px");
   });
 
-  it(`renders a diw wrap with className`, () => {
+  it(`renders a div wrap with className`, () => {
     const wrapper = render(<Parcel {...props} wrapClassName="wrapper" />);
-    expect(wrapper.find("div").hasClass("wrapper")).toBe(true);
+    expect(document.querySelector("div.wrapper")).toBeInTheDocument();
   });
 
-  it(`calls the mountParcel prop when it mounts`, () => {
+  it(`calls the mountParcel prop when it mounts`, async () => {
     const wrapper = render(<Parcel {...props} />);
-    return wrapper.instance().nextThingToDo.then(() => {
-      expect(mountParcel).toHaveBeenCalled();
-    });
+    await waitFor(() => expect(mountParcel).toHaveBeenCalled());
   });
 
-  it(`renders nothing if you pass in the appendTo prop`, () => {
-    const wrapper = render(<Parcel {...props} appendTo={document.body} />);
-    return wrapper.instance().nextThingToDo.then(() => {
-      expect(document.body.appendChild).toHaveBeenCalled();
-    });
+  it(`renders inside the append to`, async () => {
+    const appendTo = document.body.appendChild(
+      document.createElement("section")
+    );
+    expect(document.querySelector("section div")).not.toBeInTheDocument();
+    const wrapper = render(<Parcel {...props} appendTo={appendTo} />);
+    await waitFor(() =>
+      expect(document.querySelector("section div")).toBeInTheDocument()
+    );
   });
 
-  it(`calls parcelDidMount prop when the parcel finishes mounting`, () => {
+  it(`calls parcelDidMount prop when the parcel finishes mounting`, async () => {
     const parcelDidMount = jest.fn();
     const wrapper = render(
       <Parcel {...props} parcelDidMount={parcelDidMount} />
@@ -89,14 +83,11 @@ describe(`<Parcel />`, () => {
 
     expect(parcelDidMount).not.toHaveBeenCalled();
 
-    return wrapper.instance().nextThingToDo.then(() => {
-      expect(parcelDidMount).toHaveBeenCalled();
-    });
+    await waitFor(() => expect(parcelDidMount).toHaveBeenCalled());
   });
 
   it(`doesn't update the parcel a second or third time until previous parcel updates complete`, (done) => {
     const wrapper = render(<Parcel {...props} />);
-    const inst = wrapper.instance();
 
     let numParcelUpdateCalls = 0;
     let firstParcelUpdateFinished = false;
@@ -147,7 +138,7 @@ describe(`<Parcel />`, () => {
     }
 
     function triggerComponentDidUpdate() {
-      wrapper.setProps(props);
+      wrapper.rerender(<Parcel {...props} />);
     }
 
     // not once
@@ -160,17 +151,15 @@ describe(`<Parcel />`, () => {
     triggerComponentDidUpdate();
   });
 
-  it(`calls mountParcel with the all the React props`, () => {
+  it(`calls mountParcel with all the React props`, async () => {
     const wrapper = render(<Parcel {...props} />);
     // We need to wait for a microtask to finish before the Parcel component will have called mountParcel
-    return Promise.resolve().then(() => {
-      expect(mountParcel).toHaveBeenCalled();
-      const parcelProps = mountParcel.mock.calls[0][1];
-      expect(parcelProps.domElement).toBeInstanceOf(HTMLDivElement);
-    });
+    await waitFor(() => expect(mountParcel).toHaveBeenCalled());
+    const parcelProps = mountParcel.mock.calls[0][1];
+    expect(parcelProps.domElement).toBeInstanceOf(HTMLDivElement);
   });
 
-  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one`, () => {
+  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one`, async () => {
     // this creates the SingleSpaContext
     const appLifecycles = singleSpaReact({
       React,
@@ -181,13 +170,11 @@ describe(`<Parcel />`, () => {
     });
 
     const wrapper = render(
-      <SingleSpaContext.Provider value={mountParcel}>
+      <SingleSpaContext.Provider value={{ mountParcel }}>
         <Parcel config={config} />
       </SingleSpaContext.Provider>
     );
 
-    return wrapper.instance().nextThingToDo.then(() => {
-      expect(mountParcel).toHaveBeenCalled();
-    });
+    await waitFor(() => expect(mountParcel).toHaveBeenCalled());
   });
 });
