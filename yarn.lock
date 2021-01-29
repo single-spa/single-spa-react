@@ -5539,13 +5539,10 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
   integrity sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=
 
-single-spa-react@.:
-  version "3.2.0"
-
-single-spa@^5.9.0:
-  version "5.9.0"
-  resolved "https://registry.yarnpkg.com/single-spa/-/single-spa-5.9.0.tgz#e0ca2864c2e0f6917286a5d6b70c507f8f5fc840"
-  integrity sha512-GhOceK36ruH8hhGFR7o3kkbrhoRG0m8/Ygsr16/qJ60El5OSz2WCYL4BFvX9nHwH2jpzgCqgoOWH9O5+So2dvQ==
+single-spa@^5.9.1:
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/single-spa/-/single-spa-5.9.1.tgz#ecdc1e05a35b5d2b3cc18d46df75f2459f781ceb"
+  integrity sha512-RaIRLShmw5g8D5tYhZLT6qRJIc/33eAGhlM93HY3v/UWLQ9lq6bRhou3W8DPKYmwKV35IINbRYX36LlPbY1Jvg==
 
 sisteransi@^1.0.0:
   version "1.0.2"
