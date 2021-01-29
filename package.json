@@ -26,16 +26,18 @@
   },
   "types": "types/single-spa-react.d.ts",
   "scripts": {
-    "build": "concurrently yarn:build:*",
+    "build": "concurrently pnpm:build:*",
     "build:rollup": "rollup -c",
     "build:types": "rimraf parcel && copyfiles -f types/parcel/index.d.ts ./parcel",
-    "test": "concurrently yarn:test:*",
+    "lint": "eslint src",
+    "test": "concurrently pnpm:test:*",
     "test:browser": "cross-env BABEL_ENV=test jest --coverage",
     "test:types": "tsd",
     "watch-build": "rollup -cw",
     "watch-tests": "cross-env BABEL_ENV=test jest --watch",
     "format": "prettier --write .",
-    "prepublishOnly": "yarn build"
+    "check-format": "prettier --check .",
+    "prepublishOnly": "pnpm build"
   },
   "browserslist": [
     "IE 11",
@@ -68,6 +70,7 @@
   "homepage": "https://github.com/joeldenning/single-spa-react#readme",
   "devDependencies": {
     "@babel/core": "^7.12.10",
+    "@babel/eslint-parser": "^7.12.1",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
@@ -80,6 +83,8 @@
     "concurrently": "^5.3.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
+    "eslint": "^7.18.0",
+    "eslint-config-react-important-stuff": "^3.0.0",
     "husky": "^4.3.8",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",

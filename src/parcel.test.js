@@ -36,7 +36,7 @@ describe(`<Parcel />`, () => {
 
   it(`throws an error if you try to render the component without a config`, () => {
     expect(() => {
-      shallow(<Parcel />);
+      render(<Parcel />);
     }).toThrow();
   });
 
