@@ -17,15 +17,24 @@
   },
   "files": [
     "lib",
+    "parcel",
+    "types/single-spa-react.d.ts",
     "README.md"
   ],
+  "tsd": {
+    "directory": "src"
+  },
+  "types": "types/single-spa-react.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "test": "cross-env BABEL_ENV=test jest --config jest.json",
+    "build": "concurrently yarn:build:*",
+    "build:rollup": "rollup -c",
+    "build:types": "rimraf parcel && copyfiles -f types/parcel/index.d.ts ./parcel",
+    "test": "concurrently yarn:test:*",
+    "test:browser": "cross-env BABEL_ENV=test jest --config jest.json --coverage",
+    "test:types": "tsd",
     "watch-build": "rollup -cw",
     "watch-tests": "cross-env BABEL_ENV=test jest --watch --config jest.json",
     "format": "prettier --write './**/*'",
-    "coverage": "jest --coverage --config jest.json",
     "prepublishOnly": "yarn build"
   },
   "browserslist": [
@@ -63,7 +72,11 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
     "@rollup/plugin-babel": "^5.0.4",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "babel-jest": "^25.2.6",
+    "concurrently": "^5.3.0",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
@@ -75,11 +88,16 @@
     "pretty-quick": "^2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.6.1",
     "rollup-plugin-terser": "^6.1.0",
-    "single-spa-react": "."
+    "single-spa": "^5.9.1",
+    "tsd": "^0.14.0",
+    "typescript": "^4.1.3"
   },
   "peerDependencies": {
+    "@types/react": "*",
+    "@types/react-dom": "*",
     "react": "*"
   }
 }
