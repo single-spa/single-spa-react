@@ -4,7 +4,6 @@ import Parcel from "./parcel.js";
 import { render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import singleSpaReact, { SingleSpaContext } from "./single-spa-react";
-import { removeErrorHandler } from "single-spa";
 
 describe(`<Parcel />`, () => {
   let config,
