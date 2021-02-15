@@ -1,7 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "../types/single-spa-react";
-import singleSpaReact, { ReactAppOrParcel } from "../types/single-spa-react";
+import singleSpaReact, {
+  ReactAppOrParcel,
+  SingleSpaContext,
+} from "../types/single-spa-react";
 import Parcel, { ParcelCompProps } from "../types/parcel";
 import { AppProps, LifeCycleFn, mountRootParcel } from "single-spa";
 import { expectType } from "tsd";
@@ -75,3 +78,12 @@ React.createElement(Parcel, {
   config: lifecylesUntypedProps,
   hi: "there",
 });
+
+const context1 = React.useContext(SingleSpaContext);
+const context2 = React.useContext(SingleSpaContext) as AppProps & Hi;
+
+expectType<string>(context1.name);
+expectType<any>(context1.singleSpa);
+expectType<AppProps["mountParcel"]>(context1.mountParcel);
+expectType<any>(context1.customProp);
+expectType<string>(context2.hi);

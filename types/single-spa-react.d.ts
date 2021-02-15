@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { AppProps, LifeCycleFn } from "single-spa";
+import { AppProps, CustomProps, LifeCycleFn } from "single-spa";
+
+export const SingleSpaContext: React.Context<CustomProps & AppProps>;
 
 export interface SingleSpaReactOpts<RootComponentProps> {
   React: typeof React;
