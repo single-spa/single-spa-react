@@ -5,6 +5,22 @@
 // React context that gives any react component the single-spa props
 export let SingleSpaContext = null;
 
+// This try/catch exists mostly to prevent rollup from thinking that SingleSpaContext
+// is null and then doing optimizations in parcel.js that cause bugs.
+// See https://github.com/single-spa/single-spa-react/issues/105
+
+try {
+  // single-spa-react is usable as a global script, as a systemjs module, and other
+  // situations where require() is unavailable. This is why we require the user to
+  // pass in opts.React and opts.ReactDOM - to avoid the mess of "how do i properly load react".
+  // However, in situations where require() is available, we can use it this way to create
+  // the react context. The try/catch defensiveness keeps single-spa-react working in
+  // as many situations as possible.
+  SingleSpaContext = require("react").createContext();
+} catch {
+  // ignore
+}
+
 const defaultOpts = {
   // required opts
   React: null,
