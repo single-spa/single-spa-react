@@ -5,6 +5,6 @@ export default {
     ".*": "./node_modules/babel-jest",
   },
   moduleNameMapper: {
-    "single-spa-react": "<rootDir>/src/single-spa-react.js"
-  }
+    "single-spa-react": "<rootDir>/src/single-spa-react.js",
+  },
 };
