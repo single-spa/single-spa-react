@@ -77,7 +77,38 @@ export default [
       },
     ],
     plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
-    external: ["single-spa-react", "react"],
+    external: {
+      "single-spa-react": "./single-spa-react.js",
+      react: "react",
+    },
+  },
+  // assume bare specifier single-spa-react is mapped in systemjs import map
+  {
+    input: "src/parcel.js",
+    output: {
+      file: "lib/system/parcel.cjs",
+      format: "system",
+      sourcemap: true,
+    },
+    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
+    external: {
+      "single-spa-react": "single-spa-react",
+      react: "react",
+    },
+  },
+  // cjs extension is required in the externals, which is why this gets its own config in the array of configs
+  {
+    input: "src/parcel.js",
+    output: {
+      file: "lib/cjs/parcel.cjs",
+      format: "cjs",
+      sourcemap: true,
+    },
+    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
+    external: {
+      "single-spa-react": "./single-spa-react.cjs",
+      react: "react",
+    },
   },
   {
     input: "src/parcel.js",
@@ -94,6 +125,9 @@ export default [
           module: true,
         }),
     ],
-    external: ["single-spa-react", "react"],
+    external: {
+      "single-spa-react": "./single-spa-react.js",
+      react: "react",
+    },
   },
 ];
