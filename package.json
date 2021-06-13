@@ -39,8 +39,7 @@
     "check-format": "prettier --check .",
     "prepublishOnly": "pinst --disable && pnpm run build",
     "postpublish": "pinst --enable",
-    "postinstall": "husky install",
-    "prepare": "husky install"
+    "postinstall": "husky install"
   },
   "browserslist": [
     "IE 11",
