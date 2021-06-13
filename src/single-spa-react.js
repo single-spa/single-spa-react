@@ -38,6 +38,7 @@ const defaultOpts = {
   parcelCanUpdate: true, // by default, allow parcels created with single-spa-react to be updated
   suppressComponentDidCatchWarning: false,
   domElements: {},
+  renderResults: {},
 };
 
 export default function singleSpaReact(userOpts) {
@@ -131,26 +132,37 @@ function mount(opts, props) {
       );
     }
 
-    const whenFinished = function () {
+    const whenMounted = function () {
       resolve(this);
     };
 
-    const elementToRender = getElementToRender(opts, props);
+    const elementToRender = getElementToRender(opts, props, whenMounted);
     const domElement = getRootDomEl(domElementGetter, props);
-    const renderedComponent = reactDomRender({
+    const renderResult = reactDomRender({
       elementToRender,
       domElement,
-      whenFinished,
       opts,
     });
     opts.domElements[props.name] = domElement;
+    opts.renderResults[props.name] = renderResult;
   });
 }
 
 function unmount(opts, props) {
-  return Promise.resolve().then(() => {
-    opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
+  return new Promise((resolve) => {
+    opts.unmountFinished = resolve;
+
+    const root = opts.renderResults[props.name];
+
+    if (root && root.unmount) {
+      // React >= 18
+      const unmountResult = root.unmount();
+    } else {
+      // React < 18
+      opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
+    }
     delete opts.domElements[props.name];
+    delete opts.renderResults[props.name];
   });
 }
 
@@ -236,7 +248,7 @@ function defaultDomElementGetter(props) {
   };
 }
 
-function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
+function reactDomRender({ opts, elementToRender, domElement }) {
   if (
     [
       "createRoot",
@@ -245,21 +257,20 @@ function reactDomRender({ opts, elementToRender, domElement, whenFinished }) {
       "unstable_createBlockingRoot",
     ].indexOf(opts.renderType) >= 0
   ) {
-    return opts.ReactDOM[opts.renderType](domElement).render(
-      elementToRender,
-      whenFinished
-    );
+    const root = opts.ReactDOM[opts.renderType](domElement);
+    root.render(elementToRender);
+    return root;
   }
 
   if (opts.renderType === "hydrate") {
-    return opts.ReactDOM.hydrate(elementToRender, domElement, whenFinished);
+    return opts.ReactDOM.hydrate(elementToRender, domElement);
   }
 
   // default to this if 'renderType' is null or doesn't match the other options
-  return opts.ReactDOM.render(elementToRender, domElement, whenFinished);
+  return opts.ReactDOM.render(elementToRender, domElement);
 }
 
-function getElementToRender(opts, props) {
+function getElementToRender(opts, props, mountFinished) {
   const rootComponentElement = opts.React.createElement(
     opts.rootComponent,
     props
@@ -282,6 +293,35 @@ function getElementToRender(opts, props) {
       elementToRender
     );
   }
+
+  // https://github.com/single-spa/single-spa-react/issues/112
+  elementToRender = opts.React.createElement(
+    SingleSpaRoot,
+    {
+      ...props,
+      mountFinished,
+      unmountFinished() {
+        setTimeout(opts.unmountFinished);
+      },
+    },
+    elementToRender
+  );
+
+  // This is a class component, since we need a mount hook and single-spa-react supports React@15 (no useEffect available)
+  function SingleSpaRoot(_props) {
+    SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
+  }
+
+  SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
+  SingleSpaRoot.prototype.componentDidMount = function () {
+    setTimeout(this.props.mountFinished);
+  };
+  SingleSpaRoot.prototype.componentWillUnmount = function () {
+    setTimeout(this.props.unmountFinished);
+  };
+  SingleSpaRoot.prototype.render = function () {
+    return this.props.children;
+  };
 
   return elementToRender;
 }
