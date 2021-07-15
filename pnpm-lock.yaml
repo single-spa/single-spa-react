@@ -24,8 +24,8 @@ specifiers:
   pinst: ^2.1.6
   prettier: ^2.2.1
   pretty-quick: ^3.1.0
-  react: ^0.0.0-experimental-81346764b-20210714
-  react-dom: ^0.0.0-experimental-81346764b-20210714
+  react: ^18.0.0-alpha-81346764b-20210714
+  react-dom: ^18.0.0-alpha-81346764b-20210714
   rimraf: ^3.0.2
   rollup: ^2.38.1
   rollup-plugin-terser: ^7.0.2
@@ -42,7 +42,7 @@ devDependencies:
   '@babel/runtime': 7.14.0
   '@rollup/plugin-babel': 5.2.3_57a4204096147715fe7a600f8dae8e6e
   '@testing-library/jest-dom': 5.11.9
-  '@testing-library/react': 11.2.7_547593d9619990c438314654918a15b3
+  '@testing-library/react': 11.2.7_c4f68f4d46be3ff534482e225bf1725e
   '@types/react': 17.0.0
   '@types/react-dom': 17.0.0
   babel-jest: 26.6.3_@babel+core@7.12.10
@@ -57,8 +57,8 @@ devDependencies:
   pinst: 2.1.6
   prettier: 2.2.1
   pretty-quick: 3.1.0_prettier@2.2.1
-  react: 0.0.0-experimental-81346764b-20210714
-  react-dom: 0.0.0-experimental-81346764b-20210714_d145e5dbb4e463c6151ee571b4e513e1
+  react: 18.0.0-alpha-81346764b-20210714
+  react-dom: 18.0.0-alpha-81346764b-20210714_51042f198c906832d3058d6d0d78f2b9
   rimraf: 3.0.2
   rollup: 2.38.1
   rollup-plugin-terser: 7.0.2_rollup@2.38.1
@@ -1487,7 +1487,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react/11.2.7_547593d9619990c438314654918a15b3:
+  /@testing-library/react/11.2.7_c4f68f4d46be3ff534482e225bf1725e:
     resolution: {integrity: sha512-tzRNp7pzd5QmbtXNG/mhdcl7Awfu/Iz1RaVHY75zTdOkmHCuzMhRL83gWHSgOAcjS3CCbyfwUHMZgRJb4kAfpA==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -1496,8 +1496,8 @@ packages:
     dependencies:
       '@babel/runtime': 7.14.5
       '@testing-library/dom': 7.31.2
-      react: 0.0.0-experimental-81346764b-20210714
-      react-dom: 0.0.0-experimental-81346764b-20210714_d145e5dbb4e463c6151ee571b4e513e1
+      react: 18.0.0-alpha-81346764b-20210714
+      react-dom: 18.0.0-alpha-81346764b-20210714_51042f198c906832d3058d6d0d78f2b9
     dev: true
 
   /@types/aria-query/4.2.1:
@@ -5031,23 +5031,23 @@ packages:
       strip-json-comments: 2.0.1
     dev: true
 
-  /react-dom/0.0.0-experimental-81346764b-20210714_d145e5dbb4e463c6151ee571b4e513e1:
-    resolution: {integrity: sha512-ZKKL4eAGvZkFUKl9NK8snt6Hh63tcsTPNooMVen115zyzd940oUS1bgUsfscyWPNd04fXZ9uUh9HPv2qfOikCw==}
+  /react-dom/18.0.0-alpha-81346764b-20210714_51042f198c906832d3058d6d0d78f2b9:
+    resolution: {integrity: sha512-gN8bMWEtdKyQXh1eXINA3mYuPkRlTeDJIhQvTrbDOYNHe0GzMne793xGtETlLPDnpv928fEwK6dz/prUsDPjzA==}
     peerDependencies:
-      react: 0.0.0-experimental-81346764b-20210714
+      react: 18.0.0-alpha-81346764b-20210714
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      react: 0.0.0-experimental-81346764b-20210714
-      scheduler: 0.0.0-experimental-81346764b-20210714
+      react: 18.0.0-alpha-81346764b-20210714
+      scheduler: 0.21.0-alpha-81346764b-20210714
     dev: true
 
   /react-is/17.0.1:
     resolution: {integrity: sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==}
     dev: true
 
-  /react/0.0.0-experimental-81346764b-20210714:
-    resolution: {integrity: sha512-epkVyntPOiAC7mi52NfhhaVRSJ7YT2YGJR8eV9p8QTUU54qd2O1a3aWN+cpGjDcypA2yIf6H+1bEWMKxuJjMHg==}
+  /react/18.0.0-alpha-81346764b-20210714:
+    resolution: {integrity: sha512-PSAHq+djJ8TV5CNtIRon5QIMnHyXlENmdYd4fGzRQtqplzaUNZFkJzyEPfaWz1X7IAvguynJaFn0SCmdfLG+eA==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
@@ -5389,8 +5389,8 @@ packages:
       xmlchars: 2.2.0
     dev: true
 
-  /scheduler/0.0.0-experimental-81346764b-20210714:
-    resolution: {integrity: sha512-iipXa+avyuiDnakQK/F0cy9LUA85trradVskY/++X56GIY7uoi4fB2EH+m4037TSJ6vLzeCtVlrFsU0OG0BF2Q==}
+  /scheduler/0.21.0-alpha-81346764b-20210714:
+    resolution: {integrity: sha512-mDRAm1qH6zPlqgJRWuHjcn5igkPVnTSu3tuFcn576pvdQBuI8V9qBNn8aCci9xG2LH0lCrlJ2r+EvACqS9Sq2w==}
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
