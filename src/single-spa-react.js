@@ -39,6 +39,7 @@ const defaultOpts = {
   suppressComponentDidCatchWarning: false,
   domElements: {},
   renderResults: {},
+  updateResolves: {},
 };
 
 export default function singleSpaReact(userOpts) {
@@ -167,18 +168,16 @@ function unmount(opts, props) {
 }
 
 function update(opts, props) {
-  return new Promise((resolve, reject) => {
-    const whenFinished = function () {
-      resolve(this);
-    };
+  return new Promise((resolve) => {
+    if (!opts.updateResolves[props.name]) {
+      opts.updateResolves[props.name] = [];
+    }
 
-    const elementToRender = getElementToRender(opts, props);
-    const renderedComponent = reactDomRender({
-      elementToRender,
-      domElement: opts.domElements[props.name],
-      whenFinished,
-      opts,
-    });
+    opts.updateResolves[props.name].push(resolve);
+
+    const elementToRender = getElementToRender(opts, props, null);
+    const renderRoot = opts.renderResults[props.name];
+    renderRoot.render(elementToRender);
   });
 }
 
@@ -300,6 +299,12 @@ function getElementToRender(opts, props, mountFinished) {
     {
       ...props,
       mountFinished,
+      updateFinished() {
+        if (opts.updateResolves[props.name]) {
+          opts.updateResolves[props.name].forEach((r) => r());
+          delete opts.updateResolves[props.name];
+        }
+      },
       unmountFinished() {
         setTimeout(opts.unmountFinished);
       },
@@ -314,12 +319,18 @@ function getElementToRender(opts, props, mountFinished) {
 
   SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
   SingleSpaRoot.prototype.componentDidMount = function () {
+    this.mounted = true;
     setTimeout(this.props.mountFinished);
   };
   SingleSpaRoot.prototype.componentWillUnmount = function () {
     setTimeout(this.props.unmountFinished);
   };
   SingleSpaRoot.prototype.render = function () {
+    // componentDidUpdate doesn't seem to be called during root.render() for updates
+    if (this.mounted) {
+      setTimeout(this.props.updateFinished);
+    }
+
     return this.props.children;
   };
 
