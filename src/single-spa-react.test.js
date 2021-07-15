@@ -85,7 +85,7 @@ describe("single-spa-react", () => {
 
     expect(ReactDOM.render).toHaveBeenCalled();
     expect(props.wasMounted).toHaveBeenCalled();
-    const container = document.getElementById("single-spa-application:test");
+    const container = document.getElementById(`single-spa-application:test`);
     expect(container).toBeInTheDocument();
     button = container.querySelector("button");
     expect(button).toBeInTheDocument();
@@ -643,6 +643,38 @@ describe("single-spa-react", () => {
       await lifecycles.bootstrap(props);
       await lifecycles.mount(props);
       expect(opts.domElementGetter).toHaveBeenCalledWith(props);
+      await lifecycles.unmount(props);
+    });
+  });
+
+  describe(`update lifecycle`, () => {
+    // https://github.com/single-spa/single-spa-react/issues/117
+    it("ReactDOM.createRoot", async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent,
+      };
+      const lifecycles = singleSpaReact(opts);
+
+      await lifecycles.bootstrap(props);
+      await lifecycles.mount(props);
+      await lifecycles.update(props);
+      await lifecycles.unmount(props);
+    });
+
+    it("ReactDOM.render", async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent,
+        renderType: "render",
+      };
+      const lifecycles = singleSpaReact(opts);
+
+      await lifecycles.bootstrap(props);
+      await lifecycles.mount(props);
+      await lifecycles.update(props);
       await lifecycles.unmount(props);
     });
   });
