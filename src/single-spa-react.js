@@ -283,9 +283,16 @@ function getElementToRender(opts, props, mountFinished) {
       )
     : rootComponentElement;
 
-  if (opts.errorBoundary) {
+  if (
+    opts.errorBoundary ||
+    props.errorBoundary ||
+    opts.errorBoundaryClass ||
+    props.errorBoundaryClass
+  ) {
     opts.errorBoundaryClass =
-      opts.errorBoundaryClass || createErrorBoundary(opts);
+      opts.errorBoundaryClass ||
+      props.errorBoundaryClass ||
+      createErrorBoundary(opts, props);
     elementToRender = opts.React.createElement(
       opts.errorBoundaryClass,
       props,
@@ -337,7 +344,7 @@ function getElementToRender(opts, props, mountFinished) {
   return elementToRender;
 }
 
-function createErrorBoundary(opts) {
+function createErrorBoundary(opts, props) {
   // Avoiding babel output for class syntax and super()
   // to avoid bloat
   function SingleSpaReactErrorBoundary(props) {
@@ -358,7 +365,9 @@ function createErrorBoundary(opts) {
 
   SingleSpaReactErrorBoundary.prototype.render = function () {
     if (this.state.caughtError) {
-      return opts.errorBoundary(
+      const errorBoundary = opts.errorBoundary || props.errorBoundary;
+
+      return errorBoundary(
         this.state.caughtError,
         this.state.caughtErrorInfo,
         this.props
