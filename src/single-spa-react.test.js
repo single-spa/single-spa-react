@@ -609,6 +609,177 @@ describe("single-spa-react", () => {
 
       await lifecycles.unmount(props);
     });
+
+    // https://github.com/single-spa/single-spa-react/issues/119
+    it(`allows errorBoundary to be passed in as a prop`, async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function Foo() {
+          const [shouldThrow, setShouldThrow] = React.useState(false);
+
+          if (shouldThrow) {
+            throw Error("Triggering errorr boundary");
+          }
+
+          return <button onClick={handleClick}>Test</button>;
+
+          function handleClick() {
+            setShouldThrow(true);
+          }
+        },
+      };
+
+      props.errorBoundary = jest.fn().mockReturnValue(<p>An error occurred</p>);
+
+      const lifecycles = singleSpaReact(opts);
+
+      await lifecycles.bootstrap(props);
+
+      await lifecycles.mount(props);
+
+      const container = document.getElementById("single-spa-application:test");
+
+      expect(container.querySelector("button") instanceof Node).toBe(true);
+      expect(container.querySelector("p") instanceof Node).toBe(false);
+
+      document
+        .getElementById("single-spa-application:test")
+        .querySelector("button")
+        .click();
+
+      await flushScheduler();
+
+      expect(container.querySelector("button") instanceof Node).toBe(false);
+      expect(container.querySelector("p") instanceof Node).toBe(true);
+
+      await lifecycles.unmount(props);
+    });
+
+    it(`allows errorBoundaryClass to be passed in as an opt`, async () => {
+      class ErrorBoundary extends React.Component {
+        state = {
+          error: false,
+        };
+        render() {
+          if (this.state.error) {
+            return <p>An error occurred</p>;
+          } else {
+            return this.props.children;
+          }
+        }
+        componentDidCatch() {
+          this.setState({
+            error: true,
+          });
+        }
+      }
+
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function Foo() {
+          const [shouldThrow, setShouldThrow] = React.useState(false);
+
+          if (shouldThrow) {
+            throw Error("Triggering errorr boundary");
+          }
+
+          return <button onClick={handleClick}>Test</button>;
+
+          function handleClick() {
+            setShouldThrow(true);
+          }
+        },
+      };
+
+      props.errorBoundaryClass = ErrorBoundary;
+
+      const lifecycles = singleSpaReact(opts);
+
+      await lifecycles.bootstrap(props);
+
+      await lifecycles.mount(props);
+
+      const container = document.getElementById("single-spa-application:test");
+
+      expect(container.querySelector("button") instanceof Node).toBe(true);
+      expect(container.querySelector("p") instanceof Node).toBe(false);
+
+      document
+        .getElementById("single-spa-application:test")
+        .querySelector("button")
+        .click();
+
+      await flushScheduler();
+
+      expect(container.querySelector("button") instanceof Node).toBe(false);
+      expect(container.querySelector("p") instanceof Node).toBe(true);
+
+      await lifecycles.unmount(props);
+    });
+
+    it(`allows errorBoundaryClass to be passed in as a prop`, async () => {
+      class ErrorBoundary extends React.Component {
+        state = {
+          error: false,
+        };
+        render() {
+          if (this.state.error) {
+            return <p>An error occurred</p>;
+          } else {
+            return this.props.children;
+          }
+        }
+        componentDidCatch() {
+          this.setState({
+            error: true,
+          });
+        }
+      }
+
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function Foo() {
+          const [shouldThrow, setShouldThrow] = React.useState(false);
+
+          if (shouldThrow) {
+            throw Error("Triggering errorr boundary");
+          }
+
+          return <button onClick={handleClick}>Test</button>;
+
+          function handleClick() {
+            setShouldThrow(true);
+          }
+        },
+        errorBoundaryClass: ErrorBoundary,
+      };
+
+      const lifecycles = singleSpaReact(opts);
+
+      await lifecycles.bootstrap(props);
+
+      await lifecycles.mount(props);
+
+      const container = document.getElementById("single-spa-application:test");
+
+      expect(container.querySelector("button") instanceof Node).toBe(true);
+      expect(container.querySelector("p") instanceof Node).toBe(false);
+
+      document
+        .getElementById("single-spa-application:test")
+        .querySelector("button")
+        .click();
+
+      await flushScheduler();
+
+      expect(container.querySelector("button") instanceof Node).toBe(false);
+      expect(container.querySelector("p") instanceof Node).toBe(true);
+
+      await lifecycles.unmount(props);
+    });
   });
 
   describe(`domElementGetter`, () => {
