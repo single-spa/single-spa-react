@@ -10,7 +10,9 @@ export interface SingleSpaReactOpts<RootComponentProps> {
   rootComponent?:
     | React.ComponentClass<RootComponentProps, any>
     | React.FunctionComponent<RootComponentProps>;
-  loadRootComponent?: (props: RootComponentProps) => Promise<
+  loadRootComponent?: (
+    props: RootComponentProps
+  ) => Promise<
     | React.ComponentClass<RootComponentProps, any>
     | React.FunctionComponent<RootComponentProps>
   >;
