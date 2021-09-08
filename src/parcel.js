@@ -151,7 +151,8 @@ export default class Parcel extends React.Component {
       });
   };
   getParcelProps = () => {
-    const parcelProps = { ...this.props };
+    // Make sure domElement is a prop, so that the parcel updates the correct domEl rather than creating a new one
+    const parcelProps = { ...this.props, domElement: this.el };
 
     delete parcelProps.mountParcel;
     delete parcelProps.config;

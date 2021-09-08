@@ -177,7 +177,17 @@ function update(opts, props) {
 
     const elementToRender = getElementToRender(opts, props, null);
     const renderRoot = opts.renderResults[props.name];
-    renderRoot.render(elementToRender);
+    if (renderRoot && renderRoot.render) {
+      // React 18 with ReactDOM.createRoot()
+      renderRoot.render(elementToRender);
+    } else {
+      // React 16 / 17 with ReactDOM.render()
+      const domElementGetter = chooseDomElementGetter(opts, props);
+      const domElement = getRootDomEl(domElementGetter, props);
+
+      // This is the old way to update a react application - just call render() again
+      opts.ReactDOM.render(elementToRender, domElement);
+    }
   });
 }
 
@@ -262,11 +272,16 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   }
 
   if (opts.renderType === "hydrate") {
-    return opts.ReactDOM.hydrate(elementToRender, domElement);
+    opts.ReactDOM.hydrate(elementToRender, domElement);
+  } else {
+    // default to this if 'renderType' is null or doesn't match the other options
+    opts.ReactDOM.render(elementToRender, domElement);
   }
 
-  // default to this if 'renderType' is null or doesn't match the other options
-  return opts.ReactDOM.render(elementToRender, domElement);
+  // The reactDomRender function should return a react root, but ReactDOM.hydrate() and ReactDOM.render()
+  // do not return a react root. So instead, we return null which indicates that there is no react root
+  // that can be used for updates or unmounting
+  return null;
 }
 
 function getElementToRender(opts, props, mountFinished) {
@@ -326,7 +341,6 @@ function getElementToRender(opts, props, mountFinished) {
 
   SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
   SingleSpaRoot.prototype.componentDidMount = function () {
-    this.mounted = true;
     setTimeout(this.props.mountFinished);
   };
   SingleSpaRoot.prototype.componentWillUnmount = function () {
@@ -334,9 +348,7 @@ function getElementToRender(opts, props, mountFinished) {
   };
   SingleSpaRoot.prototype.render = function () {
     // componentDidUpdate doesn't seem to be called during root.render() for updates
-    if (this.mounted) {
-      setTimeout(this.props.updateFinished);
-    }
+    setTimeout(this.props.updateFinished);
 
     return this.props.children;
   };
