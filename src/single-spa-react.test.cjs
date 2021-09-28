@@ -7,9 +7,7 @@ describe("single-spa-react", () => {
   let rootComponent, props, singleSpaReact;
 
   beforeAll(async () => {
-    console.log("beforeAll 1");
     singleSpaReact = (await import("./single-spa-react.js")).default;
-    console.log("beforeAll 2");
     jest.spyOn(ReactDOM, "render");
     jest.spyOn(ReactDOM, "hydrate");
     jest.spyOn(ReactDOM, "createRoot");
