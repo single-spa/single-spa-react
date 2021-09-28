@@ -1,5 +1,13 @@
 {
-  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "presets": [
+    "@babel/preset-env",
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "classic"
+      }
+    ]
+  ],
   "plugins": ["@babel/plugin-proposal-class-properties"],
   "env": {
     "test": {
@@ -7,10 +15,18 @@
         [
           "@babel/preset-env",
           {
-            "targets": "current node"
+            "targets": {
+              "node": "current"
+            },
+            "modules": false
           }
         ],
-        "@babel/preset-react"
+        [
+          "@babel/preset-react",
+          {
+            "runtime": "classic"
+          }
+        ]
       ]
     }
   }

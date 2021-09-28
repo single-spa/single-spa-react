@@ -1,15 +1,15 @@
-import singleSpaReact from "./single-spa-react.js";
-import "@testing-library/jest-dom/extend-expect";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as scheduler from "scheduler";
-
-jest.mock("scheduler", () => require("scheduler/unstable_mock"));
+require("@testing-library/jest-dom/extend-expect");
+const React = require("react");
+const ReactDOM = require("react-dom");
+const scheduler = require("scheduler");
 
 describe("single-spa-react", () => {
-  let rootComponent, props;
+  let rootComponent, props, singleSpaReact;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    console.log("beforeAll 1");
+    singleSpaReact = (await import("./single-spa-react.js")).default;
+    console.log("beforeAll 2");
     jest.spyOn(ReactDOM, "render");
     jest.spyOn(ReactDOM, "hydrate");
     jest.spyOn(ReactDOM, "createRoot");
