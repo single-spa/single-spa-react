@@ -1,7 +1,11 @@
 import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 
 const shouldMinify = process.env.ROLLUP_WATCH !== "true";
+
+const external = ["react", "react-dom", "single-spa-react"];
 
 export default [
   {
@@ -29,7 +33,13 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
+    plugins: [
+      babel({ babelHelpers: "bundled" }),
+      shouldMinify && terser(),
+      nodeResolve(),
+      commonjs(),
+    ],
+    external,
   },
   {
     input: "src/single-spa-react.js",
@@ -45,6 +55,8 @@ export default [
           ecma: 6,
           module: true,
         }),
+      nodeResolve(),
+      commonjs(),
     ],
   },
   {
@@ -76,11 +88,13 @@ export default [
         sourcemap: true,
       },
     ],
-    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
-    external: {
-      "single-spa-react": "./single-spa-react.js",
-      react: "react",
-    },
+    plugins: [
+      babel({ babelHelpers: "bundled" }),
+      shouldMinify && terser(),
+      nodeResolve(),
+      commonjs(),
+    ],
+    external,
   },
   // assume bare specifier single-spa-react is mapped in systemjs import map
   {
@@ -90,11 +104,13 @@ export default [
       format: "system",
       sourcemap: true,
     },
-    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
-    external: {
-      "single-spa-react": "single-spa-react",
-      react: "react",
-    },
+    plugins: [
+      babel({ babelHelpers: "bundled" }),
+      shouldMinify && terser(),
+      nodeResolve(),
+      commonjs(),
+    ],
+    external,
   },
   // cjs extension is required in the externals, which is why this gets its own config in the array of configs
   {
@@ -104,11 +120,13 @@ export default [
       format: "cjs",
       sourcemap: true,
     },
-    plugins: [babel({ babelHelpers: "bundled" }), shouldMinify && terser()],
-    external: {
-      "single-spa-react": "./single-spa-react.cjs",
-      react: "react",
-    },
+    plugins: [
+      babel({ babelHelpers: "bundled" }),
+      shouldMinify && terser(),
+      nodeResolve(),
+      commonjs(),
+    ],
+    external,
   },
   {
     input: "src/parcel.js",
@@ -124,10 +142,9 @@ export default [
           ecma: 6,
           module: true,
         }),
+      nodeResolve(),
+      commonjs(),
     ],
-    external: {
-      "single-spa-react": "./single-spa-react.js",
-      react: "react",
-    },
+    external,
   },
 ];
