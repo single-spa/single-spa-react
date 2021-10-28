@@ -203,20 +203,22 @@ function atLeastReact16(React) {
 }
 
 function reactDomRender({ opts, elementToRender, domElement }) {
+  const renderType =
+    typeof opts.renderType === "function" ? opts.renderType() : opts.renderType;
   if (
     [
       "createRoot",
       "unstable_createRoot",
       "createBlockingRoot",
       "unstable_createBlockingRoot",
-    ].indexOf(opts.renderType) >= 0
+    ].indexOf(renderType) >= 0
   ) {
-    const root = opts.ReactDOM[opts.renderType](domElement);
+    const root = opts.ReactDOM[renderType](domElement);
     root.render(elementToRender);
     return root;
   }
 
-  if (opts.renderType === "hydrate") {
+  if (renderType === "hydrate") {
     opts.ReactDOM.hydrate(elementToRender, domElement);
   } else {
     // default to this if 'renderType' is null or doesn't match the other options

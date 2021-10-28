@@ -30,7 +30,15 @@ export interface SingleSpaReactOpts<RootComponentProps> {
     | "unstable_createRoot"
     | "createBlockingRoot"
     | "unstable_createBlockingRoot"
-    | "hydrate";
+    | "hydrate"
+    | "render"
+    | (() =>
+        | "createRoot"
+        | "unstable_createRoot"
+        | "createBlockingRoot"
+        | "unstable_createBlockingRoot"
+        | "hydrate"
+        | "render");
 }
 
 export interface ReactAppOrParcel<ExtraProps> {
