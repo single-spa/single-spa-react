@@ -743,7 +743,7 @@ describe("single-spa-react", () => {
           const [shouldThrow, setShouldThrow] = React.useState(false);
 
           if (shouldThrow) {
-            throw Error("Triggering errorr boundary");
+            throw Error("Triggering error boundary");
           }
 
           return <button onClick={handleClick}>Test</button>;
@@ -844,6 +844,51 @@ describe("single-spa-react", () => {
       await lifecycles.bootstrap(props);
       await lifecycles.mount(props);
       await lifecycles.update(props);
+      await lifecycles.unmount(props);
+    });
+  });
+
+  describe(`renderType as function`, () => {
+    it(`mounts and unmounts a React component with a 'renderType' function that initially evaluates to 'hydrate' and then 'render'`, async () => {
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent,
+        renderType: jest.fn(),
+      };
+      opts.renderType.mockReturnValueOnce("hydrate");
+      const lifecycles = singleSpaReact(opts);
+
+      expect(ReactDOM.hydrate).not.toHaveBeenCalled();
+      expect(props.wasMounted).not.toHaveBeenCalled();
+      expect(props.wasUnmounted).not.toHaveBeenCalled();
+      expect(opts.renderType).not.toHaveBeenCalled();
+
+      await lifecycles.bootstrap();
+      await lifecycles.mount(props);
+      await flushScheduler();
+
+      expect(ReactDOM.hydrate).toHaveBeenCalled();
+      expect(opts.renderType).toHaveBeenCalled();
+      expect(opts.renderType).toHaveReturnedWith("hydrate");
+
+      await lifecycles.unmount(props);
+      await flushScheduler();
+
+      opts.renderType.mockReturnValueOnce("render");
+
+      expect(ReactDOM.render).not.toHaveBeenCalled();
+      expect(ReactDOM.hydrate).toHaveBeenCalledTimes(1);
+      expect(opts.renderType).toHaveBeenCalledTimes(1);
+
+      await lifecycles.bootstrap();
+      await lifecycles.mount(props);
+      await flushScheduler();
+
+      expect(ReactDOM.render).toHaveBeenCalled();
+      expect(opts.renderType).toHaveBeenCalled();
+      expect(opts.renderType).toHaveReturnedWith("render");
+
       await lifecycles.unmount(props);
     });
   });
