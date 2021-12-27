@@ -1,4 +1,5 @@
 require("@testing-library/jest-dom/extend-expect");
+const { useEffect } = require("react");
 const React = require("react");
 const ReactDOM = require("react-dom");
 const scheduler = require("scheduler");
@@ -846,6 +847,40 @@ describe("single-spa-react", () => {
       await lifecycles.update(props);
       await lifecycles.unmount(props);
     });
+
+    it("Does not unmount/remount the React component during updates", async () => {
+      let rootComponentUnmounted = false;
+
+      const opts = {
+        React,
+        ReactDOM,
+        rootComponent: function (props) {
+          useEffect(() => {
+            return () => {
+              rootComponentUnmounted = true;
+            };
+          }, []);
+
+          return <div>hello</div>;
+        },
+        renderType: "render",
+        suppressComponentDidCatchWarning: true,
+      };
+      const lifecycles = singleSpaReact(opts);
+      await lifecycles.bootstrap(props);
+      await lifecycles.mount(props);
+
+      expect(rootComponentUnmounted).toBe(false);
+
+      await lifecycles.update(props);
+
+      await flushScheduler();
+      await tick();
+
+      expect(rootComponentUnmounted).toBe(false);
+
+      await lifecycles.unmount(props);
+    });
   });
 
   describe(`renderType as function`, () => {
@@ -897,5 +932,11 @@ describe("single-spa-react", () => {
 function flushScheduler() {
   return Promise.resolve().then(() => {
     scheduler.unstable_flushAll();
+  });
+}
+
+function tick() {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve);
   });
 }
