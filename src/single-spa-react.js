@@ -78,6 +78,8 @@ export default function singleSpaReact(userOpts) {
     SingleSpaContext = opts.React.createContext();
   }
 
+  opts.SingleSpaRoot = createSingleSpaRoot(opts);
+
   const lifecycles = {
     bootstrap: bootstrap.bind(null, opts),
     mount: mount.bind(null, opts),
@@ -264,7 +266,7 @@ function getElementToRender(opts, props, mountFinished) {
 
   // https://github.com/single-spa/single-spa-react/issues/112
   elementToRender = opts.React.createElement(
-    SingleSpaRoot,
+    opts.SingleSpaRoot,
     {
       ...props,
       mountFinished,
@@ -280,25 +282,6 @@ function getElementToRender(opts, props, mountFinished) {
     },
     elementToRender
   );
-
-  // This is a class component, since we need a mount hook and single-spa-react supports React@15 (no useEffect available)
-  function SingleSpaRoot(_props) {
-    SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
-  }
-
-  SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
-  SingleSpaRoot.prototype.componentDidMount = function () {
-    setTimeout(this.props.mountFinished);
-  };
-  SingleSpaRoot.prototype.componentWillUnmount = function () {
-    setTimeout(this.props.unmountFinished);
-  };
-  SingleSpaRoot.prototype.render = function () {
-    // componentDidUpdate doesn't seem to be called during root.render() for updates
-    setTimeout(this.props.updateFinished);
-
-    return this.props.children;
-  };
 
   return elementToRender;
 }
@@ -347,4 +330,27 @@ function createErrorBoundary(opts, props) {
   };
 
   return SingleSpaReactErrorBoundary;
+}
+
+function createSingleSpaRoot(opts) {
+  // This is a class component, since we need a mount hook and single-spa-react supports React@15 (no useEffect available)
+  function SingleSpaRoot(_props) {
+    SingleSpaRoot.displayName = `SingleSpaRoot(${_props.name})`;
+  }
+
+  SingleSpaRoot.prototype = Object.create(opts.React.Component.prototype);
+  SingleSpaRoot.prototype.componentDidMount = function () {
+    setTimeout(this.props.mountFinished);
+  };
+  SingleSpaRoot.prototype.componentWillUnmount = function () {
+    setTimeout(this.props.unmountFinished);
+  };
+  SingleSpaRoot.prototype.render = function () {
+    // componentDidUpdate doesn't seem to be called during root.render() for updates
+    setTimeout(this.props.updateFinished);
+
+    return this.props.children;
+  };
+
+  return SingleSpaRoot;
 }
