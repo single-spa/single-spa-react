@@ -60,6 +60,9 @@
     "url": "https://github.com/joeldenning/single-spa-react/issues"
   },
   "homepage": "https://github.com/joeldenning/single-spa-react#readme",
+  "dependencies": {
+    "browserslist-config-single-spa": "^1.0.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/eslint-parser": "^7.15.7",
@@ -75,7 +78,6 @@
     "@testing-library/react": "^13.0.0-alpha.1",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
-    "browserslist-config-single-spa": "^1.0.1",
     "concurrently": "^6.2.1",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
