@@ -207,16 +207,17 @@ function atLeastReact16(React) {
 function reactDomRender({ opts, elementToRender, domElement }) {
   const renderType =
     typeof opts.renderType === "function" ? opts.renderType() : opts.renderType;
-  if (
-    [
-      "createRoot",
-      "unstable_createRoot",
-      "createBlockingRoot",
-      "unstable_createBlockingRoot",
-    ].indexOf(renderType) >= 0
-  ) {
+
+  const needsRender = [
+    "createRoot",
+    "unstable_createRoot",
+    "createBlockingRoot",
+    "unstable_createBlockingRoot",
+  ].includes(renderType);
+
+  if (needsRender || "hydrateRoot" === renderType) {
     const root = opts.ReactDOM[renderType](domElement);
-    root.render(elementToRender);
+    if (needsRender) root.render(elementToRender);
     return root;
   }
 
