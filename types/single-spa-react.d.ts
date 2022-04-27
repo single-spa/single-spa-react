@@ -11,8 +11,6 @@ export interface ReactAppOrParcel<ExtraProps> {
   update?: LifeCycleFn<ExtraProps>;
 }
 
-type LoadRootComponentProps = any;
-
 export interface SingleSpaReactOpts<RootComponentProps> {
   React: typeof React;
   ReactDOMClient: typeof ReactDOMClient;
