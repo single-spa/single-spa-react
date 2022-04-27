@@ -11,7 +11,8 @@ describe("single-spa-react", () => {
     singleSpaReact = (await import("./single-spa-react.js")).default;
     jest.spyOn(ReactDOMClient, "createRoot");
     jest.spyOn(ReactDOMClient, "hydrateRoot");
-    jest.spyOn(console, "warn");
+    jest.spyOn(console, "warn").mockReturnValue(undefined);
+    jest.spyOn(console, "error").mockReturnValue(undefined);
   });
 
   beforeEach(() => {

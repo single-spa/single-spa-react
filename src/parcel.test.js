@@ -33,6 +33,7 @@ describe(`<Parcel />`, () => {
     mountParcel.mockReturnValue(parcel);
 
     props = { mountParcel, config };
+    jest.spyOn(console, "error").mockReturnValue(undefined);
   });
 
   it(`throws an error if you try to render the component without a config`, () => {
