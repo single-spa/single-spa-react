@@ -14,6 +14,7 @@ const config = {
     scheduler: "scheduler/cjs/scheduler-unstable_mock.development.js",
     "^single-spa-react$": "<rootDir>/src/single-spa-react.js",
   },
+  setupFiles: ["<rootDir>/jest.setup.js"],
 };
 
 export default config;
