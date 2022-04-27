@@ -191,19 +191,19 @@ function atLeastReact16(React) {
 function reactDomRender({ opts, elementToRender, domElement }) {
   const renderType =
     typeof opts.renderType === "function" ? opts.renderType() : opts.renderType;
-
-  if (renderType === "hydrateRoot") {
-    const root = opts.ReactDOMClient[renderType](domElement, elementToRender);
-    return root;
+  switch (renderType) {
+    case "createRoot": {
+      const root = opts.ReactDOMClient.createRoot(domElement);
+      root.render(elementToRender);
+      return root;
+    }
+    case "hydrateRoot": {
+      const root = opts.ReactDOMClient.hydrateRoot(domElement, elementToRender);
+      return root;
+    }
+    default:
+      return null; // no root means no updates or unmounting
   }
-
-  if (renderType === "createRoot") {
-    const root = opts.ReactDOMClient[renderType](domElement);
-    root.render(elementToRender);
-    return root;
-  }
-
-  return null; // no root means no updates
 }
 
 function getElementToRender(opts, props, mountFinished) {
