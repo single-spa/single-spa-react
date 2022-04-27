@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import "../types/single-spa-react";
 import singleSpaReact, {
   ReactAppOrParcel,
@@ -20,24 +20,24 @@ interface ErrorState {}
 
 const lifecylesUntypedProps = singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: (props) => React.createElement("div", null, "hi"),
   suppressComponentDidCatchWarning: false,
   parcelCanUpdate: true,
   errorBoundaryClass: ErrorBoundary,
-  renderType: "hydrate",
+  renderType: "createRoot",
 });
 
 singleSpaReact({
   React,
-  ReactDOM,
+  ReactDOMClient,
   loadRootComponent: () =>
     Promise.resolve((props) => React.createElement("div", null, "hi")),
 });
 
 const lifecycles1 = singleSpaReact<Hi>({
   React,
-  ReactDOM,
+  ReactDOMClient,
   rootComponent: (props: AppProps & Hi) =>
     React.createElement("div", null, "hi"),
   domElementGetter(props: Hi & AppProps) {
