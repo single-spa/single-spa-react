@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import Parcel from "./parcel.js";
 import { render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
@@ -163,7 +163,7 @@ describe(`<Parcel />`, () => {
     // this creates the SingleSpaContext
     const appLifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent() {
         return null;
       },
