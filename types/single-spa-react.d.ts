@@ -30,7 +30,7 @@ export interface SingleSpaReactOpts<RootComponentProps> {
   renderType?:
     | "createRoot"
     | "hydrateRoot"
-    | (() => "createRoot" | "hydrateRot");
+    | (() => "createRoot" | "hydrateRoot");
 }
 
 export interface ReactAppOrParcel<ExtraProps> {
