@@ -1,21 +1,23 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import { AppProps, CustomProps, LifeCycleFn } from "single-spa";
 
 export const SingleSpaContext: React.Context<CustomProps & AppProps>;
 
+export interface ReactAppOrParcel<ExtraProps> {
+  bootstrap: LifeCycleFn<ExtraProps>;
+  mount: LifeCycleFn<ExtraProps>;
+  unmount: LifeCycleFn<ExtraProps>;
+  update?: LifeCycleFn<ExtraProps>;
+}
+
+type LoadRootComponentProps = any;
+
 export interface SingleSpaReactOpts<RootComponentProps> {
   React: typeof React;
-  ReactDOM: typeof ReactDOM;
-  rootComponent?:
-    | React.ComponentClass<RootComponentProps, any>
-    | React.FunctionComponent<RootComponentProps>;
-  loadRootComponent?: (
-    props: RootComponentProps
-  ) => Promise<
-    | React.ComponentClass<RootComponentProps, any>
-    | React.FunctionComponent<RootComponentProps>
-  >;
+  ReactDOMClient: typeof ReactDOMClient;
+  rootComponent?: React.ElementType<RootComponentProps>;
+  loadRootComponent?: (props?: any) => Promise<React.ElementType<any>>;
   errorBoundary?: (
     err: Error,
     errInfo: React.ErrorInfo,
@@ -27,18 +29,8 @@ export interface SingleSpaReactOpts<RootComponentProps> {
   domElementGetter?: (props: RootComponentProps) => HTMLElement;
   renderType?:
     | "createRoot"
-    | "unstable_createRoot"
-    | "createBlockingRoot"
-    | "unstable_createBlockingRoot"
-    | "hydrate"
-    | "render"
-    | (() =>
-        | "createRoot"
-        | "unstable_createRoot"
-        | "createBlockingRoot"
-        | "unstable_createBlockingRoot"
-        | "hydrate"
-        | "render");
+    | "hydrateRoot"
+    | (() => "createRoot" | "hydrateRot");
 }
 
 export interface ReactAppOrParcel<ExtraProps> {

@@ -26,14 +26,14 @@ try {
 const defaultOpts = {
   // required opts
   React: null,
-  ReactDOM: null,
+  ReactDOMClient: null,
 
   // required - one or the other
   rootComponent: null,
   loadRootComponent: null,
 
   // optional opts
-  renderType: null,
+  renderType: "createRoot",
   errorBoundary: null,
   errorBoundaryClass: null,
   domElementGetter: null,
@@ -58,8 +58,8 @@ export default function singleSpaReact(userOpts) {
     throw new Error(`single-spa-react must be passed opts.React`);
   }
 
-  if (!opts.ReactDOM) {
-    throw new Error(`single-spa-react must be passed opts.ReactDOM`);
+  if (!opts.ReactDOMClient) {
+    throw new Error(`single-spa-react must be passed opts.ReactDOMClient`);
   }
 
   if (!opts.rootComponent && !opts.loadRootComponent) {
@@ -146,16 +146,8 @@ function mount(opts, props) {
 function unmount(opts, props) {
   return new Promise((resolve) => {
     opts.unmountFinished = resolve;
-
     const root = opts.renderResults[props.name];
-
-    if (root && root.unmount) {
-      // React >= 18
-      const unmountResult = root.unmount();
-    } else {
-      // React < 18
-      opts.ReactDOM.unmountComponentAtNode(opts.domElements[props.name]);
-    }
+    const unmountResult = root.unmount();
     delete opts.domElements[props.name];
     delete opts.renderResults[props.name];
   });
@@ -171,16 +163,8 @@ function update(opts, props) {
 
     const elementToRender = getElementToRender(opts, props, null);
     const renderRoot = opts.renderResults[props.name];
-    if (renderRoot && renderRoot.render) {
-      // React 18 with ReactDOM.createRoot()
-      renderRoot.render(elementToRender);
-    } else {
-      // React 16 / 17 with ReactDOM.render()
-      const domElement = chooseDomElementGetter(opts, props)();
 
-      // This is the old way to update a react application - just call render() again
-      opts.ReactDOM.render(elementToRender, domElement);
-    }
+    renderRoot.render(elementToRender);
   });
 }
 
@@ -208,30 +192,18 @@ function reactDomRender({ opts, elementToRender, domElement }) {
   const renderType =
     typeof opts.renderType === "function" ? opts.renderType() : opts.renderType;
 
-  const needsRender = [
-    "createRoot",
-    "unstable_createRoot",
-    "createBlockingRoot",
-    "unstable_createBlockingRoot",
-  ].includes(renderType);
-
-  if (needsRender || "hydrateRoot" === renderType) {
-    const root = opts.ReactDOM[renderType](domElement);
-    if (needsRender) root.render(elementToRender);
+  if (renderType === "hydrateRoot") {
+    const root = opts.ReactDOMClient[renderType](domElement, elementToRender);
     return root;
   }
 
-  if (renderType === "hydrate") {
-    opts.ReactDOM.hydrate(elementToRender, domElement);
-  } else {
-    // default to this if 'renderType' is null or doesn't match the other options
-    opts.ReactDOM.render(elementToRender, domElement);
+  if (renderType === "createRoot") {
+    const root = opts.ReactDOMClient[renderType](domElement);
+    root.render(elementToRender);
+    return root;
   }
 
-  // The reactDomRender function should return a react root, but ReactDOM.hydrate() and ReactDOM.render()
-  // do not return a react root. So instead, we return null which indicates that there is no react root
-  // that can be used for updates or unmounting
-  return null;
+  return null; // no root means no updates
 }
 
 function getElementToRender(opts, props, mountFinished) {
