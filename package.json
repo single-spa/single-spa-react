@@ -1,7 +1,7 @@
 {
   "name": "single-spa-react",
   "version": "5.0.0",
-  "description": "A single spa plugin for React apps",
+  "description": "Single-spa lifecycles helper for React apps",
   "main": "lib/umd/single-spa-react.js",
   "module": "lib/esm/single-spa-react.js",
   "type": "module",
@@ -57,9 +57,9 @@
   "author": "Joel Denning",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joeldenning/single-spa-react/issues"
+    "url": "https://github.com/single-spa/single-spa-react/issues"
   },
-  "homepage": "https://github.com/joeldenning/single-spa-react#readme",
+  "homepage": "https://github.com/single-spa/single-spa-react#readme",
   "dependencies": {
     "browserslist-config-single-spa": "^1.0.1"
   },
