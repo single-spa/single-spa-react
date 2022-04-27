@@ -112,5 +112,6 @@
     "@types/react-dom": {
       "optional": true
     }
-  }
+  },
+  "prettier": {}
 }
