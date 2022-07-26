@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpx pretty-quick --staged && pnpm run test && pnpm run lint
+pnpm pretty-quick --staged && pnpm run test && pnpm run lint
