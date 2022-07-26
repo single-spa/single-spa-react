@@ -221,29 +221,26 @@ function getRenderType(opts) {
 }
 
 function reactDomRender({ reactDom, renderType, elementToRender, domElement }) {
-  const renderRoot = reactDom[renderType];
-  if (typeof renderRoot !== "function")
-    throw new Error( // TODO: add tests for this block
-      `renderRoot returned from ${renderType} is not a function.`
-    );
+  const renderFn = reactDom[renderType];
+  if (typeof renderFn !== "function")
+    throw new Error(`renderType "${renderType}" did not return a function.`);
 
   switch (renderType) {
     case "createRoot":
     case "unstable_createRoot":
     case "createBlockingRoot":
     case "unstable_createBlockingRoot": {
-      const root = renderRoot(domElement);
+      const root = renderFn(domElement);
       root.render(elementToRender);
       return root;
     }
     case "hydrateRoot": {
-      const root = renderRoot(domElement, elementToRender);
+      const root = renderFn(domElement, elementToRender);
       return root;
     }
     case "hydrate":
     default: {
-      renderRoot(elementToRender, domElement);
-      //  TODO: add tests for this block
+      renderFn(elementToRender, domElement);
       // The renderRoot function should return a react root, but ReactDOM.hydrate() and ReactDOM.render()
       // do not return a react root. So instead, we return null which indicates that there is no react root
       // that can be used for updates or unmounting
