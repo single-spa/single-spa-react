@@ -36,9 +36,7 @@
     "watch-build": "rollup -cw",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "prepublishOnly": "pinst --disable && pnpm run build",
-    "postpublish": "pinst --enable",
-    "postinstall": "husky install"
+    "prepare": "husky install"
   },
   "browserslist": [
     "extends browserslist-config-single-spa"
@@ -84,11 +82,10 @@
     "dom-element-getter-helpers": "^1.1.1",
     "eslint": "^7.32.0",
     "eslint-config-react-important-stuff": "^3.0.0",
-    "husky": "^7.0.2",
+    "husky": "^8.0.0",
     "jest": "^27.2.1",
     "jest-cli": "^27.2.1",
     "jest-config": "^27.2.1",
-    "pinst": "^2.1.6",
     "prettier": "^2.4.1",
     "pretty-quick": "^3.1.1",
     "react": "^18.0.0",
