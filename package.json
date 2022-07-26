@@ -1,6 +1,6 @@
 {
   "name": "single-spa-react",
-  "version": "4.6.1",
+  "version": "4.7.0",
   "description": "Single-spa lifecycles helper for React apps",
   "main": "lib/umd/single-spa-react.js",
   "module": "lib/esm/single-spa-react.js",
