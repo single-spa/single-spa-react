@@ -25,7 +25,9 @@ export interface SingleSpaReactOpts<RootComponentProps> {
   rootComponent?:
     | React.ComponentClass<RootComponentProps, any>
     | React.FunctionComponent<RootComponentProps>;
-  loadRootComponent?: (props?: any) => Promise<React.ElementType<any>>;
+  loadRootComponent?: (
+    props?: RootComponentProps
+  ) => Promise<React.ElementType<typeof props>>;
   errorBoundary?: (
     err: Error,
     errInfo: React.ErrorInfo,
