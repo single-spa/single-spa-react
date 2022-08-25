@@ -1,6 +1,6 @@
 {
   "include": ["types/single-spa-react"],
   "compilerOptions": {
-    "lib": ["DOM"]
+    "lib": ["dom", "es2015"]
   }
 }

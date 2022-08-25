@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client"; // React >= 18
 import Parcel from "./parcel.js";
-import { render, waitFor, screen } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import singleSpaReact, { SingleSpaContext } from "./single-spa-react";
 import { jest } from "@jest/globals";
@@ -33,6 +34,7 @@ describe(`<Parcel />`, () => {
     mountParcel.mockReturnValue(parcel);
 
     props = { mountParcel, config };
+    jest.spyOn(console, "error").mockReturnValue(undefined);
   });
 
   it(`throws an error if you try to render the component without a config`, () => {
@@ -159,11 +161,30 @@ describe(`<Parcel />`, () => {
     expect(parcelProps.domElement).toBeInstanceOf(HTMLDivElement);
   });
 
-  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one`, async () => {
+  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one (React <18)`, async () => {
     // this creates the SingleSpaContext
-    const appLifecycles = singleSpaReact({
+    singleSpaReact({
       React,
       ReactDOM,
+      rootComponent() {
+        return null;
+      },
+    });
+
+    render(
+      <SingleSpaContext.Provider value={{ mountParcel }}>
+        <Parcel config={config} />
+      </SingleSpaContext.Provider>
+    );
+
+    await waitFor(() => expect(mountParcel).toHaveBeenCalled());
+  });
+
+  it(`lets you not pass in a mountParcel prop if the SingleSpaContext is set with one (React >=18)`, async () => {
+    // this creates the SingleSpaContext
+    singleSpaReact({
+      React,
+      ReactDOMClient,
       rootComponent() {
         return null;
       },

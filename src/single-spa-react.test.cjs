@@ -1,34 +1,18 @@
 require("@testing-library/jest-dom/extend-expect");
 const { useEffect } = require("react");
 const React = require("react");
-const ReactDOM = require("react-dom");
-const scheduler = require("scheduler");
+const ReactDOMClient = require("react-dom/client");
+const { act } = require("react-dom/test-utils");
 
 describe("single-spa-react", () => {
   let rootComponent, props, singleSpaReact;
 
   beforeAll(async () => {
     singleSpaReact = (await import("./single-spa-react.js")).default;
-    jest.spyOn(ReactDOM, "render");
-    jest.spyOn(ReactDOM, "hydrate");
-    jest.spyOn(ReactDOM, "createRoot");
-    jest.spyOn(ReactDOM, "unmountComponentAtNode");
-    jest.spyOn(console, "warn");
-
-    // Mock all the variations of createRoot that arer not on the installed version of react-dom
-    ReactDOM.unstable_createRoot = jest.fn().mockImplementation(function () {
-      return ReactDOM.createRoot.apply(this, arguments);
-    });
-
-    ReactDOM.createBlockingRoot = jest.fn().mockImplementation(function () {
-      return ReactDOM.createRoot.apply(this, arguments);
-    });
-
-    ReactDOM.unstable_createBlockingRoot = jest
-      .fn()
-      .mockImplementation(function () {
-        return ReactDOM.createRoot.apply(this, arguments);
-      });
+    jest.spyOn(ReactDOMClient, "createRoot");
+    jest.spyOn(ReactDOMClient, "hydrateRoot");
+    jest.spyOn(console, "warn").mockReturnValue(undefined);
+    jest.spyOn(console, "error").mockReturnValue(undefined);
   });
 
   beforeEach(() => {
@@ -58,16 +42,16 @@ describe("single-spa-react", () => {
   it(`throws an error if you don't pass required opts`, () => {
     expect(() => singleSpaReact()).toThrow();
     expect(() => singleSpaReact({})).toThrow();
-    expect(() => singleSpaReact({ ReactDOM, rootComponent })).toThrow();
+    expect(() => singleSpaReact({ ReactDOMClient, rootComponent })).toThrow();
     expect(() => singleSpaReact({ React, rootComponent })).toThrow();
-    expect(() => singleSpaReact({ React, ReactDOM })).toThrow();
+    expect(() => singleSpaReact({ React, ReactDOMClient })).toThrow();
   });
 
   it(`mounts and unmounts a React component, passing through the single-spa props`, async () => {
     props.why = "hello";
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
     });
 
@@ -75,14 +59,12 @@ describe("single-spa-react", () => {
 
     expect(props.wasMounted).not.toHaveBeenCalled();
     expect(props.wasUnmounted).not.toHaveBeenCalled();
-    expect(ReactDOM.render).not.toHaveBeenCalled();
 
     await lifecycles.bootstrap();
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
 
-    await flushScheduler();
-
-    expect(ReactDOM.render).toHaveBeenCalled();
     expect(props.wasMounted).toHaveBeenCalled();
     const container = document.getElementById(`single-spa-application:test`);
     expect(container).toBeInTheDocument();
@@ -91,37 +73,35 @@ describe("single-spa-react", () => {
     expect(button.textContent).toEqual("Button test");
     expect(props.wasUnmounted).not.toHaveBeenCalled();
 
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
 
-    await flushScheduler();
-
-    expect(ReactDOM.unmountComponentAtNode).toHaveBeenCalled();
     expect(props.wasUnmounted).toHaveBeenCalled();
     expect(button).not.toBeInTheDocument();
   });
 
-  it(`mounts and unmounts a React component with a 'renderType' of 'hydrate'`, async () => {
+  it(`mounts and unmounts a React component with a 'renderType' of 'hydrateRoot'`, async () => {
     props.why = "hello";
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
-      renderType: "hydrate",
+      renderType: "hydrateRoot",
     });
 
     let button;
 
-    expect(ReactDOM.hydrate).not.toHaveBeenCalled();
-    expect(ReactDOM.hydrate).not.toHaveBeenCalled();
+    expect(ReactDOMClient.hydrateRoot).not.toHaveBeenCalled();
     expect(props.wasMounted).not.toHaveBeenCalled();
     expect(props.wasUnmounted).not.toHaveBeenCalled();
 
     await lifecycles.bootstrap();
-    await lifecycles.mount(props);
-    await flushScheduler();
+    await act(async () => {
+      lifecycles.mount(props);
+    });
 
-    expect(ReactDOM.hydrate).toHaveBeenCalled();
+    expect(ReactDOMClient.hydrateRoot).toHaveBeenCalled();
     let container = document.getElementById("single-spa-application:test");
     button = container.querySelector("button");
     expect(button).toBeInTheDocument();
@@ -129,8 +109,9 @@ describe("single-spa-react", () => {
     expect(props.wasMounted).toHaveBeenCalled();
     expect(props.wasUnmounted).not.toHaveBeenCalled();
 
-    await lifecycles.unmount(props);
-    await flushScheduler();
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
 
     expect(props.wasUnmounted).toHaveBeenCalled();
     expect(button).not.toBeInTheDocument();
@@ -139,7 +120,7 @@ describe("single-spa-react", () => {
   it(`mounts and unmounts a React component with a 'renderType' of 'createRoot'`, async () => {
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
       renderType: "createRoot",
     });
@@ -148,152 +129,31 @@ describe("single-spa-react", () => {
 
     await lifecycles.bootstrap();
 
-    const mountPromise = lifecycles.mount(props);
-
-    await flushScheduler();
-
-    await mountPromise;
-
-    let container = document.getElementById("single-spa-application:test");
-    button = container.querySelector("button");
-    expect(button).toBeInTheDocument();
-    expect(button.textContent).toEqual("Button test");
-    expect(props.wasMounted).toHaveBeenCalled();
-    expect(props.wasUnmounted).not.toHaveBeenCalled();
-    expect(ReactDOM.createRoot).toHaveBeenCalled();
-
-    const unmountPromise = lifecycles.unmount(props);
-
-    await flushScheduler();
-
-    await unmountPromise;
-
-    expect(props.wasUnmounted).toHaveBeenCalled();
-    expect(button).not.toBeInTheDocument();
-    // In React 18, root.unmount() is called instead of unmountComponentAtNode
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
-  });
-
-  it(`mounts and unmounts a React component with a 'renderType' of 'unstable_createRoot'`, async () => {
-    const lifecycles = singleSpaReact({
-      React,
-      ReactDOM,
-      rootComponent,
-      renderType: "unstable_createRoot",
+    await act(async () => {
+      lifecycles.mount(props);
     });
 
-    let button;
-
-    await lifecycles.bootstrap();
-
-    const mountPromise = lifecycles.mount(props);
-
-    await flushScheduler();
-
-    await mountPromise;
-
     let container = document.getElementById("single-spa-application:test");
     button = container.querySelector("button");
     expect(button).toBeInTheDocument();
     expect(button.textContent).toEqual("Button test");
     expect(props.wasMounted).toHaveBeenCalled();
     expect(props.wasUnmounted).not.toHaveBeenCalled();
-    expect(ReactDOM.unstable_createRoot).toHaveBeenCalled();
+    expect(ReactDOMClient.createRoot).toHaveBeenCalled();
 
-    const unmountPromise = lifecycles.unmount(props);
-
-    await flushScheduler();
-
-    await unmountPromise;
-
-    expect(props.wasUnmounted).toHaveBeenCalled();
-    expect(button).not.toBeInTheDocument();
-    // In React 18, root.unmount() is called instead of unmountComponentAtNode
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
-  });
-
-  it(`mounts and unmounts a React component with a 'renderType' of 'createBlockingRoot'`, async () => {
-    const lifecycles = singleSpaReact({
-      React,
-      ReactDOM,
-      rootComponent,
-      renderType: "createBlockingRoot",
+    await act(async () => {
+      lifecycles.unmount(props);
     });
 
-    let button;
-
-    await lifecycles.bootstrap();
-
-    const mountPromise = lifecycles.mount(props);
-
-    await flushScheduler();
-
-    await mountPromise;
-
-    let container = document.getElementById("single-spa-application:test");
-    button = container.querySelector("button");
-    expect(button).toBeInTheDocument();
-    expect(button.textContent).toEqual("Button test");
-    expect(props.wasMounted).toHaveBeenCalled();
-    expect(props.wasUnmounted).not.toHaveBeenCalled();
-    expect(ReactDOM.createBlockingRoot).toHaveBeenCalled();
-
-    const unmountPromise = lifecycles.unmount(props);
-
-    await flushScheduler();
-
-    await unmountPromise;
-
     expect(props.wasUnmounted).toHaveBeenCalled();
     expect(button).not.toBeInTheDocument();
-    // In React 18, root.unmount() is called instead of unmountComponentAtNode
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
-  });
-
-  it(`mounts and unmounts a React component with a 'renderType' of 'unstable_createBlockingRoot'`, async () => {
-    const lifecycles = singleSpaReact({
-      React,
-      ReactDOM,
-      rootComponent,
-      renderType: "unstable_createBlockingRoot",
-    });
-
-    let button;
-
-    await lifecycles.bootstrap();
-
-    const mountPromise = lifecycles.mount(props);
-
-    await flushScheduler();
-
-    await mountPromise;
-
-    let container = document.getElementById("single-spa-application:test");
-    button = container.querySelector("button");
-    expect(button).toBeInTheDocument();
-    expect(button.textContent).toEqual("Button test");
-    expect(props.wasMounted).toHaveBeenCalled();
-    expect(props.wasUnmounted).not.toHaveBeenCalled();
-    expect(ReactDOM.unstable_createBlockingRoot).toHaveBeenCalled();
-    expect(ReactDOM.createBlockingRoot).not.toHaveBeenCalled();
-
-    const unmountPromise = lifecycles.unmount(props);
-
-    await flushScheduler();
-
-    await unmountPromise;
-
-    expect(props.wasUnmounted).toHaveBeenCalled();
-    expect(button).not.toBeInTheDocument();
-    // In React 18, root.unmount() is called instead of unmountComponentAtNode
-    expect(ReactDOM.unmountComponentAtNode).not.toHaveBeenCalled();
   });
 
   it(`chooses the parcel dom element over other dom element getters`, async () => {
     const optsDomElementGetter = () => "optsDomElementGetter";
     let opts = {
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
       domElementGetter: optsDomElementGetter,
     };
@@ -308,18 +168,22 @@ describe("single-spa-react", () => {
     let button;
 
     await lifecycles.bootstrap(props);
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
     button = propsDomEl.querySelector("button");
     expect(button).toBeTruthy();
     expect(button.textContent).toEqual("Button test");
 
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
     button = propsDomEl.querySelector("button");
     expect(button).toBeFalsy();
   });
 
   it(`correctly handles two parcels using the same configuration`, async () => {
-    let opts = { React, ReactDOM, rootComponent };
+    let opts = { React, ReactDOMClient, rootComponent };
 
     let props1 = { ...props, domElement: document.createElement("div") };
     let props2 = { ...props, domElement: document.createElement("div") };
@@ -327,7 +191,9 @@ describe("single-spa-react", () => {
 
     await lifecycles.bootstrap(props);
 
-    await lifecycles.mount(props1);
+    await act(async () => {
+      lifecycles.mount(props1);
+    });
 
     expect(props1.domElement.querySelector("button") instanceof Node).toBe(
       true
@@ -336,7 +202,9 @@ describe("single-spa-react", () => {
       false
     );
 
-    await lifecycles.unmount(props1);
+    await act(async () => {
+      lifecycles.unmount(props1);
+    });
 
     expect(props1.domElement.querySelector("button") instanceof Node).toBe(
       false
@@ -347,7 +215,9 @@ describe("single-spa-react", () => {
 
     // simulate another parcel using the same configuration
     await lifecycles.bootstrap();
-    await lifecycles.mount(props2);
+    await act(async () => {
+      lifecycles.mount(props2);
+    });
 
     expect(props1.domElement.querySelector("button") instanceof Node).toBe(
       false
@@ -356,7 +226,9 @@ describe("single-spa-react", () => {
       true
     );
 
-    await lifecycles.unmount(props2);
+    await act(async () => {
+      lifecycles.unmount(props2);
+    });
 
     expect(props1.domElement.querySelector("button") instanceof Node).toBe(
       false
@@ -371,7 +243,7 @@ describe("single-spa-react", () => {
 
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
       domElementGetter() {
         return domEl;
@@ -382,11 +254,15 @@ describe("single-spa-react", () => {
 
     expect(domEl.querySelector("button") instanceof Node).toBe(false);
 
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
 
     expect(domEl.querySelector("button") instanceof Node).toBe(true);
 
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
 
     expect(domEl.querySelector("button") instanceof Node).toBe(false);
   });
@@ -395,20 +271,28 @@ describe("single-spa-react", () => {
     let domEl = document.createElement("div");
     props.domElementGetter = () => domEl;
 
-    const lifecycles = singleSpaReact({ React, ReactDOM, rootComponent });
+    const lifecycles = singleSpaReact({
+      React,
+      ReactDOMClient,
+      rootComponent,
+    });
 
     await lifecycles.bootstrap(props);
     expect(domEl.querySelector("button") instanceof Node).toBe(false);
 
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
     expect(domEl.querySelector("button") instanceof Node).toBe(true);
 
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
     expect(domEl.querySelector("button") instanceof Node).toBe(false);
   });
 
   it(`doesn't throw an error if unmount is not called with a dom element or dom element getter`, async () => {
-    const opts = { React, ReactDOM, rootComponent };
+    const opts = { React, ReactDOMClient, rootComponent };
     const domEl = document.createElement("div");
     props.domElementGetter = jest.fn().mockImplementation(() => domEl);
 
@@ -416,29 +300,37 @@ describe("single-spa-react", () => {
 
     await lifecycles.bootstrap(props);
 
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
     expect(props.domElementGetter).toHaveBeenCalledTimes(1);
     // The domElementGetter should no longer be required after mount is finished
     delete props.domElementGetter;
 
     // Shouldn't throw even though domElementGetter is gone
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
   });
 
   it(`warns if you are using react >=16 but don't implement componentDidCatch`, async () => {
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
     });
 
     await lifecycles.bootstrap(props);
     expect(console.warn).not.toHaveBeenCalled();
 
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
     expect(console.warn).toHaveBeenCalled();
 
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
   });
 
   it(`does not warn if you are using react 15 but don't implement componentDidCatch`, async () => {
@@ -447,17 +339,21 @@ describe("single-spa-react", () => {
     React.version = "15.4.1";
     const lifecycles = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
     });
 
     await lifecycles.bootstrap(props);
     expect(console.warn).not.toHaveBeenCalled();
 
-    await lifecycles.mount(props);
+    await act(async () => {
+      lifecycles.mount(props);
+    });
     expect(console.warn).not.toHaveBeenCalled();
 
-    await lifecycles.unmount(props);
+    await act(async () => {
+      lifecycles.unmount(props);
+    });
 
     React.version = originalVersion;
   });
@@ -466,13 +362,17 @@ describe("single-spa-react", () => {
   it(`does not throw an error if a customProps prop is provided`, async () => {
     const parcelConfig = singleSpaReact({
       React,
-      ReactDOM,
+      ReactDOMClient,
       rootComponent,
     });
     const normalProps = { ...props, foo: "bar", name: "app1" };
     await parcelConfig.bootstrap(normalProps);
-    await parcelConfig.mount(normalProps);
-    await parcelConfig.unmount(normalProps);
+    await act(async () => {
+      parcelConfig.mount(normalProps);
+    });
+    await act(async () => {
+      parcelConfig.unmount(normalProps);
+    });
 
     const unusualProps = {
       ...props,
@@ -480,15 +380,19 @@ describe("single-spa-react", () => {
       customProps: { foo: "bar" },
     };
     await parcelConfig.bootstrap(unusualProps);
-    await parcelConfig.mount(unusualProps);
-    await parcelConfig.unmount(unusualProps);
+    await act(async () => {
+      parcelConfig.mount(unusualProps);
+    });
+    await act(async () => {
+      parcelConfig.unmount(unusualProps);
+    });
   });
 
   describe("error boundaries", () => {
     it(`should not log a warning when root component has componentDidCatch`, async () => {
       const lifecycles = singleSpaReact({
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: class RootComponent extends React.Component {
           componentDidCatch() {}
           render() {
@@ -498,14 +402,18 @@ describe("single-spa-react", () => {
       });
 
       await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     it(`should log a warning when rootComponent is class without componentDidCatch`, async () => {
       const lifecycles = singleSpaReact({
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: class RootComponent extends React.Component {
           render() {
             return <button></button>;
@@ -517,17 +425,21 @@ describe("single-spa-react", () => {
       await lifecycles.bootstrap(props);
       expect(console.warn).not.toHaveBeenCalled();
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
       expect(console.warn).toHaveBeenCalled();
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
       expect(console.warn).toHaveBeenCalled();
     });
 
     it(`should log a warning with function component`, async () => {
       const lifecycles = singleSpaReact({
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function foo() {
           return <button>Hello</button>;
         },
@@ -536,17 +448,21 @@ describe("single-spa-react", () => {
       await lifecycles.bootstrap(props);
       expect(console.warn).not.toHaveBeenCalled();
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
       expect(console.warn).toHaveBeenCalled();
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
       expect(console.warn).toHaveBeenCalled();
     });
 
     it(`should not log a warning when errorBoundary opts is passed in`, async () => {
       const lifecycles = singleSpaReact({
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function foo() {
           return <button>Test</button>;
         },
@@ -558,17 +474,21 @@ describe("single-spa-react", () => {
       await lifecycles.bootstrap(props);
       expect(console.warn).not.toHaveBeenCalled();
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
       expect(console.warn).not.toHaveBeenCalled();
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
       expect(console.warn).not.toHaveBeenCalled();
     });
 
     it(`should call opts.errorBoundary during an error boundary handler`, async () => {
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function Foo() {
           const [shouldThrow, setShouldThrow] = React.useState(false);
 
@@ -589,31 +509,35 @@ describe("single-spa-react", () => {
 
       await lifecycles.bootstrap(props);
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
       const container = document.getElementById("single-spa-application:test");
 
       expect(container.querySelector("button") instanceof Node).toBe(true);
       expect(container.querySelector("p") instanceof Node).toBe(false);
 
-      document
-        .getElementById("single-spa-application:test")
-        .querySelector("button")
-        .click();
-
-      await flushScheduler();
+      act(() => {
+        document
+          .getElementById("single-spa-application:test")
+          .querySelector("button")
+          .click();
+      });
 
       expect(container.querySelector("button") instanceof Node).toBe(false);
       expect(container.querySelector("p") instanceof Node).toBe(true);
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     // https://github.com/single-spa/single-spa-react/issues/119
     it(`allows errorBoundary to be passed in as a prop`, async () => {
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function Foo() {
           const [shouldThrow, setShouldThrow] = React.useState(false);
 
@@ -635,24 +559,28 @@ describe("single-spa-react", () => {
 
       await lifecycles.bootstrap(props);
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
       const container = document.getElementById("single-spa-application:test");
 
       expect(container.querySelector("button") instanceof Node).toBe(true);
       expect(container.querySelector("p") instanceof Node).toBe(false);
 
-      document
-        .getElementById("single-spa-application:test")
-        .querySelector("button")
-        .click();
-
-      await flushScheduler();
+      act(() => {
+        document
+          .getElementById("single-spa-application:test")
+          .querySelector("button")
+          .click();
+      });
 
       expect(container.querySelector("button") instanceof Node).toBe(false);
       expect(container.querySelector("p") instanceof Node).toBe(true);
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     it(`allows errorBoundaryClass to be passed in as an opt`, async () => {
@@ -676,7 +604,7 @@ describe("single-spa-react", () => {
 
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function Foo() {
           const [shouldThrow, setShouldThrow] = React.useState(false);
 
@@ -698,24 +626,28 @@ describe("single-spa-react", () => {
 
       await lifecycles.bootstrap(props);
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
       const container = document.getElementById("single-spa-application:test");
 
       expect(container.querySelector("button") instanceof Node).toBe(true);
       expect(container.querySelector("p") instanceof Node).toBe(false);
 
-      document
-        .getElementById("single-spa-application:test")
-        .querySelector("button")
-        .click();
-
-      await flushScheduler();
+      act(() => {
+        document
+          .getElementById("single-spa-application:test")
+          .querySelector("button")
+          .click();
+      });
 
       expect(container.querySelector("button") instanceof Node).toBe(false);
       expect(container.querySelector("p") instanceof Node).toBe(true);
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     it(`allows errorBoundaryClass to be passed in as a prop`, async () => {
@@ -739,7 +671,7 @@ describe("single-spa-react", () => {
 
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function Foo() {
           const [shouldThrow, setShouldThrow] = React.useState(false);
 
@@ -760,24 +692,28 @@ describe("single-spa-react", () => {
 
       await lifecycles.bootstrap(props);
 
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
       const container = document.getElementById("single-spa-application:test");
 
       expect(container.querySelector("button") instanceof Node).toBe(true);
       expect(container.querySelector("p") instanceof Node).toBe(false);
 
-      document
-        .getElementById("single-spa-application:test")
-        .querySelector("button")
-        .click();
-
-      await flushScheduler();
+      act(() => {
+        document
+          .getElementById("single-spa-application:test")
+          .querySelector("button")
+          .click();
+      });
 
       expect(container.querySelector("button") instanceof Node).toBe(false);
       expect(container.querySelector("p") instanceof Node).toBe(true);
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
   });
 
@@ -786,23 +722,28 @@ describe("single-spa-react", () => {
       props.name = "k_ruel";
       const lifecycles = singleSpaReact({
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent,
         // No domElementGetter
       });
 
       await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
+
       expect(
         document.getElementById("single-spa-application:k_ruel")
       ).toBeInTheDocument();
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     it(`passes props to the domElementGetter`, async () => {
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent,
         domElementGetter: jest.fn(),
       };
@@ -811,41 +752,36 @@ describe("single-spa-react", () => {
       opts.domElementGetter.mockReturnValue(document.createElement("div"));
 
       await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
       expect(opts.domElementGetter).toHaveBeenCalledWith(props);
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
   });
 
   describe(`update lifecycle`, () => {
     // https://github.com/single-spa/single-spa-react/issues/117
-    it("ReactDOM.createRoot", async () => {
+    it("ReactDOMClient.createRoot", async () => {
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent,
       };
       const lifecycles = singleSpaReact(opts);
 
       await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
-      await lifecycles.update(props);
-      await lifecycles.unmount(props);
-    });
-
-    it("ReactDOM.render", async () => {
-      const opts = {
-        React,
-        ReactDOM,
-        rootComponent,
-        renderType: "render",
-      };
-      const lifecycles = singleSpaReact(opts);
-
-      await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
-      await lifecycles.update(props);
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.mount(props);
+      });
+      await act(async () => {
+        lifecycles.update(props);
+      });
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
 
     it("Does not unmount/remount the React component during updates", async () => {
@@ -853,7 +789,7 @@ describe("single-spa-react", () => {
 
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent: function (props) {
           useEffect(() => {
             return () => {
@@ -863,80 +799,75 @@ describe("single-spa-react", () => {
 
           return <div>hello</div>;
         },
-        renderType: "render",
+        renderType: "createRoot",
         suppressComponentDidCatchWarning: true,
       };
       const lifecycles = singleSpaReact(opts);
       await lifecycles.bootstrap(props);
-      await lifecycles.mount(props);
+
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
       expect(rootComponentUnmounted).toBe(false);
 
-      await lifecycles.update(props);
-
-      await flushScheduler();
-      await tick();
+      await act(async () => {
+        lifecycles.update(props);
+      });
 
       expect(rootComponentUnmounted).toBe(false);
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
   });
 
   describe(`renderType as function`, () => {
-    it(`mounts and unmounts a React component with a 'renderType' function that initially evaluates to 'hydrate' and then 'render'`, async () => {
+    it(`mounts and unmounts a React component with a 'renderType' function that initially evaluates to 'hydrateRoot' and then 'createRoot'`, async () => {
       const opts = {
         React,
-        ReactDOM,
+        ReactDOMClient,
         rootComponent,
         renderType: jest.fn(),
       };
-      opts.renderType.mockReturnValueOnce("hydrate");
+      opts.renderType.mockReturnValueOnce("hydrateRoot");
       const lifecycles = singleSpaReact(opts);
 
-      expect(ReactDOM.hydrate).not.toHaveBeenCalled();
+      expect(ReactDOMClient.hydrateRoot).not.toHaveBeenCalled();
       expect(props.wasMounted).not.toHaveBeenCalled();
       expect(props.wasUnmounted).not.toHaveBeenCalled();
       expect(opts.renderType).not.toHaveBeenCalled();
 
       await lifecycles.bootstrap();
-      await lifecycles.mount(props);
-      await flushScheduler();
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
-      expect(ReactDOM.hydrate).toHaveBeenCalled();
+      expect(ReactDOMClient.hydrateRoot).toHaveBeenCalled();
       expect(opts.renderType).toHaveBeenCalled();
-      expect(opts.renderType).toHaveReturnedWith("hydrate");
+      expect(opts.renderType).toHaveReturnedWith("hydrateRoot");
 
-      await lifecycles.unmount(props);
-      await flushScheduler();
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
 
-      opts.renderType.mockReturnValueOnce("render");
+      opts.renderType.mockReturnValueOnce("createRoot");
 
-      expect(ReactDOM.render).not.toHaveBeenCalled();
-      expect(ReactDOM.hydrate).toHaveBeenCalledTimes(1);
+      expect(ReactDOMClient.hydrateRoot).toHaveBeenCalledTimes(1);
       expect(opts.renderType).toHaveBeenCalledTimes(1);
 
       await lifecycles.bootstrap();
-      await lifecycles.mount(props);
-      await flushScheduler();
+      await act(async () => {
+        lifecycles.mount(props);
+      });
 
-      expect(ReactDOM.render).toHaveBeenCalled();
       expect(opts.renderType).toHaveBeenCalled();
-      expect(opts.renderType).toHaveReturnedWith("render");
+      expect(opts.renderType).toHaveReturnedWith("createRoot");
 
-      await lifecycles.unmount(props);
+      await act(async () => {
+        lifecycles.unmount(props);
+      });
     });
   });
 });
-
-function flushScheduler() {
-  return Promise.resolve().then(() => {
-    scheduler.unstable_flushAll();
-  });
-}
-
-function tick() {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve);
-  });
-}
