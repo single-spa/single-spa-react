@@ -36,7 +36,7 @@ const defaultOpts = {
   loadRootComponent: null,
 
   // optional opts
-  renderType: "createRoot",
+  renderType: null, // defaults to "createRoot" if React 18, or "render" if React <=17
   errorBoundary: null,
   errorBoundaryClass: null,
   domElementGetter: null,
@@ -142,12 +142,7 @@ function mount(opts, props) {
 
     const elementToRender = getElementToRender(opts, props, whenMounted);
     const domElement = chooseDomElementGetter(opts, props)();
-    const renderResult = reactDomRender({
-      elementToRender,
-      domElement,
-      reactDom: getReactDom(opts),
-      renderType: getRenderType(opts),
-    });
+    const renderResult = getRenderResult(opts, elementToRender, domElement);
 
     opts.domElements[props.name] = domElement;
     opts.renderResults[props.name] = renderResult;
@@ -219,7 +214,9 @@ function getRenderType(opts) {
     : opts.renderType;
 }
 
-function reactDomRender({ reactDom, renderType, elementToRender, domElement }) {
+function getRenderResult(opts, elementToRender, domElement) {
+  const reactDom = getReactDom(opts);
+  const renderType = getRenderType(opts);
   const renderFn = reactDom[renderType];
   if (typeof renderFn !== "function")
     throw new Error(`renderType "${renderType}" did not return a function.`);
@@ -249,10 +246,11 @@ function reactDomRender({ reactDom, renderType, elementToRender, domElement }) {
       });
       return root;
     }
+    case "render":
     case "hydrate":
     default: {
       renderFn(elementToRender, domElement);
-      // The renderRoot function should return a react root, but ReactDOM.hydrate() and ReactDOM.render()
+      // The renderRoot function should return a react root, but ReactDOM.render() and ReactDOM.hydrate()
       // do not return a react root. So instead, we return null which indicates that there is no react root
       // that can be used for updates or unmounting
       return null;
