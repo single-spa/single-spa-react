@@ -1,6 +1,7 @@
 require("@testing-library/jest-dom/extend-expect");
 const { useEffect } = require("react");
 const React = require("react");
+const ReactDOM = require("react-dom");
 const ReactDOMClient = require("react-dom/client");
 const { act } = require("react-dom/test-utils");
 
@@ -339,7 +340,7 @@ describe("single-spa-react", () => {
     React.version = "15.4.1";
     const lifecycles = singleSpaReact({
       React,
-      ReactDOMClient,
+      ReactDOM,
       rootComponent,
     });
 
