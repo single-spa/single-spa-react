@@ -83,6 +83,10 @@ export default function singleSpaReact(userOpts) {
     SingleSpaContext = opts.React.createContext();
   }
 
+  if (!opts.renderType) {
+    opts.renderType = atLeastReact18(opts.React) ? "createRoot" : "render";
+  }
+
   opts.SingleSpaRoot = createSingleSpaRoot(opts);
 
   const lifecycles = {
