@@ -190,25 +190,20 @@ function update(opts, props) {
   });
 }
 
-function atLeastReact16(React) {
-  if (
-    React &&
-    typeof React.version === "string" &&
-    React.version.indexOf(".") >= 0
-  ) {
-    const majorVersionString = React.version.slice(
-      0,
-      React.version.indexOf(".")
-    );
+function minReactVersion(majorVersion) {
+  return function atLeastReactV(React) {
     try {
-      return Number(majorVersionString) >= 16;
+      const versionStr = React.version?.slice(0, React.version.indexOf("."));
+      const version = Number(versionStr);
+      return version >= majorVersion;
     } catch (err) {
       return false;
     }
-  } else {
-    return false;
-  }
+  };
 }
+
+const atLeastReact16 = minReactVersion(16);
+const atLeastReact18 = minReactVersion(18);
 
 function getReactDom(opts) {
   return opts.ReactDOMClient || opts.ReactDOM;
