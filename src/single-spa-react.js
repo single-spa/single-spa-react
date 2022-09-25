@@ -220,8 +220,9 @@ function reactDomRender({ reactDom, renderType, elementToRender, domElement }) {
   if (typeof renderFn !== "function")
     throw new Error(`renderType "${renderType}" did not return a function.`);
 
+  const identifierPrefix = opts.name;
+
   switch (renderType) {
-    case "createRoot":
     case "unstable_createRoot":
     case "createBlockingRoot":
     case "unstable_createBlockingRoot": {
@@ -229,8 +230,19 @@ function reactDomRender({ reactDom, renderType, elementToRender, domElement }) {
       root.render(elementToRender);
       return root;
     }
+    case "createRoot": {
+      const root = renderFn(domElement, {
+        identifierPrefix,
+        // TODO: TBD - add onRecoverableError support
+      });
+      root.render(elementToRender);
+      return root;
+    }
     case "hydrateRoot": {
-      const root = renderFn(domElement, elementToRender);
+      const root = renderFn(domElement, elementToRender, {
+        identifierPrefix,
+        // TODO: TBD - add onRecoverableError support
+      });
       return root;
     }
     case "hydrate":
