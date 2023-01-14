@@ -238,6 +238,55 @@ describe("single-spa-react", () => {
     );
   });
 
+  it(`correctly handles two parcels mounting and unmounting at the same time using the same configuration`, async () => {
+    let opts = {
+      React,
+      ReactDOMClient,
+      rootComponent,
+      suppressComponentDidCatchWarning: true,
+    };
+
+    let props1 = {
+      ...props,
+      name: "parcel-1",
+      domElement: document.createElement("div"),
+    };
+    let props2 = {
+      ...props,
+      name: "parcel-2",
+      domElement: document.createElement("div"),
+    };
+
+    const lifecycles = singleSpaReact(opts);
+    await lifecycles.bootstrap(props);
+
+    await act(async () => {
+      lifecycles.mount(props1);
+      lifecycles.mount(props2);
+    });
+
+    expect(props1.domElement.querySelector("button") instanceof Node).toBe(
+      true
+    );
+    expect(props2.domElement.querySelector("button") instanceof Node).toBe(
+      true
+    );
+
+    await act(async () => {
+      const promise1 = lifecycles.unmount(props1);
+      const promise2 = lifecycles.unmount(props2);
+      await expect(promise1).resolves.not.toThrow();
+      await expect(promise2).resolves.not.toThrow();
+    });
+
+    expect(props1.domElement.querySelector("button") instanceof Node).toBe(
+      false
+    );
+    expect(props2.domElement.querySelector("button") instanceof Node).toBe(
+      false
+    );
+  });
+
   it(`allows you to provide a domElementGetter as an opt`, async () => {
     let domEl = document.createElement("div");
 
