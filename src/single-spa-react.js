@@ -45,7 +45,7 @@ const defaultOpts = {
   domElements: {},
   renderResults: {},
   updateResolves: {},
-  unmountFinished: {},
+  unmountResolves: {},
 };
 
 export default function singleSpaReact(userOpts) {
@@ -153,7 +153,7 @@ function mount(opts, props) {
 
 function unmount(opts, props) {
   return new Promise((resolve) => {
-    opts.unmountFinished[props.name] = resolve;
+    opts.unmountResolves[props.name] = resolve;
 
     const root = opts.renderResults[props.name];
 
@@ -294,11 +294,9 @@ function getElementToRender(opts, props, mountFinished) {
         }
       },
       unmountFinished() {
-        if (opts.unmountFinished[props.name]) {
-          setTimeout(function () {
-            opts.unmountFinished[props.name]();
-            delete opts.unmountFinished[props.name];
-          });
+        if (opts.unmountResolves[props.name]) {
+          opts.unmountResolves[props.name]();
+          delete opts.unmountResolves[props.name];
         }
       },
     },
