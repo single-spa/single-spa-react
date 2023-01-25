@@ -3,7 +3,12 @@
 LICENSE
 yarn.lock
 .npmignore
-lib
-parcel/
-coverage
 pnpm-lock.yaml
+
+# output
+lib/
+parcel/
+coverage/
+
+# ci
+.pnpm-store/
