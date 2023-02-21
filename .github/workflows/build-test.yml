@@ -9,17 +9,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
         with:
-          node-version: "15"
-      - uses: pnpm/action-setup@v1.2.1
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2
         with:
-          version: 5.14.1
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-      - run: pnpm run lint
-      - run: pnpm run check-format
-      - run: pnpm run build
+          version: 7.26.0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        run: pnpm test
+      - name: Validate
+        run: |
+          pnpm run lint
+          pnpm run check-format
+      - name: Build
+        run: pnpm run build
+      - name: Publish to npm
+        if: |
+          github.repository == 'single-spa/single-spa-react' &&
+          github.ref == 'refs/heads/main' &&
+          !(contains(github.event.head_commit.message, 'ci skip') || contains(github.event.head_commit.message, 'skip ci'))
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm exec auto shipit --dry-run # TODO: remove dry-run once its mostly working

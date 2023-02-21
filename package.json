@@ -76,6 +76,7 @@
     "@testing-library/react": "^13.1.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "auto": "^10.37.6",
     "concurrently": "^6.2.1",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
@@ -110,5 +111,11 @@
       "optional": true
     }
   },
-  "prettier": {}
+  "prettier": {},
+  "auto": {
+    "plugins": [
+      "npm",
+      "released"
+    ]
+  }
 }
