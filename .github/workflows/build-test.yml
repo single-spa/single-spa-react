@@ -38,4 +38,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm exec auto shipit --dry-run # TODO: remove dry-run once its mostly working
+        run: pnpm exec auto shipit
