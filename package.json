@@ -37,7 +37,8 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "prepare": "husky install",
-    "release": "auto shipit --no-changelog"
+    "release": "auto shipit --no-changelog",
+    "changelog": "auto changelog"
   },
   "browserslist": [
     "extends browserslist-config-single-spa"
