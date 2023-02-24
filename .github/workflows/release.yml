@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    branches: main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.26.0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm run build
+      - name: Release to npm
+        id: release
+        # run only on upstream repo (not forks) and
+        # only if commit message does not contain [ci skip] or [skip ci]
+        if: |
+          github.repository == 'single-spa/single-spa-react' &&
+          !(contains(github.event.head_commit.message, 'ci skip') || contains(github.event.head_commit.message, 'skip ci'))
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm run release
