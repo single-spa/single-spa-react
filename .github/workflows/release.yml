@@ -33,3 +33,26 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm run release
+      - name: Generate changelog
+        uses: actions/github-script@v6
+        # if: steps.release.outcome == 'success' # only if release step ran successfully
+        with:
+          script: |
+            const pkgJson = require('./package.json')
+            const branchName = `update-changelog-for-${pkgJson.version}`
+            const message = `Update changelog for ${pkgJson.version} [skip ci]`
+            try {
+              await exec.exec('git', ['checkout', '-b', branchName])
+              await exec.exec('pnpm', ['run', 'changelog']);
+              await exec.exec('git', ['add', 'CHANGELOG.md']); 
+              await exec.exec('git', ['commit', '-m', message]); 
+              github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: branchName,
+                base: 'main'
+              })
+            } catch(e) {
+              console.info('Error creating changelog PR. Run `pnpm run changelog` manually and create a PR if necessary.')
+              console.error(e)
+            }
