@@ -36,7 +36,8 @@
     "watch-build": "rollup -cw",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "auto shipit --no-changelog"
   },
   "browserslist": [
     "extends browserslist-config-single-spa"

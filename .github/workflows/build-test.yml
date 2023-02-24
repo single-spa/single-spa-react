@@ -30,7 +30,8 @@ jobs:
           pnpm run check-format
       - name: Build
         run: pnpm run build
-      - name: Publish to npm
+      - name: Release to npm
+        id: release
         if: |
           github.repository == 'single-spa/single-spa-react' &&
           github.ref == 'refs/heads/main' &&
@@ -38,4 +39,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm exec auto shipit
+        run: pnpm run release
