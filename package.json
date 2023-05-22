@@ -5,16 +5,6 @@
   "main": "lib/umd/single-spa-react.js",
   "module": "lib/esm/single-spa-react.js",
   "type": "module",
-  "exports": {
-    ".": {
-      "import": "./lib/esm/single-spa-react.js",
-      "require": "./lib/cjs/single-spa-react.cjs"
-    },
-    "./parcel": {
-      "import": "./lib/esm/parcel.js",
-      "require": "./lib/cjs/parcel.cjs"
-    }
-  },
   "files": [
     "lib",
     "parcel",
