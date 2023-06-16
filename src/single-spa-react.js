@@ -116,7 +116,8 @@ function mount(opts, props) {
     if (
       !opts.suppressComponentDidCatchWarning &&
       atLeastReact16(opts.React) &&
-      !opts.errorBoundary
+      !opts.errorBoundary &&
+      !opts.errorBoundaryClass
     ) {
       if (!opts.rootComponent.prototype) {
         console.warn(
