@@ -6,6 +6,7 @@
   "module": "lib/esm/single-spa-react.js",
   "type": "module",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "import": "./lib/esm/single-spa-react.js",
       "require": "./lib/cjs/single-spa-react.cjs"
