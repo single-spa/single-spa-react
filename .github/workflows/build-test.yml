@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.26.0
+          version: 8.6.2
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -30,12 +30,3 @@ jobs:
           pnpm run check-format
       - name: Build
         run: pnpm run build
-      - name: Publish to npm
-        if: |
-          github.repository == 'single-spa/single-spa-react' &&
-          github.ref == 'refs/heads/main' &&
-          !(contains(github.event.head_commit.message, 'ci skip') || contains(github.event.head_commit.message, 'skip ci'))
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm exec auto shipit
