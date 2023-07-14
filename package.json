@@ -37,6 +37,7 @@
     "watch-build": "rollup -cw",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
+    "prepublishOnly": "pnpm run build",
     "prepare": "husky install"
   },
   "browserslist": [
