@@ -8,10 +8,12 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./types/single-spa-react.d.ts",
       "import": "./lib/esm/single-spa-react.js",
       "require": "./lib/cjs/single-spa-react.cjs"
     },
     "./parcel": {
+      "types": "./types/parcel/index.d.ts",
       "import": "./lib/esm/parcel.js",
       "require": "./lib/cjs/parcel.cjs"
     }
