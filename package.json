@@ -13,7 +13,7 @@
       "require": "./lib/cjs/single-spa-react.cjs"
     },
     "./parcel": {
-      "types": "./types/parcel/index.d.ts",
+      "types": "./parcel/index.d.ts",
       "import": "./lib/esm/parcel.js",
       "require": "./lib/cjs/parcel.cjs"
     }
