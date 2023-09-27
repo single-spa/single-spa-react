@@ -37,6 +37,7 @@
     "watch-build": "rollup -cw",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
+    "check-changeset": "changeset status --since=main",
     "prepublishOnly": "pnpm run build",
     "prepare": "husky install",
     "changeset": "changeset",

@@ -36,6 +36,7 @@ jobs:
         run: |
           pnpm run lint
           pnpm run check-format
+          pnpm run check-changeset
 
       - name: Build
         run: pnpm run build
