@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+        with:
+          # check out full history
+          fetch-depth: 0
 
       - name: Install Pnpm
         uses: pnpm/action-setup@v2
@@ -36,6 +39,7 @@ jobs:
         run: |
           pnpm run lint
           pnpm run check-format
+          pnpm exec changeset status --since=origin/main
 
       - name: Build
         run: pnpm run build
