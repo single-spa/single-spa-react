@@ -8,8 +8,14 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./lib/esm/single-spa-react.js",
-      "require": "./lib/cjs/single-spa-react.cjs"
+      "import": {
+        "types": "./types/single-spa-react.d.ts",
+        "default": "./lib/esm/single-spa-react.js"
+      },
+      "require": {
+        "types": "./types/single-spa-react.d.cts",
+        "default": "./lib/cjs/single-spa-react.cjs"
+      }
     },
     "./parcel": {
       "import": "./lib/esm/parcel.js",
@@ -20,6 +26,7 @@
     "lib",
     "parcel",
     "types/single-spa-react.d.ts",
+    "types/single-spa-react.d.cts",
     "README.md"
   ],
   "tsd": {
@@ -29,7 +36,7 @@
   "scripts": {
     "build": "concurrently pnpm:build:*",
     "build:rollup": "rollup -c",
-    "build:types": "rimraf parcel && copyfiles -f types/parcel/index.d.ts ./parcel",
+    "build:types": "node scripts/build-types.js",
     "lint": "eslint src",
     "test": "concurrently pnpm:test:*",
     "test:browser": "cross-env BABEL_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage",
