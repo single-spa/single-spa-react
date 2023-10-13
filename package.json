@@ -8,14 +8,24 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./types/single-spa-react.d.ts",
-      "import": "./lib/esm/single-spa-react.js",
-      "require": "./lib/cjs/single-spa-react.cjs"
+      "import": {
+        "types": "./types/single-spa-react.d.ts",
+        "default": "./lib/esm/single-spa-react.js"
+      },
+      "require": {
+        "types": "./types/single-spa-react.d.ts",
+        "default": "./lib/cjs/single-spa-react.cjs"
+      }
     },
     "./parcel": {
-      "types": "./parcel/index.d.ts",
-      "import": "./lib/esm/parcel.js",
-      "require": "./lib/cjs/parcel.cjs"
+      "import": {
+        "types": "./parcel/index.d.ts",
+        "default": "./lib/esm/parcel.js"
+      },
+      "require": {
+        "types": "./parcel/index.d.ts",
+        "default": "./lib/cjs/parcel.cjs"
+      }
     }
   },
   "files": [
