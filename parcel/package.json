@@ -1,4 +1,4 @@
 {
-  "main": "./lib/cjs/parcel.cjs",
-  "types": "./types/parcel/index.d.cts"
+  "main": "../lib/cjs/parcel.cjs",
+  "types": "../types/parcel/index.d.cts"
 }
