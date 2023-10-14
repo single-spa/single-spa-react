@@ -18,21 +18,26 @@
       }
     },
     "./parcel": {
-      "import": "./lib/esm/parcel.js",
-      "require": "./lib/cjs/parcel.cjs"
+      "import": {
+        "types": "./types/parcel/index.d.ts",
+        "default": "./lib/esm/parcel.js"
+      },
+      "require": {
+        "types": "./types/parcel/index.d.cts",
+        "default": "./lib/cjs/parcel.cjs"
+      }
     }
   },
+  "types": "types/single-spa-react.d.ts",
   "files": [
     "lib",
     "parcel",
-    "types/single-spa-react.d.ts",
-    "types/single-spa-react.d.cts",
+    "types",
     "README.md"
   ],
   "tsd": {
     "directory": "src"
   },
-  "types": "types/single-spa-react.d.ts",
   "scripts": {
     "build": "concurrently pnpm:build:*",
     "build:rollup": "rollup -c",
