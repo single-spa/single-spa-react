@@ -3,7 +3,6 @@ node_modules/
 lib/
 yarn-error.log
 coverage
-parcel/
 
 # File is ignored as it is an identical copy of single-spa-react.d.ts, and is copied during the build
 single-spa-react.d.cts
