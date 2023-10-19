@@ -49,22 +49,15 @@ declare function singleSpaReact<ExtraProps = {}>(
   opts: SingleSpaReactOpts<ExtraProps & AppProps>
 ): ReactAppOrParcel<ExtraProps>;
 
-declare namespace singleSpaReact {
-  /**
-   * Prevents typescript from requiring accessing the default export with ".default", which is not required.
-   * For more information see https://github.com/arethetypeswrong/arethetypeswrong.github.io/blob/main/docs/problems/MissingExportEquals.md
-   */
-  const _default: typeof singleSpaReact;
-  export { _default as default };
+export = singleSpaReact;
 
+declare namespace singleSpaReact {
   export {
     SingleSpaContext,
-    SingleSpaReactOpts,
-    ReactAppOrParcel,
     DeprecatedRenderTypes,
     LegacyRenderType,
     RenderType,
+    SingleSpaReactOpts,
+    ReactAppOrParcel,
   };
 }
-
-export = singleSpaReact;
