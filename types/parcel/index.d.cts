@@ -5,7 +5,7 @@ import {
   Parcel as SingleSpaParcel,
 } from "single-spa";
 
-export interface ParcelCompProps<ExtraProps = {}> {
+interface ParcelCompProps<ExtraProps = {}> {
   config: ParcelConfig<ExtraProps>;
   mountParcel?: (
     parcelConfig: ParcelConfig,
@@ -29,5 +29,8 @@ declare class Parcel<ExtraProps = {}> extends React.Component<
   ParcelState
 > {}
 
-// @ts-ignore
 export = Parcel;
+
+declare namespace Parcel {
+  export { ParcelCompProps, ParcelState };
+}
