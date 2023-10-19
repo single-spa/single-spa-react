@@ -28,7 +28,7 @@
       }
     }
   },
-  "types": "types/single-spa-react.d.ts",
+  "types": "types/single-spa-react.d.cts",
   "files": [
     "lib",
     "parcel",
@@ -41,7 +41,6 @@
   "scripts": {
     "build": "concurrently pnpm:build:*",
     "build:rollup": "rollup -c",
-    "build:types": "node scripts/build-types.js",
     "lint": "eslint src",
     "test": "concurrently pnpm:test:*",
     "test:browser": "cross-env BABEL_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage",
