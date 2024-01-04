@@ -36,7 +36,6 @@ const defaultOpts = {
   loadRootComponent: null,
 
   // optional opts
-  renderType: "createRoot",
   errorBoundary: null,
   errorBoundaryClass: null,
   domElementGetter: null,
@@ -66,6 +65,15 @@ function singleSpaReact(userOpts) {
     throw new Error(
       `single-spa-react must be passed opts.ReactDOM or opts.ReactDOMClient`
     );
+  }
+
+  if (!opts.renderType) {
+    // https://github.com/single-spa/single-spa-react/issues/202
+    if (opts.ReactDOM?.createRoot || opts.ReactDOMClient?.createRoot) {
+      opts.renderType = "createRoot";
+    } else {
+      opts.renderType = "render";
+    }
   }
 
   if (!opts.rootComponent && !opts.loadRootComponent) {
