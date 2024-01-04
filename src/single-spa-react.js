@@ -376,14 +376,4 @@ function createSingleSpaRoot(opts) {
   return SingleSpaRoot;
 }
 
-/**
- * If module is running in a CommonJS environment, a compatibility layer for node16 resolution strategy is inserted.
- * During transpilation, Rollup correctly inserts the "exports.default", and "exports.__esModule" properties, but they are not respected by some bundlers.
- * For more information see https://github.com/arethetypeswrong/arethetypeswrong.github.io/blob/main/docs/problems/CJSOnlyExportsDefault.md
- */
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = singleSpaReact;
-  module.exports.default = singleSpaReact;
-}
-
 export default singleSpaReact;
