@@ -2,7 +2,7 @@
   "name": "single-spa-react",
   "version": "5.1.4",
   "description": "Single-spa lifecycles helper for React apps",
-  "main": "lib/cjs/single-spa-react.cjs",
+  "main": "lib/umd/single-spa-react.js",
   "module": "lib/esm/single-spa-react.js",
   "type": "module",
   "exports": {
