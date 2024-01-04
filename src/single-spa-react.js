@@ -48,7 +48,7 @@ const defaultOpts = {
   unmountResolves: {},
 };
 
-export default function singleSpaReact(userOpts) {
+function singleSpaReact(userOpts) {
   if (typeof userOpts !== "object") {
     throw new Error(`single-spa-react requires a configuration object`);
   }
@@ -375,3 +375,5 @@ function createSingleSpaRoot(opts) {
 
   return SingleSpaRoot;
 }
+
+export default singleSpaReact;

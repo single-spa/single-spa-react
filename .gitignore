@@ -3,4 +3,3 @@ node_modules/
 lib/
 yarn-error.log
 coverage
-parcel/
