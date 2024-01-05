@@ -69,7 +69,7 @@ function singleSpaReact(userOpts) {
 
   if (!opts.renderType) {
     // https://github.com/single-spa/single-spa-react/issues/202
-    if (opts.ReactDOM?.createRoot || opts.ReactDOMClient?.createRoot) {
+    if (opts.ReactDOMClient?.createRoot) {
       opts.renderType = "createRoot";
     } else {
       opts.renderType = "render";
