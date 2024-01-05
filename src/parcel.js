@@ -47,8 +47,8 @@ export default class Parcel extends React.Component {
         this.props.appendTo.appendChild(domElement);
       }
       this.parcel = mountParcel(this.props.config, {
-        domElement,
         ...this.getParcelProps(),
+        domElement,
       });
       this.parcel.mountPromise.then(this.props.parcelDidMount);
       return this.parcel.mountPromise;
