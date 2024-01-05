@@ -1,5 +1,11 @@
 # single-spa-react
 
+## 6.0.1
+
+### Patch Changes
+
+- [#203](https://github.com/single-spa/single-spa-react/pull/203) [`ec968f2`](https://github.com/single-spa/single-spa-react/commit/ec968f2bb3658b783a4ba60519a73ab71962966f) Thanks [@joeldenning](https://github.com/joeldenning)! - Automatically support React 17 with default opts. Resolves #202
+
 ## 6.0.0
 
 ### Major Changes
