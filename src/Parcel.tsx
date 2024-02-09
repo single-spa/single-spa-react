@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /* This import statement requires a peer or dev dependency on react that is fulfilled at runtime.
  * To avoid duplicate bundling of react, we do not do this inside of single-spa-react.js.
  * We also do not set up the prop types in this file to avoid requiring the user of the library

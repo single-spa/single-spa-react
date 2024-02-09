@@ -63,7 +63,7 @@ export default [
     ],
   },
   {
-    input: "src/Parcel.jsx",
+    input: "src/Parcel.tsx",
     output: [
       {
         file: "lib/umd/parcel.js",
@@ -102,7 +102,7 @@ export default [
   },
   // assume bare specifier single-spa-react is mapped in systemjs import map
   {
-    input: "src/Parcel.jsx",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/system/parcel.cjs",
       format: "system",
@@ -119,7 +119,7 @@ export default [
   },
   // cjs extension is required in the externals, which is why this gets its own config in the array of configs
   {
-    input: "src/Parcel.jsx",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/cjs/parcel.cjs",
       format: "cjs",
@@ -135,7 +135,7 @@ export default [
     external,
   },
   {
-    input: "src/Parcel.jsx",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/es2015/parcel.js",
       format: "esm",
