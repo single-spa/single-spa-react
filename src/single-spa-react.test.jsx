@@ -1,8 +1,8 @@
-require("@testing-library/jest-dom/extend-expect");
-const { useEffect } = require("react");
-const React = require("react");
-const ReactDOMClient = require("react-dom/client");
-const { act } = require("react-dom/test-utils");
+import React, { useEffect } from "react";
+import ReactDOMClient from "react-dom/client";
+import { act } from "react-dom/test-utils";
+import { jest } from "@jest/globals";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("single-spa-react", () => {
   let rootComponent, props, singleSpaReact;

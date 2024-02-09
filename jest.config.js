@@ -1,19 +1,10 @@
-import { defaults } from "jest-config";
-
 /** @type {import('@jest/types').Config.ProjectConfig} */
 const config = {
   coveragePathIgnorePatterns: ["<rootDir>/node_modules"],
-  collectCoverageFrom: ["src/**/*.js"],
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
   testEnvironment: "jsdom",
-  moduleFileExtensions: [...defaults.moduleFileExtensions, "cjs"],
-  transform: {
-    "\\.[cm]?[jt]sx?$": "babel-jest",
-  },
-  testRegex: "src/.+.test.c?js$",
-  moduleNameMapper: {
-    scheduler: "scheduler/cjs/scheduler-unstable_mock.development.js",
-    "^single-spa-react$": "<rootDir>/src/single-spa-react.js",
-  },
+  extensionsToTreatAsEsm: [".jsx", ".ts", ".tsx"],
+  testRegex: "src/.+\\.test\\.c?[jt]sx?$",
   setupFiles: ["<rootDir>/jest.setup.js"],
 };
 
