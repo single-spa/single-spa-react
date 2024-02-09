@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /* We don't import parcel.component.js from this file intentionally. See comment
  * in that file for why
  */

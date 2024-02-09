@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import * as ReactDOMClient from "react-dom/client"; // React >= 18
 import Parcel from "./Parcel";
 import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import singleSpaReact, { SingleSpaContext } from "./single-spa-react";
 import { jest } from "@jest/globals";
 

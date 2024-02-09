@@ -10,11 +10,14 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noImplicitAny": false,
+
+    "types": ["@testing-library/jest-dom"]
   },
   "include": ["src", "types/single-spa-react"],
   "exclude": ["node_modules", "dist", "**/*.test-d.ts"]

@@ -74,7 +74,8 @@
   },
   "homepage": "https://github.com/single-spa/single-spa-react#readme",
   "dependencies": {
-    "browserslist-config-single-spa": "^1.0.1"
+    "browserslist-config-single-spa": "^1.0.1",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -86,13 +87,15 @@
     "@babel/runtime": "^7.15.4",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.2",
+    "@jest/globals": "^29.7.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.1.1",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.17",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "auto": "^10.37.6",
@@ -114,7 +117,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "single-spa": "^5.9.3",
     "tsd": "^0.17.0",
-    "typescript": "^4.4.3"
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "@types/react": "*",

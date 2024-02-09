@@ -10,7 +10,7 @@ const external = ["react", "react-dom", "single-spa-react"];
 
 export default [
   {
-    input: "src/single-spa-react.js",
+    input: "src/single-spa-react.ts",
     output: [
       {
         file: "lib/umd/single-spa-react.js",
@@ -44,7 +44,7 @@ export default [
     external,
   },
   {
-    input: "src/single-spa-react.js",
+    input: "src/single-spa-react.ts",
     output: {
       file: "lib/es2015/single-spa-react.js",
       format: "esm",
