@@ -1,6 +1,21 @@
 {
-  "include": ["types/single-spa-react"],
   "compilerOptions": {
-    "lib": ["dom", "es2015"]
-  }
+    "outDir": "./dist",
+    "module": "esnext",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "es2015", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "types/single-spa-react"],
+  "exclude": ["node_modules", "dist"]
 }
