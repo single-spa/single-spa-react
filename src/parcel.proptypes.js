@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import Parcel from "./parcel";
+import Parcel from "./Parcel";
 
 Parcel.propTypes = {
   // Required

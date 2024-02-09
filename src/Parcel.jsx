@@ -3,7 +3,7 @@
  * We also do not set up the prop types in this file to avoid requiring the user of the library
  * to have prop-types installed and in their browser bundle, since not everyone uses prop types.
  */
-import { SingleSpaContext } from "single-spa-react";
+import { SingleSpaContext } from "./single-spa-react";
 import * as React from "react";
 
 export default class Parcel extends React.Component {
