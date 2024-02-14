@@ -1,14 +1,16 @@
-require("@testing-library/jest-dom/extend-expect");
-const { useEffect } = require("react");
-const React = require("react");
-const ReactDOMClient = require("react-dom/client");
-const { act } = require("react-dom/test-utils");
+// @ts-nocheck
+
+import React, { useEffect } from "react";
+import ReactDOMClient from "react-dom/client";
+import { act } from "react-dom/test-utils";
+import { jest } from "@jest/globals";
+import "@testing-library/jest-dom";
 
 describe("single-spa-react", () => {
   let rootComponent, props, singleSpaReact;
 
   beforeAll(async () => {
-    singleSpaReact = (await import("./single-spa-react.js")).default;
+    singleSpaReact = (await import("./single-spa-react.ts")).default;
     jest.spyOn(ReactDOMClient, "createRoot");
     jest.spyOn(ReactDOMClient, "hydrateRoot");
     jest.spyOn(console, "warn").mockReturnValue(undefined);

@@ -1,12 +1,8 @@
 {
   "presets": [
     "@babel/preset-env",
-    [
-      "@babel/preset-react",
-      {
-        "runtime": "classic"
-      }
-    ]
+    "@babel/preset-typescript",
+    "@babel/preset-react"
   ],
   "plugins": ["@babel/plugin-proposal-class-properties"],
   "env": {
@@ -17,16 +13,11 @@
           {
             "targets": {
               "node": "current"
-            },
-            "modules": false
+            }
           }
         ],
-        [
-          "@babel/preset-react",
-          {
-            "runtime": "classic"
-          }
-        ]
+        "@babel/preset-typescript",
+        "@babel/preset-react"
       ]
     }
   }

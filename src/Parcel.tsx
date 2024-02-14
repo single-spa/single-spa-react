@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 /* This import statement requires a peer or dev dependency on react that is fulfilled at runtime.
  * To avoid duplicate bundling of react, we do not do this inside of single-spa-react.js.
  * We also do not set up the prop types in this file to avoid requiring the user of the library
  * to have prop-types installed and in their browser bundle, since not everyone uses prop types.
  */
-import { SingleSpaContext } from "single-spa-react";
+import { SingleSpaContext } from "./single-spa-react";
 import * as React from "react";
 
 export default class Parcel extends React.Component {

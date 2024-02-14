@@ -2,6 +2,7 @@ import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript"; // Import TypeScript plugin
 
 const shouldMinify = process.env.ROLLUP_WATCH !== "true";
 
@@ -9,7 +10,7 @@ const external = ["react", "react-dom", "single-spa-react"];
 
 export default [
   {
-    input: "src/single-spa-react.js",
+    input: "src/single-spa-react.ts",
     output: [
       {
         file: "lib/umd/single-spa-react.js",
@@ -34,6 +35,7 @@ export default [
       },
     ],
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify && terser(),
       nodeResolve(),
@@ -42,13 +44,14 @@ export default [
     external,
   },
   {
-    input: "src/single-spa-react.js",
+    input: "src/single-spa-react.ts",
     output: {
       file: "lib/es2015/single-spa-react.js",
       format: "esm",
       sourcemap: true,
     },
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify &&
         terser({
@@ -60,7 +63,7 @@ export default [
     ],
   },
   {
-    input: "src/parcel.js",
+    input: "src/Parcel.tsx",
     output: [
       {
         file: "lib/umd/parcel.js",
@@ -89,6 +92,7 @@ export default [
       },
     ],
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify && terser(),
       nodeResolve(),
@@ -98,13 +102,14 @@ export default [
   },
   // assume bare specifier single-spa-react is mapped in systemjs import map
   {
-    input: "src/parcel.js",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/system/parcel.cjs",
       format: "system",
       sourcemap: true,
     },
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify && terser(),
       nodeResolve(),
@@ -114,13 +119,14 @@ export default [
   },
   // cjs extension is required in the externals, which is why this gets its own config in the array of configs
   {
-    input: "src/parcel.js",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/cjs/parcel.cjs",
       format: "cjs",
       sourcemap: true,
     },
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify && terser(),
       nodeResolve(),
@@ -129,13 +135,14 @@ export default [
     external,
   },
   {
-    input: "src/parcel.js",
+    input: "src/Parcel.tsx",
     output: {
       file: "lib/es2015/parcel.js",
       format: "esm",
       sourcemap: true,
     },
     plugins: [
+      typescript(),
       babel({ babelHelpers: "bundled" }),
       shouldMinify &&
         terser({
