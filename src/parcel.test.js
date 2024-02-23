@@ -45,24 +45,31 @@ describe(`<Parcel />`, () => {
 
   it(`renders a div by default`, () => {
     expect(document.querySelector("div")).not.toBeInTheDocument();
-    const wrapper = render(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />, {
+      wrapper: React.StrictMode,
+    });
     expect(document.querySelector("div")).toBeInTheDocument();
   });
 
   it(`renders a div wrap with style`, () => {
     const wrapper = render(
-      <Parcel {...props} wrapStyle={{ height: "100px" }} />
+      <Parcel {...props} wrapStyle={{ height: "100px" }} />,
+      { wrapper: React.StrictMode }
     );
     expect(document.querySelector(`div[style]`).style.height).toEqual("100px");
   });
 
   it(`renders a div wrap with className`, () => {
-    const wrapper = render(<Parcel {...props} wrapClassName="wrapper" />);
+    const wrapper = render(<Parcel {...props} wrapClassName="wrapper" />, {
+      wrapper: React.StrictMode,
+    });
     expect(document.querySelector("div.wrapper")).toBeInTheDocument();
   });
 
   it(`calls the mountParcel prop when it mounts`, async () => {
-    const wrapper = render(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />, {
+      wrapper: React.StrictMode,
+    });
     await waitFor(() => expect(mountParcel).toHaveBeenCalled());
   });
 
@@ -71,7 +78,9 @@ describe(`<Parcel />`, () => {
       document.createElement("section")
     );
     expect(document.querySelector("section div")).not.toBeInTheDocument();
-    const wrapper = render(<Parcel {...props} appendTo={appendTo} />);
+    const wrapper = render(<Parcel {...props} appendTo={appendTo} />, {
+      wrapper: React.StrictMode,
+    });
     await waitFor(() =>
       expect(document.querySelector("section div")).toBeInTheDocument()
     );
@@ -80,7 +89,8 @@ describe(`<Parcel />`, () => {
   it(`calls parcelDidMount prop when the parcel finishes mounting`, async () => {
     const parcelDidMount = jest.fn();
     const wrapper = render(
-      <Parcel {...props} parcelDidMount={parcelDidMount} />
+      <Parcel {...props} parcelDidMount={parcelDidMount} />,
+      { wrapper: React.StrictMode }
     );
 
     expect(parcelDidMount).not.toHaveBeenCalled();
@@ -89,7 +99,9 @@ describe(`<Parcel />`, () => {
   });
 
   it(`doesn't update the parcel a second or third time until previous parcel updates complete`, (done) => {
-    const wrapper = render(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />, {
+      wrapper: React.StrictMode,
+    });
 
     let numParcelUpdateCalls = 0;
     let firstParcelUpdateFinished = false;
@@ -154,7 +166,9 @@ describe(`<Parcel />`, () => {
   });
 
   it(`calls mountParcel with all the React props`, async () => {
-    const wrapper = render(<Parcel {...props} />);
+    const wrapper = render(<Parcel {...props} />, {
+      wrapper: React.StrictMode,
+    });
     // We need to wait for a microtask to finish before the Parcel component will have called mountParcel
     await waitFor(() => expect(mountParcel).toHaveBeenCalled());
     const parcelProps = mountParcel.mock.calls[0][1];
@@ -193,7 +207,8 @@ describe(`<Parcel />`, () => {
     const wrapper = render(
       <SingleSpaContext.Provider value={{ mountParcel }}>
         <Parcel config={config} />
-      </SingleSpaContext.Provider>
+      </SingleSpaContext.Provider>,
+      { wrapper: React.StrictMode }
     );
 
     await waitFor(() => expect(mountParcel).toHaveBeenCalled());

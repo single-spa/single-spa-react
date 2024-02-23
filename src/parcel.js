@@ -26,6 +26,7 @@ export default class Parcel extends React.Component {
     }
   }
   componentDidMount() {
+    this.unmounted = false;
     this.addThingToDo("mount", () => {
       const mountParcel = this.props.mountParcel || this.mountParcel;
       if (!mountParcel) {
