@@ -50,8 +50,8 @@ devDependencies:
     specifier: ^5.14.1
     version: 5.14.1
   '@testing-library/react':
-    specifier: ^13.1.1
-    version: 13.1.1(react-dom@18.0.0)(react@18.0.0)
+    specifier: ^13.4.0
+    version: 13.4.0(react-dom@18.0.0)(react@18.0.0)
   '@types/react':
     specifier: ^18.0.0
     version: 18.0.6
@@ -2225,7 +2225,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@babel/code-frame': 7.14.5
-      '@babel/runtime': 7.15.4
+      '@babel/runtime': 7.22.6
       '@types/aria-query': 4.2.2
       aria-query: 4.2.2
       chalk: 4.1.2
@@ -2249,14 +2249,14 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react@13.1.1(react-dom@18.0.0)(react@18.0.0):
-    resolution: {integrity: sha512-8mirlAa0OKaUvnqnZF6MdAh2tReYA2KtWVw1PKvaF5EcCZqgK5pl8iF+3uW90JdG5Ua2c2c2E2wtLdaug3dsVg==}
+  /@testing-library/react@13.4.0(react-dom@18.0.0)(react@18.0.0):
+    resolution: {integrity: sha512-sXOGON+WNTh3MLE9rve97ftaZukN3oNf2KjDy7YTx6hcTO2uuLHuCGynMDhFwGw/jYf4OJ2Qk0i4i79qMNNkyw==}
     engines: {node: '>=12'}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      '@babel/runtime': 7.15.4
+      '@babel/runtime': 7.22.6
       '@testing-library/dom': 8.5.0
       '@types/react-dom': 18.0.2
       react: 18.0.0
@@ -5463,7 +5463,7 @@ packages:
     dev: true
 
   /lz-string@1.4.4:
-    resolution: {integrity: sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=}
+    resolution: {integrity: sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==}
     hasBin: true
     dev: true
 
