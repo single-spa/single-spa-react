@@ -17,11 +17,9 @@ describe.each(cases)(
       parcel,
       props;
 
-    beforeAll(() => {
-      configure({ strictMode });
-    });
-
     beforeEach(() => {
+      configure({ reactStrictMode: strictMode });
+
       config = {
         bootstrap: jest.fn(),
         mount: jest.fn(),
