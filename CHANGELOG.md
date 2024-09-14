@@ -1,5 +1,11 @@
 # single-spa-react
 
+## 6.0.2
+
+### Patch Changes
+
+- [#206](https://github.com/single-spa/single-spa-react/pull/206) [`986149d`](https://github.com/single-spa/single-spa-react/commit/986149d04d4eac0a9b3d156935f621fc8f858c2f) Thanks [@nickbosland](https://github.com/nickbosland)! - Fixed an issue with mounting a parcel when StrictMode is enabled
+
 ## 6.0.1
 
 ### Patch Changes
