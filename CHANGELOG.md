@@ -1,3 +1,6 @@
+# Unpublished
+
+- (breaking): COMMITMSG
 # single-spa-react
 
 ## 6.0.2
