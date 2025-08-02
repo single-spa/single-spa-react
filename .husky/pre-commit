@@ -1,4 +1,2 @@
 pnpm pretty-quick --staged
 pnpm run test
-exec < /dev/tty
-pnpm exec heeler add
