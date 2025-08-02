@@ -1,6 +1,11 @@
 {
-  "include": ["types/single-spa-react"],
+  "include": ["src/single-spa-react.ts"],
   "compilerOptions": {
-    "lib": ["dom", "es2015"]
+    "declaration": true,
+    "declarationDir": "lib",
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "lib": ["dom", "es2024"],
+    "jsx": "react-jsx"
   }
 }

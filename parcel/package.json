@@ -1,4 +1,0 @@
-{
-  "main": "../lib/umd/parcel.js",
-  "types": "../types/parcel/index.d.cts"
-}
