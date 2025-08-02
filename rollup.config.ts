@@ -1,7 +1,6 @@
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import del from "rollup-plugin-delete";
-import { dts } from "rollup-plugin-dts";
 import terser from "@rollup/plugin-terser";
 
 export default [
@@ -16,7 +15,7 @@ export default [
       }),
       typescript(),
       resolve(),
-      // terser(),
+      terser(),
     ],
   },
 ];

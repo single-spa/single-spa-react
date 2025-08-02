@@ -57,9 +57,6 @@ importers:
       rollup-plugin-delete:
         specifier: ^3.0.1
         version: 3.0.1(rollup@4.46.2)
-      rollup-plugin-dts:
-        specifier: ^6.2.1
-        version: 6.2.1(rollup@4.46.2)(typescript@5.9.2)
 
 packages:
 
@@ -1402,9 +1399,6 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  magic-string@0.30.17:
-    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
-
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
@@ -1614,13 +1608,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       rollup: '*'
-
-  rollup-plugin-dts@6.2.1:
-    resolution: {integrity: sha512-sR3CxYUl7i2CHa0O7bA45mCrgADyAQ0tVtGSqi3yvH28M+eg1+g5d7kQ9hLvEz5dorK3XVsH5L2jwHLQf72DzA==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      rollup: ^3.29.4 || ^4
-      typescript: ^4.5 || ^5.0
 
   rollup@4.46.2:
     resolution: {integrity: sha512-WMmLFI+Boh6xbop+OAGo9cQ3OgX9MIg7xOQjn+pTCwOkk+FNDAeAemXkJ3HzDJrVXleLOFVa1ipuc1AmEx1Dwg==}
@@ -3440,10 +3427,6 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  magic-string@0.30.17:
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.4
-
   make-dir@4.0.0:
     dependencies:
       semver: 7.7.2
@@ -3611,14 +3594,6 @@ snapshots:
     dependencies:
       del: 8.0.0
       rollup: 4.46.2
-
-  rollup-plugin-dts@6.2.1(rollup@4.46.2)(typescript@5.9.2):
-    dependencies:
-      magic-string: 0.30.17
-      rollup: 4.46.2
-      typescript: 5.9.2
-    optionalDependencies:
-      '@babel/code-frame': 7.27.1
 
   rollup@4.46.2:
     dependencies:

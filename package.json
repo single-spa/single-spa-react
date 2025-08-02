@@ -59,8 +59,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "rollup": "^4.46.2",
-    "rollup-plugin-delete": "^3.0.1",
-    "rollup-plugin-dts": "^6.2.1"
+    "rollup-plugin-delete": "^3.0.1"
   },
   "dependencies": {
     "dom-element-getter-helpers": "^2.0.3"
