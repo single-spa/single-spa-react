@@ -20,7 +20,7 @@ test("throws an error with missing createElement", () => {
   expect(() =>
     singleSpaReact({
       createRoot,
-      renderReactNode: (props) => createElement("div"),
+      renderReactNode: (props) => <div />,
     }),
   ).toThrow(/createElement/);
 });
@@ -30,7 +30,7 @@ test("throws an error with missing useEffect", () => {
     singleSpaReact({
       createRoot,
       createElement,
-      renderReactNode: (props) => createElement("div"),
+      renderReactNode: (props) => <div />,
     }),
   ).toThrow(/useEffect/);
 });
