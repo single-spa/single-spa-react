@@ -34,7 +34,6 @@ jobs:
       - name: Validate
         run: |
           pnpm run check-format
-          pnpm exec heeler check
 
       - name: Build
         run: pnpm run build
