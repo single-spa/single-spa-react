@@ -1,5 +1,0 @@
-exec < /dev/tty
-if pnpm exec heeler add $(cat $1); then
-  git add .changelog
-  git commit --amend --no-edit --no-verify
-fi

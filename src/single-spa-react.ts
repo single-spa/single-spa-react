@@ -2,22 +2,32 @@ import {
   chooseDomElementGetter,
   type DomElementGetterOpts,
 } from "dom-element-getter-helpers";
-import type { ReactNode } from "react";
+import type { ReactNode, createElement, useEffect } from "react";
 import type {
   createRoot,
   hydrateRoot,
   RootOptions,
   Root,
 } from "react-dom/client";
+import type { AppProps, LifeCycles } from "single-spa";
 
-export interface SingleSpaReactOpts extends DomElementGetterOpts {
-  createRoot: typeof createRoot;
-  hydrateRoot: typeof hydrateRoot;
+type AtLeastOne<T> = { [Key in keyof T]: Pick<T, Key> }[keyof T];
+
+export type SingleSpaReactOpts = DomElementGetterOpts & {
+  createElement: typeof createElement;
+  useEffect: typeof useEffect;
   rootOptions?: RootOptions;
-  createReactNode: ((props) => ReactNode) | ((props) => Promise<ReactNode>);
-}
+  renderReactNode: ((props) => ReactNode) | ((props) => Promise<ReactNode>);
+} & AtLeastOne<{
+    createRoot: typeof createRoot;
+    hydrateRoot: typeof hydrateRoot;
+  }>;
 
-export default function singleSpaReact(opts: SingleSpaReactOpts) {
+const inBrowser = typeof window !== "undefined";
+
+export default function singleSpaReact<ExtraProps = {}>(
+  opts: SingleSpaReactOpts,
+): LifeCycles<ExtraProps> {
   if (!opts) {
     throw Error(
       `single-spa-react: singleSpaReact() function requires an opts object passed as argument`,
@@ -25,7 +35,7 @@ export default function singleSpaReact(opts: SingleSpaReactOpts) {
   }
 
   if (
-    typeof opts.createRoot !== "function" ||
+    typeof opts.createRoot !== "function" &&
     typeof opts.hydrateRoot !== "function"
   ) {
     throw Error(
@@ -33,34 +43,78 @@ export default function singleSpaReact(opts: SingleSpaReactOpts) {
     );
   }
 
-  if (typeof opts.createReactNode !== "function") {
-    throw Error(`single-spa-react: opts.createReactNode must be defined`);
+  if (typeof opts.renderReactNode !== "function") {
+    throw Error(`single-spa-react: opts.renderReactNode must be defined`);
+  }
+
+  if (typeof opts.createElement !== "function") {
+    throw Error(`single-spa-react: opts.createElement must be defined`);
+  }
+
+  if (typeof opts.useEffect !== "function") {
+    throw Error(`single-spa-react: opts.useEffect must be defined`);
   }
 
   const instances = {};
 
+  const SingleSpaRoot = (rootProps) => {
+    opts.useEffect(rootProps.renderFinished);
+
+    return rootProps.children;
+  };
+
   return {
-    async init() {},
-    async mount(props) {
+    async init(props: AppProps & ExtraProps) {},
+    async mount(props: AppProps & ExtraProps) {
+      let renderFinished, renderFailed;
+      const renderFinishedPromise = new Promise((resolve, reject) => {
+        renderFinished = resolve;
+        renderFailed = reject;
+      });
+
+      function onUncaughtError(error, errorInfo) {
+        console.error(`single-spa-react: error mounting '${props.name}'`);
+        console.error(error);
+        console.error(errorInfo);
+        renderFailed(error);
+      }
+
       const domElement = chooseDomElementGetter(opts, props)();
-      const reactElement: ReactNode = await opts.createReactNode(props);
+      const reactElement: ReactNode = await opts.renderReactNode(props);
       const rootOptions: RootOptions = {
         identifierPrefix: props.name,
+        onUncaughtError,
         ...(opts.rootOptions ?? {}),
       };
       let root: Root;
       if (opts.createRoot) {
         root = opts.createRoot(domElement, rootOptions);
-        root.render(reactElement);
       } else {
         root = opts.hydrateRoot(domElement, reactElement, rootOptions);
       }
 
+      root.render(
+        opts.createElement(SingleSpaRoot, {
+          renderFinished,
+          children: reactElement,
+        }),
+      );
+
       instances[props.name] = root;
+
+      await renderFinishedPromise;
     },
-    async unmount(props) {
+    async update(props: AppProps & ExtraProps) {
+      const reactRoot = instances[props.name];
+      reactRoot.render(props);
+    },
+    async unmount(props: AppProps & ExtraProps) {
+      console.log("instances", instances);
       instances[props.name].unmount();
+      const domElement = chooseDomElementGetter(opts, props)();
+      domElement.remove();
       delete instances[props.name];
     },
+    async serverRender(props: AppProps & ExtraProps) {},
   };
 }
