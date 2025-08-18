@@ -10,20 +10,17 @@ import type {
   Root,
 } from "react-dom/client";
 import type { AppProps, LifeCycles } from "single-spa";
-
-type AtLeastOne<T> = { [Key in keyof T]: Pick<T, Key> }[keyof T];
+import type { AtLeastOne } from "./utility-types.js";
 
 export type SingleSpaReactOpts = DomElementGetterOpts & {
-  createElement: typeof createElement;
-  useEffect: typeof useEffect;
+  createElement;
+  useEffect;
   rootOptions?: RootOptions;
   renderReactNode: ((props) => ReactNode) | ((props) => Promise<ReactNode>);
 } & AtLeastOne<{
     createRoot: typeof createRoot;
     hydrateRoot: typeof hydrateRoot;
   }>;
-
-const inBrowser = typeof window !== "undefined";
 
 export default function singleSpaReact<ExtraProps = {}>(
   opts: SingleSpaReactOpts,
@@ -106,10 +103,23 @@ export default function singleSpaReact<ExtraProps = {}>(
     },
     async update(props: AppProps & ExtraProps) {
       const reactRoot = instances[props.name];
-      reactRoot.render(props);
+      const reactElement: ReactNode = await opts.renderReactNode(props);
+
+      let renderFinished;
+      const renderPromise = new Promise((resolve) => {
+        renderFinished = resolve;
+      });
+
+      reactRoot.render(
+        opts.createElement(SingleSpaRoot, {
+          renderFinished,
+          children: reactElement,
+        }),
+      );
+
+      await renderPromise;
     },
     async unmount(props: AppProps & ExtraProps) {
-      console.log("instances", instances);
       instances[props.name].unmount();
       const domElement = chooseDomElementGetter(opts, props)();
       domElement.remove();
