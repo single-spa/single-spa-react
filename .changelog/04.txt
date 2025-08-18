@@ -1,0 +1,2 @@
+feature
+Support for hydrateRoot

@@ -10,7 +10,6 @@ import {
   useState,
 } from "react";
 import type { AppProps, ParcelConfig, mountRootParcel } from "single-spa";
-import type { AtLeastOne } from "./utility-types";
 
 export type SingleSpaReactParcelProps = {
   config: ParcelConfig | (() => Promise<ParcelConfig>);
@@ -19,10 +18,9 @@ export type SingleSpaReactParcelProps = {
   handleError?: () => void;
   wrapWith?: string;
   wrapWithProps?: DetailedHTMLProps;
-} & AtLeastOne<{
-  mountParcel: mountRootParcel;
-  singleSpaContext: Context<AppProps>;
-}>;
+  mountParcel?: mountRootParcel;
+  singleSpaContext?: Context<AppProps>;
+};
 
 const defaultContext = createContext<AppProps>({
   name: "test",

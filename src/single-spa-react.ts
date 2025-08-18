@@ -10,17 +10,15 @@ import type {
   Root,
 } from "react-dom/client";
 import type { AppProps, LifeCycles } from "single-spa";
-import type { AtLeastOne } from "./utility-types.js";
 
 export type SingleSpaReactOpts = DomElementGetterOpts & {
   createElement;
   useEffect;
-  rootOptions?: RootOptions;
   renderReactNode: ((props) => ReactNode) | ((props) => Promise<ReactNode>);
-} & AtLeastOne<{
-    createRoot: typeof createRoot;
-    hydrateRoot: typeof hydrateRoot;
-  }>;
+  createRoot?;
+  hydrateRoot?;
+  rootOptions?: RootOptions;
+};
 
 export default function singleSpaReact<ExtraProps = {}>(
   opts: SingleSpaReactOpts,
@@ -77,25 +75,24 @@ export default function singleSpaReact<ExtraProps = {}>(
       }
 
       const domElement = chooseDomElementGetter(opts, props)();
-      const reactElement: ReactNode = await opts.renderReactNode(props);
+      const childNode: ReactNode = await opts.renderReactNode(props);
       const rootOptions: RootOptions = {
         identifierPrefix: props.name,
         onUncaughtError,
         ...(opts.rootOptions ?? {}),
       };
+      const reactElement = opts.createElement(SingleSpaRoot, {
+        renderFinished,
+        children: childNode,
+      });
+
       let root: Root;
       if (opts.createRoot) {
         root = opts.createRoot(domElement, rootOptions);
+        root.render(reactElement);
       } else {
         root = opts.hydrateRoot(domElement, reactElement, rootOptions);
       }
-
-      root.render(
-        opts.createElement(SingleSpaRoot, {
-          renderFinished,
-          children: reactElement,
-        }),
-      );
 
       instances[props.name] = root;
 
@@ -125,6 +122,5 @@ export default function singleSpaReact<ExtraProps = {}>(
       domElement.remove();
       delete instances[props.name];
     },
-    async serverRender(props: AppProps & ExtraProps) {},
   };
 }

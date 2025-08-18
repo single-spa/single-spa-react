@@ -1,7 +1,7 @@
 import { createElement, useEffect } from "react";
 import singleSpaReact from "./single-spa-react";
 import { test, expect } from "@jest/globals";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { AppProps, mountRootParcel } from "single-spa";
 
 test("throws error with no opts passed in", () => {
@@ -58,4 +58,33 @@ test(`can mount and unmount a react application to the DOM`, async () => {
   ).toEqual("Content");
   await lifecycles.unmount(props);
   expect(document.getElementById(`single-spa-application:test`)).toBe(null);
+});
+
+test(`can hydrate a react application`, async () => {
+  const domElement = document.createElement("div");
+  domElement.appendChild(
+    Object.assign(document.createElement("div"), { textContent: "Content" }),
+  );
+  document.body.appendChild(domElement);
+
+  const lifecycles = singleSpaReact({
+    domElementGetter: () => domElement,
+    createElement,
+    hydrateRoot,
+    useEffect,
+    renderReactNode(props) {
+      return createElement("div", null, "Content");
+    },
+  });
+
+  const props: AppProps = {
+    name: "test",
+    mountParcel: mountRootParcel,
+  };
+
+  await lifecycles.init(props);
+  await lifecycles.mount(props);
+  expect(domElement.textContent).toEqual("Content");
+  await lifecycles.unmount(props);
+  expect(document.body.contains(domElement)).toBe(false);
 });

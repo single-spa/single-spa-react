@@ -5,7 +5,7 @@ import terser from "@rollup/plugin-terser";
 
 export default [
   {
-    input: ["./src/single-spa-react.ts"],
+    input: ["./src/single-spa-react.ts", "./src/parcel.tsx"],
     output: {
       dir: "lib",
     },
