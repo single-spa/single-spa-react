@@ -53,7 +53,10 @@ export default function singleSpaReact<ExtraProps = {}>(
   const instances = {};
 
   const SingleSpaRoot = (rootProps) => {
-    opts.useEffect(rootProps.renderFinished);
+    opts.useEffect(() => {
+      console.log("render finished");
+      rootProps.renderFinished();
+    });
 
     return rootProps.children;
   };
@@ -85,6 +88,8 @@ export default function singleSpaReact<ExtraProps = {}>(
         renderFinished,
         children: childNode,
       });
+
+      console.log("domElement", domElement.id);
 
       let root: Root;
       if (opts.createRoot) {
@@ -119,7 +124,9 @@ export default function singleSpaReact<ExtraProps = {}>(
     async unmount(props: AppProps & ExtraProps) {
       instances[props.name].unmount();
       const domElement = chooseDomElementGetter(opts, props)();
-      domElement.remove();
+      if (domElement.domElementGetterHelpers) {
+        domElement.remove();
+      }
       delete instances[props.name];
     },
   };

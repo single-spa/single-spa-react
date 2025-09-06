@@ -70,7 +70,7 @@ export default function SingleSpaReactParcel({
 
       if (typeof configProp === "function") {
         let aborted = false;
-        const configPromise = config();
+        const configPromise = configProp();
         if (!(configPromise instanceof Promise)) {
           throw Error(
             `single-spa-react: Parcel's config() loading function did not return a promise`,
@@ -83,9 +83,13 @@ export default function SingleSpaReactParcel({
           }
 
           if (typeof config !== "object") {
-            throw Error(
-              `single-spa-react: Parcel's config() loading function returned a promise that did not resolve with a parcel config`,
-            );
+            const errMessage = `single-spa-react: Parcel's config() loading function returned a promise that did not resolve with a parcel config`;
+
+            if (handleError) {
+              handleError(new Error(errMessage));
+            } else {
+              throw Error(errMessage);
+            }
           }
 
           setConfig(config);

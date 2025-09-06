@@ -71,7 +71,7 @@
     "single-spa": "7.0.0-beta.9"
   },
   "dependencies": {
-    "dom-element-getter-helpers": "^2.0.3"
+    "dom-element-getter-helpers": "^2.1.0"
   },
   "peerDependencies": {
     "react": ">=19",

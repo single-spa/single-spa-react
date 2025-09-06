@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       dom-element-getter-helpers:
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.1.0
+        version: 2.1.0
     devDependencies:
       '@babel/core':
         specifier: ^7.28.3
@@ -1594,8 +1594,8 @@ packages:
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
-  dom-element-getter-helpers@2.0.3:
-    resolution: {integrity: sha512-bPd6xf+7ADAz0SE1DCb1iD+U9Df3Uuh63P0+BHBohcDaD4HYvSdUu1GDzpOUpWrI0lYKKjAmmrC4ATzTf/0/wA==}
+  dom-element-getter-helpers@2.1.0:
+    resolution: {integrity: sha512-XRBxQoDJg2Ja7tkconi8W8mhNLUgFWl/r7xi0ktvMJ/uCzufh0k4PS4x54/aSvcXbKCfpwCXb1R4YA+oX4b3Fg==}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -4320,7 +4320,7 @@ snapshots:
 
   dom-accessibility-api@0.5.16: {}
 
-  dom-element-getter-helpers@2.0.3:
+  dom-element-getter-helpers@2.1.0:
     dependencies:
       single-spa: 7.0.0-beta.9
 

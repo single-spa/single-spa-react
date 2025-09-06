@@ -54,6 +54,108 @@ test(`render a parcel with mountRootParcel`, async () => {
   expect(mountedParcel.getStatus()).toBe(AppOrParcelStatus.NOT_MOUNTED);
 });
 
+test(`render a parcel with config loading function`, async () => {
+  let mountResolve;
+  const mountPromise = new Promise((resolve) => {
+    mountResolve = resolve;
+  });
+
+  let mountedParcel;
+
+  const mountParcel = (...args) => {
+    mountedParcel = mountRootParcel(...args);
+    return mountedParcel;
+  };
+
+  function Parent(props) {
+    return (
+      <Parcel
+        config={async () => props.parcelConfig}
+        mountParcel={mountParcel}
+        parcelDidMount={mountResolve}
+      />
+    );
+  }
+
+  const parcelConfig = singleSpaReact({
+    createRoot,
+    createElement,
+    useEffect,
+    renderReactNode() {
+      return <div>Parcel content</div>;
+    },
+  });
+
+  const { unmount } = render(<Parent parcelConfig={parcelConfig} />);
+
+  await mountPromise;
+
+  expect(mountedParcel.getStatus()).toBe(AppOrParcelStatus.MOUNTED);
+
+  expect(await screen.findByText("Parcel content")).toBeDefined();
+
+  unmount();
+
+  expect(await screen.queryByText("Parcel content")).toBe(null);
+
+  await mountedParcel.unmountPromise;
+
+  expect(mountedParcel.getStatus()).toBe(AppOrParcelStatus.NOT_MOUNTED);
+});
+
+test(`throws an error when loading function for config doesn't return a promise`, async () => {
+  function Parent(props) {
+    return (
+      <Parcel config={() => props.parcelConfig} mountParcel={mountRootParcel} />
+    );
+  }
+
+  const parcelConfig = singleSpaReact({
+    createRoot,
+    createElement,
+    useEffect,
+    renderReactNode() {
+      return <div>Parcel content</div>;
+    },
+  });
+
+  expect(() => render(<Parent parcelConfig={parcelConfig} />)).toThrow(
+    /did not return a promise/,
+  );
+});
+
+test(`throws an error when loading function for config resolves with a non-object`, async () => {
+  let configResolve;
+
+  const configPromise = new Promise((resolve) => {
+    configResolve = resolve;
+  });
+
+  let handledErr;
+
+  function Parent(props) {
+    return (
+      <Parcel
+        config={async () => {
+          configResolve();
+          return "";
+        }}
+        mountParcel={mountRootParcel}
+        handleError={(err) => {
+          handledErr = err;
+        }}
+      />
+    );
+  }
+
+  render(<Parent />);
+
+  await configPromise;
+
+  expect(handledErr).toBeDefined();
+  expect(handledErr.message).toMatch(/did not resolve with a parcel config/);
+});
+
 test(`re-renders`, async () => {
   let mountResolve;
   const mountPromise = new Promise((resolve) => {

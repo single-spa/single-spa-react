@@ -1,4 +1,4 @@
-import { createElement, useEffect } from "react";
+import { createElement, useEffect, useRef, act } from "react";
 import singleSpaReact from "./single-spa-react";
 import { test, expect } from "@jest/globals";
 import { createRoot, hydrateRoot } from "react-dom/client";
@@ -57,7 +57,6 @@ test(`can mount and unmount a react application to the DOM`, async () => {
     document.getElementById(`single-spa-application:test`)?.textContent,
   ).toEqual("Content");
   await lifecycles.unmount(props);
-  expect(document.getElementById(`single-spa-application:test`)).toBe(null);
 });
 
 test(`can hydrate a react application`, async () => {
@@ -73,6 +72,38 @@ test(`can hydrate a react application`, async () => {
     hydrateRoot,
     useEffect,
     renderReactNode(props) {
+      return createElement(Root);
+    },
+  });
+
+  function Root() {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current.textContent = "Client hydration";
+    }, []);
+
+    return createElement("div", { ref }, "Content");
+  }
+
+  const props: AppProps = {
+    name: "test",
+    mountParcel: mountRootParcel,
+  };
+
+  await lifecycles.init(props);
+  await lifecycles.mount(props);
+  expect(domElement.textContent).toEqual("Client hydration");
+  await lifecycles.unmount(props);
+  expect(document.body.contains(domElement)).toBe(true);
+  expect(domElement.textContent).toEqual("");
+});
+
+test(`container dom element is removed if created by dom-element-getter-helpers`, async () => {
+  const lifecycles = singleSpaReact({
+    createElement,
+    createRoot,
+    useEffect,
+    renderReactNode(props) {
       return createElement("div", null, "Content");
     },
   });
@@ -84,7 +115,43 @@ test(`can hydrate a react application`, async () => {
 
   await lifecycles.init(props);
   await lifecycles.mount(props);
+  expect(document.getElementById(`single-spa-application:test`)).toBeDefined();
+  expect(
+    document.getElementById(`single-spa-application:test`)?.textContent,
+  ).toEqual("Content");
+  await lifecycles.unmount(props);
+  expect(document.getElementById(`single-spa-application:test`)).toBe(null);
+});
+
+test(`container dom element is not removed if not created by dom-element-getter-helpers`, async () => {
+  const domElement = document.createElement("div");
+  domElement.id = "single-spa-application:test";
+  document.body.appendChild(domElement);
+
+  const lifecycles = singleSpaReact({
+    domElementGetter() {
+      return domElement;
+    },
+    createElement,
+    createRoot,
+    useEffect,
+    renderReactNode(props) {
+      return createElement("div", null, "Content");
+    },
+  });
+
+  const props: AppProps = {
+    name: "test",
+    mountParcel: mountRootParcel,
+  };
+
+  await lifecycles.init(props);
+  await lifecycles.mount(props);
+  expect(document.getElementById(`single-spa-application:test`)).toBeDefined();
+  expect(document.getElementById(`single-spa-application:test`)).toBe(
+    domElement,
+  );
   expect(domElement.textContent).toEqual("Content");
   await lifecycles.unmount(props);
-  expect(document.body.contains(domElement)).toBe(false);
+  expect(document.getElementById(`single-spa-application:test`)).toBeDefined();
 });
