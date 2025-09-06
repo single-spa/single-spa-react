@@ -1,7 +1,6 @@
 import resolve from "@rollup/plugin-node-resolve";
 import { babel } from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
-// import typescript from 'rollup-plugin-typescript2';
 import del from "rollup-plugin-delete";
 import terser from "@rollup/plugin-terser";
 
@@ -16,10 +15,10 @@ export default [
       del({
         targets: "lib",
       }),
-      // typescript(),
       babel({
         extensions: [".ts", ".tsx"],
       }),
+      // For the react lib which still publishes cjs
       commonjs(),
       resolve(),
       terser(),
