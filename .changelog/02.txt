@@ -1,0 +1,2 @@
+breaking
+Remove main, module, and require fields from package.json

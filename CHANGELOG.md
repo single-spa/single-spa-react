@@ -17,11 +17,9 @@
 ### Major Changes
 
 - [#197](https://github.com/single-spa/single-spa-react/pull/197) [`1141959`](https://github.com/single-spa/single-spa-react/commit/1141959915c3a0073623e589b1eebd0891876745) Thanks [@MilanKovacic](https://github.com/MilanKovacic)! - ### Fixed
-
   - Enhanced compatibility with various bundlers and TypeScript `moduleResolution` strategies. The package's export patterns have been refined to address issues previously encountered with different bundling tools, ensuring more consistent and reliable integration across diverse build environments. Additionally, TypeScript type definitions have been improved, enhancing type safety and developer experience in varied TypeScript setups.
 
   ### BREAKING CHANGES
-
   - The changes in export patterns / types may require updates in how projects import from `single-spa-react/*`.
 
 ### Patch Changes

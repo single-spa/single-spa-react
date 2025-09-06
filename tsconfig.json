@@ -1,6 +1,12 @@
 {
-  "include": ["types/single-spa-react"],
+  "include": ["src/single-spa-react.ts", "src/parcel.tsx"],
   "compilerOptions": {
-    "lib": ["dom", "es2015"]
+    "declaration": true,
+    "declarationDir": "lib",
+    "emitDeclarationOnly": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "lib": ["dom", "es2024"],
+    "jsx": "react-jsx"
   }
 }
