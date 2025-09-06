@@ -52,7 +52,6 @@ export default function singleSpaReact<ExtraProps = {}>(
 
   const SingleSpaRoot = (rootProps) => {
     opts.useEffect(() => {
-      console.log("render finished");
       rootProps.renderFinished();
     });
 
@@ -86,8 +85,6 @@ export default function singleSpaReact<ExtraProps = {}>(
         renderFinished,
         children: childNode,
       });
-
-      console.log("domElement", domElement.id);
 
       let root: Root;
       if (opts.createRoot) {
