@@ -6,6 +6,32 @@
 - feature: Re-implement <Parcel /> component 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
 - breaking: Remove main, module, and require fields from package.json 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
 - breaking: Rewrite to typescript. New opts required. Newer versions of React required 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
+- breaking: returns `init` function rather than `bootstrap` function, which is compatible with single-spa@7 or with earlier versions of single-spa via the [`@single-spa/lifecycles-compat`](https://github.com/single-spa/lifecyles-compat) library
+
+### Upgrading
+
+single-spa-react
+
+```diff
+-export const { bootstrap, mount, unmount } = singleSpaReact({
+-  React,
+-  ReactDOMClient,
+-  rootComponent,
+-  errorBoundary(err, info, props) {
+-    // https://reactjs.org/docs/error-boundaries.html
+-    return <div>This renders when a catastrophic error occurs</div>;
+-  },
+-});
+
++export const { init, mount, unmount } = singleSpaReact({
++  createRoot,
++  createElement,
++  useEffect,
++  renderReactNode: () => (
++    <Root />
++  )
++});
+```
 
 ## 6.0.2
 
