@@ -27,7 +27,7 @@ single-spa-react
 +  createRoot,
 +  createElement,
 +  useEffect,
-+  renderReactNode: () => (
++  renderReactNode: (props) => (
 +    <Root />
 +  )
 +});
