@@ -10,8 +10,6 @@
 
 ### Upgrading
 
-single-spa-react
-
 ```diff
 -export const { bootstrap, mount, unmount } = singleSpaReact({
 -  React,
