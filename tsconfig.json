@@ -1,8 +1,9 @@
 {
-  "include": ["src/single-spa-react.ts"],
+  "include": ["src/single-spa-react.ts", "src/parcel.tsx"],
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "lib",
+    "emitDeclarationOnly": true,
     "moduleResolution": "nodenext",
     "module": "nodenext",
     "lib": ["dom", "es2024"],

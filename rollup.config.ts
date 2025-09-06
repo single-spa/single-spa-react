@@ -1,5 +1,7 @@
 import resolve from "@rollup/plugin-node-resolve";
-import typescript from "@rollup/plugin-typescript";
+import { babel } from "@rollup/plugin-babel";
+import commonjs from "@rollup/plugin-commonjs";
+// import typescript from 'rollup-plugin-typescript2';
 import del from "rollup-plugin-delete";
 import terser from "@rollup/plugin-terser";
 
@@ -9,11 +11,16 @@ export default [
     output: {
       dir: "lib",
     },
+    external: ["react", "react-dom"],
     plugins: [
       del({
         targets: "lib",
       }),
-      typescript(),
+      // typescript(),
+      babel({
+        extensions: [".ts", ".tsx"],
+      }),
+      commonjs(),
       resolve(),
       terser(),
     ],

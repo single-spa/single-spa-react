@@ -1,7 +1,5 @@
-import {
-  chooseDomElementGetter,
-  type DomElementGetterOpts,
-} from "dom-element-getter-helpers";
+import { chooseDomElementGetter } from "dom-element-getter-helpers";
+import type { DomElementGetterOpts } from "dom-element-getter-helpers";
 import type { ReactNode, createElement, useEffect } from "react";
 import type {
   createRoot,

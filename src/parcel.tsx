@@ -1,29 +1,34 @@
+import type { Context, DetailedHTMLProps } from "react";
 import {
-  type Context,
   createContext,
   createElement,
-  DetailedHTMLProps,
   useContext,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
-import type { AppProps, ParcelConfig, mountRootParcel } from "single-spa";
+import type {
+  AppProps,
+  ParcelConfig,
+  mountRootParcel,
+  Parcel,
+} from "single-spa";
 
 export type SingleSpaReactParcelProps = {
   config: ParcelConfig | (() => Promise<ParcelConfig>);
   parcelDidMount?: () => void;
   parcelDidUpdate?: () => void;
-  handleError?: () => void;
+  handleError?: (err: Error) => void;
   wrapWith?: string;
-  wrapWithProps?: DetailedHTMLProps;
-  mountParcel?: mountRootParcel;
+  wrapWithProps?: DetailedHTMLProps<any, any>;
+  mountParcel?: typeof mountRootParcel;
   singleSpaContext?: Context<AppProps>;
 };
 
 const defaultContext = createContext<AppProps>({
   name: "test",
+  mountParcel: null,
 });
 
 export default function SingleSpaReactParcel({
@@ -39,8 +44,8 @@ export default function SingleSpaReactParcel({
 }: SingleSpaReactParcelProps) {
   const [config, setConfig] = useState<ParcelConfig>();
   const context = useContext<AppProps>(singleSpaContext ?? defaultContext);
-  const containerRef = useRef();
-  const [parcel, setParcel] = useState();
+  const containerRef = useRef<HTMLElement>(undefined);
+  const [parcel, setParcel] = useState<Parcel>();
   const [updatePromise, setUpdatePromise] = useState();
   const definedMountParcel = mountParcel ?? context.mountParcel;
 
