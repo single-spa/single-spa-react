@@ -54,7 +54,6 @@
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.4",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
@@ -71,7 +70,6 @@
     "react-dom": "^19.1.1",
     "rollup": "^4.50.0",
     "rollup-plugin-delete": "^3.0.1",
-    "rollup-plugin-typescript2": "^0.36.0",
     "single-spa": "7.0.0-beta.9"
   },
   "peerDependencies": {
