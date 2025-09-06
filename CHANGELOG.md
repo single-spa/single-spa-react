@@ -1,5 +1,12 @@
 # single-spa-react
 
+## 7.0.0-beta.0
+
+- feature: Support for hydrateRoot 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
+- feature: Re-implement <Parcel /> component 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
+- breaking: Remove main, module, and require fields from package.json 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
+- breaking: Rewrite to typescript. New opts required. Newer versions of React required 15d55b1 ([#218](https://github.com/single-spa/single-spa-react/pull/218)) by Jolyn
+
 ## 6.0.2
 
 ### Patch Changes

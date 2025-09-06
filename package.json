@@ -1,6 +1,6 @@
 {
   "name": "single-spa-react",
-  "version": "6.0.2",
+  "version": "7.0.0-beta.0",
   "description": "Single-spa lifecycles helper for React apps",
   "type": "module",
   "exports": {

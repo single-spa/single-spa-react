@@ -1,2 +1,0 @@
-breaking
-Rewrite to typescript. New opts required. Newer versions of React required
